@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/list_second_divider_color"
+    android:orientation="vertical"
+    android:scrollbars="none">
+
+    <include layout="@layout/cp_common_title_bar" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10.0dip"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:singleLine="true"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:text="使用优惠券"
+            android:textColor="@color/app_text_black"
+            android:textSize="@dimen/text_design_32px" />
+
+        <CheckBox
+            android:id="@+id/cb_need_coupon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:button="@drawable/score_change_icon" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_show_coupon"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="10.0dip"
+            android:paddingTop="10.0dip">
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/list_second_divider_color"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:text="选择可用的优惠券"
+                android:textColor="@color/app_text_light_black"
+                android:textSize="@dimen/text_design_28px" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/list_second_divider_color"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:text="(每间房每晚可使用优惠券一张)"
+                android:textColor="@color/app_text_light_black"
+                android:textSize="@dimen/text_design_24px" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="0.0dip"
+            android:layout_weight="1.0">
+
+            <FrameLayout
+                android:id="@+id/fl_cpupon"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/lv_coupon"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/tv_empty"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:gravity="center_vertical"
+                   android:padding="@dimen/activity_horizontal_margin"
+                    android:text="未找到可用的优惠券"
+                    android:textColor="@color/app_text_black"
+                    android:textSize="@dimen/text_design_28px"
+                    android:visibility="visible" />
+            </FrameLayout>
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tv_submit"
+            style="@style/BtnNomalStyle"
+            android:text="完成" />
+    </LinearLayout>
+</LinearLayout>

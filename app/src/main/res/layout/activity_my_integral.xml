@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/backgrund_dark"
+    android:orientation="vertical">
+
+    <include layout="@layout/cp_common_title_bar"/>
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/WHITE"
+        android:paddingBottom="24.0dip"
+        android:paddingTop="20.0dip"
+        android:src="@mipmap/illustration_integral" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/WHITE"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="可兑换:"
+            android:textColor="@color/black_tv"
+            android:textSize="@dimen/text_design_30px" />
+
+        <TextView
+            android:id="@+id/tv_use_integral"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15.0dip"
+            android:text="23"
+            android:textColor="@color/orange"
+            android:textSize="@dimen/text_larger" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dip"
+        android:background="@color/list_divider_color" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="65.0dip"
+        android:background="@color/WHITE"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0.0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="账号总积分"
+                android:textColor="#ff798394"
+                android:textSize="@dimen/text_design_24px" />
+
+            <TextView
+                android:id="@+id/tv_total_integral"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginRight="8.0dip"
+                android:layout_marginTop="5.0dip"
+                android:text="10"
+                android:textColor="#ff221815"
+                android:textSize="@dimen/text_normal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0.0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="冻结积分"
+                android:textColor="#ff798394"
+                android:textSize="@dimen/text_design_24px" />
+
+            <TextView
+                android:id="@+id/tv_cool_integral"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="5.0dip"
+                android:text="0"
+                android:textColor="#ff221815"
+                android:textSize="@dimen/text_normal" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lay_integral_detail"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10.0dip"
+        android:background="@color/WHITE"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="42.0dip"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="13.0dip"
+            android:src="@mipmap/mine_integral_1_ic" />
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="45.0dip">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="8.0dip"
+                android:text="积分明细"
+                android:textColor="@color/black_tv"
+                android:textSize="@dimen/text_design_30px" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10.0dip"
+                android:layout_toLeftOf="@+id/image_arrow_right"
+                android:text="积分"
+                android:textColor="#ff798394"
+                android:textSize="@dimen/text_design_22px" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="0.5dip"
+                android:layout_alignParentBottom="true"
+                android:background="#ffdcdcdc"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/image_arrow_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10.0dip"
+                android:src="@mipmap/arrow_right" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lay_exchange_record"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/WHITE"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="42.0dip"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="13.0dip"
+            android:src="@mipmap/mine_integral_2_ic" />
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="45.0dip">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10.0dip"
+                android:layout_toLeftOf="@+id/image_arrow_rights"
+                android:text="记录"
+                android:textColor="#ff798394"
+                android:textSize="@dimen/text_design_22px" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="8.0dip"
+                android:text="兑换记录"
+                android:textColor="@color/black_tv"
+                android:textSize="@dimen/text_design_30px" />
+
+            <ImageView
+                android:id="@+id/image_arrow_rights"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10.0dip"
+                android:src="@mipmap/arrow_right" />
+        </RelativeLayout>
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="apartment.wisdom.com.activities.MeInfoActivity">
+
+    <include layout="@layout/cp_common_title_bar" />
+
+
+    <RelativeLayout
+        android:id="@+id/people_ll"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/activity_horizontal_margin">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/avatar"
+            android:textColor="@color/activity_tv"
+            android:textSize="@dimen/text_normal_up" />
+
+        <ImageView
+            android:id="@+id/image_person"
+            android:layout_width="56.0dip"
+            android:layout_height="56.0dip"
+            android:layout_marginLeft="19.0dip"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_toLeftOf="@+id/iv_arrow"
+            android:background="@drawable/mine_image_out_bg"
+            android:padding="2.0dip"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/mine_head" />
+
+        <ImageView
+            android:id="@+id/iv_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/arrow_right" />
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/rl_usename"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:background="@color/white"
+        android:padding="@dimen/activity_horizontal_margin">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/name"
+            android:textColor="@color/activity_tv"
+            android:textSize="@dimen/text_normal_up" />
+
+        <TextView
+            android:id="@+id/tv_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:gravity="right"
+            android:layout_centerVertical="true"
+            android:drawablePadding="@dimen/activity_horizontal_margin"
+            android:drawableRight="@mipmap/arrow_right"
+            android:hint="请填写您的姓名"
+            android:textColor="@color/activity_info"
+            android:textSize="@dimen/text_normal" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_birth"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/list_divider_height"
+        android:background="@color/white"
+        android:padding="@dimen/activity_horizontal_margin">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/birth"
+            android:textColor="@color/activity_tv"
+            android:textSize="@dimen/text_normal_up" />
+
+        <TextView
+            android:id="@+id/tv_birth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:drawablePadding="@dimen/activity_horizontal_margin"
+            android:drawableRight="@mipmap/arrow_right"
+            android:text="请选择出生日期"
+            android:gravity="right"
+            android:textColor="@color/activity_info"
+            android:textSize="@dimen/text_normal" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/list_divider_height"
+        android:background="@color/white"
+        android:padding="@dimen/activity_horizontal_margin">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/phone"
+            android:textColor="@color/activity_tv"
+            android:textSize="@dimen/text_normal_up" />
+
+        <TextView
+            android:id="@+id/tv_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:drawablePadding="@dimen/activity_horizontal_margin"
+            android:drawableRight="@mipmap/arrow_right"
+            android:hint="请输入您的手机号"
+            android:gravity="right"
+            android:textColor="@color/activity_info"
+            android:textSize="@dimen/text_normal" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/list_divider_height"
+        android:background="@color/white"
+        android:padding="@dimen/activity_horizontal_margin">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/id_card"
+            android:textColor="@color/activity_tv"
+            android:textSize="@dimen/text_normal_up" />
+
+        <TextView
+            android:id="@+id/tv_card"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:drawablePadding="@dimen/activity_horizontal_margin"
+            android:drawableRight="@mipmap/arrow_right"
+            android:hint="请输入您的证件号码"
+            android:gravity="right"
+            android:textColor="@color/activity_info"
+            android:textSize="@dimen/text_normal" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/list_divider_height"
+        android:background="@color/white"
+        android:padding="@dimen/activity_horizontal_margin">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/email"
+            android:textColor="@color/activity_tv"
+            android:textSize="@dimen/text_normal_up" />
+
+        <TextView
+            android:id="@+id/tv_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:drawablePadding="@dimen/activity_horizontal_margin"
+            android:drawableRight="@mipmap/arrow_right"
+            android:hint="请输入您的邮箱"
+            android:gravity="right"
+            android:textColor="@color/activity_info"
+            android:textSize="@dimen/text_normal" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:layout_centerHorizontal="true"
+            android:drawableLeft="@mipmap/block_canary_notification"
+            android:gravity="center_vertical"
+            android:text="@string/keep_your_secret"
+            android:textColor="@color/activity_info"
+            android:textSize="@dimen/text_small" />
+
+        <TextView
+            android:id="@+id/tv_login_out"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_normal"
+            android:padding="@dimen/image_padding_big"
+            android:text="@string/exit_app"
+            android:layout_margin="@dimen/activity_horizontal_margin"
+            style="@style/BtnNomalStyle"/>
+    </RelativeLayout>
+</LinearLayout>

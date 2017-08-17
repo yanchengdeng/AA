@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical"
+    android:background="@color/white"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:id="@+id/ll_hotel_name"
+        android:paddingLeft="10.0dip"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15.0dip"
+        android:layout_marginBottom="10.0dip">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:layout_weight="1.0">
+
+            <TextView
+                android:textSize="@dimen/text_design_28px"
+                android:textColor="@color/app_text_black"
+                android:id="@+id/detail_name_tv"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="酒店"
+                android:singleLine="true" />
+
+            <TextView
+                android:textSize="@dimen/text_design_24px"
+                android:textColor="@color/app_text_light_black"
+                android:id="@+id/detail_type_id"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5.0dip"
+                android:text="标准大床   1房间"
+                android:singleLine="true" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_gravity="center|right"
+            android:visibility="visible"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_marginRight="10.0dip"
+            android:src="@mipmap/arrow_right" />
+    </LinearLayout>
+
+    <View
+        android:background="@color/list_divider_color"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/list_divider_height"
+        android:layout_marginLeft="10.0dip" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10.0dip"
+        android:layout_marginTop="10.0dip">
+
+        <TextView
+            android:textSize="@dimen/text_design_24px"
+            android:textColor="@color/app_text_black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="入住时间 ："
+            android:ems="5" />
+
+
+
+        <TextView
+            android:textSize="@dimen/text_design_24px"
+            android:textColor="@color/app_text_light_black"
+            android:id="@+id/detail_time_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20.0dip"
+            android:text="08月15日 19：00前💰"
+            android:singleLine="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:id="@+id/detail_end_ll"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10.0dip"
+        android:layout_marginTop="5.0dip">
+
+        <TextView
+            android:textSize="@dimen/text_design_24px"
+            android:textColor="@color/app_text_black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="离店时间 ："
+            android:ems="5" />
+
+        <TextView
+            android:textSize="@dimen/text_design_24px"
+            android:textColor="@color/app_text_light_black"
+            android:id="@+id/detail_end_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="8月16号  20：00前"
+            android:layout_marginLeft="10.0dip" />
+
+        <TextView
+            android:textSize="@dimen/text_design_24px"
+            android:textColor="@color/app_text_light_black"
+            android:id="@+id/detail_day_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30.0dip" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10.0dip"
+            android:layout_marginTop="5.0dip">
+
+            <TextView
+                android:textSize="@dimen/text_design_24px"
+                android:textColor="@color/app_text_black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="订单状态 ："
+                android:ems="5" />
+
+            <TextView
+                android:textSize="@dimen/text_design_24px"
+                android:textColor="@color/app_text_light_black"
+                android:id="@+id/detail_pay_tv"
+                android:layout_width="wrap_content"
+                android:text="已支付"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10.0dip" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_gravity="center|right"
+            android:id="@+id/iv_pay"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10.0dip"
+            android:src="@mipmap/order_details_pay_btn" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:id="@+id/ll_room_list"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10.0dip"
+        android:layout_marginTop="5.0dip">
+
+        <TextView
+            android:textSize="@dimen/text_design_24px"
+            android:textColor="@color/app_text_black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="房  间  号："
+            android:ems="5" />
+
+        <TextView
+            android:textSize="@dimen/text_design_24px"
+            android:textColor="@color/app_text_light_black"
+            android:id="@+id/tv_room_names"
+            android:text="302"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10.0dip" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/continue_view"
+        android:background="@color/list_second_divider_color"
+        android:layout_width="fill_parent"
+        android:layout_height="10.0dip"
+        android:layout_marginTop="10.0dip" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10.0dip"
+        android:layout_marginTop="10.0dip">
+
+        <TextView
+            android:textSize="@dimen/text_design_24px"
+            android:textColor="@color/app_text_black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="入  住  人："
+            android:ems="5" />
+
+        <TextView
+            android:textSize="@dimen/text_design_24px"
+            android:textColor="@color/app_text_light_black"
+            android:id="@+id/detail_people_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="邓言诚"
+            android:layout_marginLeft="10.0dip" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10.0dip"
+        android:layout_marginTop="5.0dip"
+        android:layout_marginBottom="10.0dip">
+
+        <TextView
+            android:textSize="@dimen/text_design_24px"
+            android:textColor="@color/app_text_black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="联系手机 ："
+            android:ems="5" />
+
+        <TextView
+            android:textSize="@dimen/text_design_24px"
+            android:textColor="@color/app_text_light_black"
+            android:id="@+id/detail_photo_tv"
+            android:layout_width="wrap_content"
+            android:text="13067380836"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10.0dip" />
+    </LinearLayout>
+
+    <View
+        android:background="@color/list_second_divider_color"
+        android:layout_width="fill_parent"
+        android:layout_height="10.0dip" />
+</LinearLayout>

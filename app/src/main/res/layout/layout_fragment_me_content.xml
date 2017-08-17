@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dip"
+        android:layout_marginLeft="40.0dip"
+        android:background="@color/divider_line" />
+
+    <TextView
+        android:id="@+id/mine_hotel_order"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:drawableLeft="@mipmap/mine_order_ic"
+        android:drawablePadding="13.0dip"
+        android:drawableRight="@mipmap/arrow_right"
+        android:paddingBottom="13.0dip"
+        android:paddingLeft="14.0dip"
+        android:paddingRight="10.0dip"
+        android:paddingTop="13.0dip"
+        android:text="酒店订单"
+        android:textColor="@color/ta_list_black"
+        android:textSize="@dimen/text_14sp" />
+
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dip"
+        android:layout_marginLeft="40.0dip"
+        android:background="@color/divider_line" />
+
+    <LinearLayout
+        android:id="@+id/common_info"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="13.0dip"
+        android:paddingLeft="14.0dip"
+        android:paddingRight="10.0dip"
+        android:paddingTop="13.0dip">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:drawableLeft="@mipmap/mine_list_message_3_ic"
+            android:drawablePadding="13.0dip"
+            android:text="常用信息"
+            android:textColor="@color/ta_list_black"
+            android:textSize="@dimen/text_14sp" />
+
+        <TextView
+            android:layout_width="0.0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:drawablePadding="13.0dip"
+            android:drawableRight="@mipmap/arrow_right"
+            android:gravity="right"
+            android:text="常用旅客、地址、发票"
+            android:textColor="#ff798394"
+            android:textSize="12.0sp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dip"
+        android:layout_marginLeft="40.0dip"
+        android:background="@color/divider_line" />
+
+    <TextView
+        android:id="@+id/mine_evaluate"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:drawableLeft="@mipmap/mine_comment_ic"
+        android:drawablePadding="13.0dip"
+        android:drawableRight="@mipmap/arrow_right"
+        android:paddingBottom="13.0dip"
+        android:paddingLeft="14.0dip"
+        android:paddingRight="10.0dip"
+        android:paddingTop="13.0dip"
+        android:text="我的点评"
+        android:textColor="@color/ta_list_black"
+        android:textSize="@dimen/text_14sp" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dip"
+        android:layout_marginLeft="40.0dip"
+        android:background="@color/divider_line" />
+
+
+    <LinearLayout
+        android:id="@+id/mine_tel_phone"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="13.0dip"
+        android:paddingLeft="14.0dip"
+        android:paddingRight="10.0dip"
+        android:paddingTop="13.0dip">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:drawableLeft="@mipmap/mine_phone_ic"
+            android:drawablePadding="13.0dip"
+            android:text="客服电话"
+            android:textColor="@color/ta_list_black"
+            android:textSize="@dimen/text_14sp" />
+
+        <TextView
+            android:id="@+id/phone_tv"
+            android:layout_width="0.0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:drawablePadding="13.0dip"
+            android:gravity="right"
+            android:text="4006-456-999"
+            android:textColor="@color/theme_color"
+            android:textSize="12.0sp" />
+    </LinearLayout>
+
+
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dip"
+        android:layout_marginLeft="40.0dip"
+        android:background="@color/divider_line" />
+    <TextView
+        android:id="@+id/tv_about"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:drawableLeft="@mipmap/about"
+        android:drawablePadding="13.0dip"
+        android:drawableRight="@mipmap/arrow_right"
+        android:paddingBottom="13.0dip"
+        android:paddingLeft="14.0dip"
+        android:paddingRight="10.0dip"
+        android:paddingTop="13.0dip"
+        android:text="@string/about_app"
+        android:textColor="@color/ta_list_black"
+        android:textSize="@dimen/text_14sp" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dip"
+        android:layout_marginLeft="40.0dip"
+        android:background="@color/divider_line" />
+
+</LinearLayout>

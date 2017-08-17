@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical"
+    android:background="@color/white"
+    android:paddingBottom="10.0dip"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:paddingTop="10.0dip"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10.0dip">
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10.0dip"
+            android:layout_marginRight="10.0dip"
+            android:src="@mipmap/details_card_bg"
+            android:scaleType="fitXY" />
+
+        <TextView
+            android:textSize="16.0sp"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:id="@+id/detail_room_tv"
+            android:paddingLeft="30.0dip"
+            android:paddingTop="12.0dip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="预订成功"
+            android:singleLine="true" />
+
+        <TextView
+            android:textSize="13.0sp"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:id="@+id/tv_order_state"
+            android:paddingLeft="30.0dip"
+            android:paddingTop="1.0dip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="已取消"
+            android:layout_below="@+id/detail_room_tv" />
+
+        <TextView
+            android:textSize="28.0sp"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:id="@+id/tv_detail_money"
+            android:paddingRight="30.0dip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14.0dip"
+            android:text="159"
+            android:layout_alignParentRight="true" />
+    </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_choose_by_self"
+            android:visibility="gone"
+            android:text="自助选房"
+            style="@style/BtnNomalStyle" />
+    </FrameLayout>
+
+    <View
+        android:background="@color/list_divider_color"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/list_divider_height" />
+
+    <View
+        android:background="@color/list_divider_color"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/list_divider_height" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10.0dip"
+        android:layout_marginRight="10.0dip">
+
+        <ImageView
+            android:paddingRight="18.0dip"
+            android:visibility="visible"
+            android:layout_width="wrap_content"
+            android:layout_height="35.0dip"
+            android:src="@mipmap/order_detail_cost"
+            android:scaleType="centerInside" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="0.0dip"
+            android:layout_height="wrap_content"
+            android:gravity="right|center_vertical"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1.0">
+
+            <TextView
+                android:id="@+id/tv_room_count"
+                android:textSize="@dimen/text_design_24px"
+                android:textColor="@color/introduce_color"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="35.0dip"
+                android:text="2017-07-20(1间)"
+                 />
+
+
+            <TextView
+                android:id="@+id/tv_room_price"
+                android:textSize="@dimen/text_design_24px"
+                android:textColor="@color/introduce_color"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="35.0dip"
+                android:text="￥159"
+                />
+        </LinearLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/iv_show_more"
+        android:paddingTop="10.0dip"
+        android:paddingBottom="10.0dip"
+        android:visibility="gone"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/arrow_down" />
+
+    <View
+        android:background="@color/list_divider_color"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/list_divider_height" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/ll_all_day_show"
+        android:visibility="visible"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15.0dip">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10.0dip">
+
+            <TextView
+                android:textSize="@dimen/text_design_24px"
+                android:textColor="@color/introduce_color"
+                android:gravity="center"
+                android:id="@+id/detail_delay_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="35.0dip"
+                android:text="房间保留19:00"
+                android:drawableLeft="@mipmap/order_detail_stay"
+                android:drawablePadding="10.0dip" />
+
+            <TextView
+                android:textSize="@dimen/text_design_24px"
+                android:textColor="@color/introduce_color"
+                android:gravity="center"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/detail_exit_tv"
+                android:text="延迟退房14:00"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@mipmap/order_detail_delay"
+                android:drawablePadding="10.0dip" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

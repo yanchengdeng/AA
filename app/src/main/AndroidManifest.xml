@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="apartment.wisdom.com">
+
+    <uses-permission android:name="android.permission.READ_LOGS" />
+    <!-- 这个权限用于进行网络定位 -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- 这个权限用于访问GPS定位 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- 用于访问wifi网络信息，wifi信息会用于进行网络定位 -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!-- 获取运营商信息，用于支持提供运营商信息相关的接口 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- 这个权限用于获取wifi的获取权限，wifi信息会用来进行网络定位 -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <!-- 用于读取手机当前的状态 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!-- 写入扩展存储，向扩展卡写入数据，用于写入离线定位数据 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!-- 访问网络，网络定位需要上网 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- SD卡读取权限，用户写入离线定位数据 -->
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+
+    <application
+        android:name=".AAApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        tools:replace="android:icon">
+
+        <!--
+        添加Umeng 统计
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="5993901e7666135c63000317" />
+             <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="Channel ID" />
+        -->
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="PvyN3Dn6UR8QIGrjPLlZBtHAYPiR5YFS" />
+        //key:开发者申请的Key
+        <service
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:process=":remote">
+            <intent-filter>
+                <action android:name="com.baidu.location.service_v2.2" />
+            </intent-filter>
+        </service>
+
+        <activity
+            android:name=".activities.WelcomeActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".activities.MainActivity" />
+        <activity android:name=".activities.ActivityDetailActivity" />
+        <activity android:name=".activities.SearchHotalResultActivity" />
+        <activity android:name=".activities.CalendarChooseActivity" />
+        <activity
+            android:name=".activities.CityPickedActivity"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity
+            android:name=".activities.HotelDetailActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <!-- umeng分享 -->
+
+
+        <!-- umengAppKey，记得替换成自己的 -->
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="5126ff896c738f2bfa000438" />
+
+        <activity
+            android:name="com.umeng.socialize.media.WBShareCallBackActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+            android:name="com.sina.weibo.sdk.share.WbShareTransActivity"
+            android:launchMode="singleTask"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
+            <intent-filter>
+                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+            android:name=".wxapi.WXPayEntryActivity"
+            android:exported="true"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:scheme="wx120b649484505c67" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.alipay.sdk.app.H5PayActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:exported="false"
+            android:screenOrientation="behind"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
+            android:name="com.alipay.sdk.app.H5AuthActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity android:name=".activities.CommendListActivity" />
+        <activity android:name=".activities.HotelIntroduceActivity" />
+        <activity android:name=".activities.MapActivity" />
+        <activity android:name=".activities.PreOrderActivity" />
+        <activity android:name=".activities.PayActivity" />
+        <activity android:name=".activities.BalanceActivity" />
+        <activity android:name=".activities.TicketListActivity" />
+        <activity android:name=".activities.MyIntegralActivity" />
+        <activity android:name=".activities.HotelOrderListActivity" />
+        <activity android:name=".activities.CommonInfoActivity" />
+        <activity android:name=".activities.AboutActivity" />
+        <activity android:name=".activities.MeInfoActivity" />
+        <activity android:name=".activities.EditEmailActivity" />
+        <activity
+            android:name="me.nereo.multi_image_selector.MultiImageSelectorActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".activities.EditNameActivity" />
+        <activity android:name=".activities.EditCardActivity" />
+        <activity android:name=".activities.AdPeopleActivity" />
+        <activity android:name=".activities.HotelOrderDetailActivity" />
+        <activity
+            android:name=".activities.DoCommendActivity"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity android:name=".activities.IntegralDetailActivity" />
+        <activity android:name=".activities.RechagerActivity" />
+        <activity
+            android:name=".activities.BalanceDetailActivity"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity android:name=".activities.SelectCouponActivity" />
+        <activity android:name=".activities.HistoryHotelActivity" />
+        <activity android:name=".activities.LoginActivity"></activity>
+    </application>
+
+</manifest>

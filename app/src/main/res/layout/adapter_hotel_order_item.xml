@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:foreground="?android:attr/selectableItemBackground"
+    card_view:cardBackgroundColor="@color/white"
+    card_view:cardCornerRadius="4dp"
+    card_view:cardUseCompatPadding="true">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+
+        <TextView
+            android:id="@+id/tv_hotel_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="北京尚有酒店朝阳区分店205号"
+            android:textColor="@color/activity_tv"
+            android:textSize="@dimen/text_normal_up" />
+
+        <TextView
+            android:id="@+id/tv_room_address"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/image_padding"
+            android:drawableLeft="@mipmap/selection_location_ic_red"
+            android:drawablePadding="5.0dip"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="北京市朝阳区朝阳路125号A座8层1405"
+            android:textColor="@color/activity_info"
+            android:textColorHint="@color/app_text_light_black"
+            android:textSize="@dimen/text_normal_down" />
+
+        <TextView
+            android:id="@+id/tv_room_info"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/image_padding"
+            android:drawableLeft="@mipmap/message_zip_ic"
+            android:drawablePadding="5.0dip"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="2017-08-08至2017-08-12 (4晚/间)"
+            android:textColor="@color/activity_info"
+            android:textColorHint="@color/app_text_light_black"
+            android:textSize="@dimen/text_normal_down" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/image_padding_big">
+
+            <TextView
+                android:id="@+id/tv_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="待评论"
+                android:textColor="@color/activity_info"
+                android:textSize="@dimen/text_normal_down" />
+
+            <TextView
+                android:id="@+id/tv_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="￥159"
+                android:textColor="@color/colorAccent"
+                android:textSize="@dimen/text_normal_down" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:id="@+id/bt_order_pre"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8.0dip"
+                android:layout_marginRight="8.0dip"
+                android:layout_marginTop="5.0dip"
+                android:background="@drawable/bg_order_gray"
+                android:paddingBottom="6.0dip"
+                android:paddingLeft="22.0dip"
+                android:paddingRight="22.0dip"
+                android:paddingTop="6.0dip"
+                android:text="再次预订"
+                android:textColor="#99221815"
+                android:textSize="12.0sp" />
+
+
+            <TextView
+                android:id="@+id/bt_order_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8.0dip"
+                android:layout_marginRight="8.0dip"
+                android:layout_marginTop="5.0dip"
+                android:background="@drawable/bg_order_gray"
+                android:paddingBottom="6.0dip"
+                android:paddingLeft="22.0dip"
+                android:paddingRight="22.0dip"
+                android:paddingTop="6.0dip"
+                android:text="删除"
+                android:textColor="#99221815"
+                android:textSize="12.0sp" />
+
+
+            <TextView
+                android:id="@+id/bt_do_comment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8.0dip"
+                android:layout_marginRight="8.0dip"
+                android:layout_marginTop="5.0dip"
+                android:background="@drawable/bg_order"
+                android:paddingBottom="6.0dip"
+                android:paddingLeft="22.0dip"
+                android:paddingRight="22.0dip"
+                android:paddingTop="6.0dip"
+                android:text="点评"
+                android:textColor="@color/app_red"
+                android:textSize="12.0sp" />
+
+        </LinearLayout>
+    </LinearLayout>
+</android.support.v7.widget.CardView>

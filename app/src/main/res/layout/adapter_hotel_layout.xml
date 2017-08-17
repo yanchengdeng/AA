@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_activity"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="horizontal"
+    android:padding="@dimen/image_padding">
+
+
+    <ImageView
+        android:id="@+id/img"
+        android:layout_width="@dimen/list_icon_size"
+        android:layout_height="@dimen/list_icon_size"
+        android:scaleType="fitXY"
+        android:src="@mipmap/splash_default" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/image_padding_big"
+        android:layout_marginTop="@dimen/image_padding_big"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_tittle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="尚客优酒店北京朝阳区双桥东桥路"
+            android:textColor="@color/activity_tv"
+            android:textSize="@dimen/text_normal_up" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/image_padding_big"
+            android:layout_marginTop="@dimen/image_padding_big"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4.5"
+                android:textColor="@color/colorAccent"
+                android:textSize="@dimen/text_normal_up" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/score_unit"
+                android:textColor="@color/colorAccent"
+                android:textSize="@dimen/text_normal_down" />
+
+            <TextView
+                android:id="@+id/tv_apprise_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/image_padding_big"
+                android:text="非常好 超级棒"
+                android:textColor="@color/colorAccent"
+                android:textSize="@dimen/text_normal_down" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_apprise_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/image_padding_big"
+            android:text="性价比很高"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/text_normal" />
+
+            <include layout="@layout/layout_price_common" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

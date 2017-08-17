@@ -1,0 +1,42 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <!-- 字体大小-->
+    <dimen name="text_larger">18sp</dimen>
+    <dimen name="text_normal_up">16sp</dimen>
+    <dimen name="text_normal">14sp</dimen>
+    <dimen name="text_normal_down">12sp</dimen>
+    <dimen name="text_small">10sp</dimen>
+    <dimen name="text_small_donw">7sp</dimen>
+    <dimen name="text_larger_big">21sp</dimen>
+
+    <!--圖文間距 -->
+    <dimen name="image_padding">5dp</dimen>
+    <dimen name="image_padding_big">10dp</dimen>
+
+    <!-- Bar  高度 -->
+    <dimen name="common_header_height">50dp</dimen>
+    <!-- 头像大小-->
+    <dimen name="icon_head_size">80dp</dimen>
+    <dimen name="list_icon_size">100dp</dimen>
+
+    <!-- 城市選擇使用字體  及間距-->
+    <dimen name="side_letter_bar_letter_size">12sp</dimen>
+    <dimen name="side_letter_bar_width">36dp</dimen>
+    <dimen name="city_text_size">16sp</dimen>
+    <dimen name="main_heigh">120dp</dimen>
+    <dimen name="main_heigh_right">90dp</dimen>
+    <dimen name="ad_heigh">150dp</dimen>
+    <dimen name="app_bar_height">240dp</dimen>
+    <dimen name="text_design_24px">12.0sp</dimen>
+    <dimen name="text_design_28px">14.0sp</dimen>
+    <dimen name="list_divider_height">1dp</dimen>
+    <dimen name="text_design_20px">10.0sp</dimen>
+    <dimen name="text_design_26px">13sp</dimen>
+    <dimen name="text_design_30px">15sp</dimen>
+    <dimen name="text_design_22px">11sp</dimen>
+    <dimen name="text_14sp">14sp</dimen>
+    <dimen name="text_design_32px">16sp</dimen>
+</resources>

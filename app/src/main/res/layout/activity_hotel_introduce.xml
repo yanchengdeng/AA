@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="apartment.wisdom.com.activities.HotelIntroduceActivity">
+
+    <include layout="@layout/cp_common_title_bar" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/activity_horizontal_margin"
+                android:text="@string/hotel_enquiment"
+                android:background="@color/white"
+                android:textColor="@color/activity_tv"
+                android:textSize="@dimen/text_normal_up" />
+
+            <apartment.wisdom.com.widgets.views.MyGridView
+                android:id="@+id/gv_enqiment"
+                android:layout_width="match_parent"
+                android:background="@color/white"
+                android:paddingBottom="@dimen/activity_horizontal_margin"
+                android:numColumns="3"
+                android:horizontalSpacing="@dimen/activity_horizontal_margin"
+                android:verticalSpacing="@dimen/activity_horizontal_margin"
+                android:layout_height="wrap_content"/>
+
+
+            <TextView
+                android:id="@+id/tv_hotel_call"
+                android:layout_width="match_parent"
+                android:drawableLeft="@mipmap/home_call_icon"
+                android:drawablePadding="@dimen/image_padding"
+                android:gravity="center_vertical"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:padding="@dimen/activity_horizontal_margin"
+                android:drawableRight="@mipmap/arrow_right"
+                android:text="@string/call_phone_info"
+                android:background="@color/white"
+                android:layout_height="wrap_content" />
+
+            <ImageView
+                android:id="@+id/iv_map"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/list_icon_size"
+                android:scaleType="fitXY"
+                android:src="@mipmap/iv_map" />
+
+            <TextView
+                android:id="@+id/tv_address"
+                android:background="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@mipmap/cp_ic_locate"
+                android:padding="@dimen/image_padding_big"
+                android:text="福建省福州市晋安区华林路303号"
+                android:textColor="@color/activity_info"
+                android:textSize="@dimen/text_normal_down" />
+
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:text="@string/hotel_introduce"
+                android:background="@color/white"
+                android:textColor="@color/activity_tv"
+                android:textSize="@dimen/text_normal_up" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/activity_horizontal_margin"
+                android:paddingEnd="@dimen/activity_horizontal_margin"
+                android:paddingBottom="@dimen/activity_horizontal_margin"
+                android:text="酒店介酒店介绍酒店介绍酒店介绍酒店介绍酒店介绍酒店介绍酒店介绍酒店介绍酒店介绍酒店介绍酒店介绍酒店介绍酒店介绍酒店介绍酒店介绍酒店介绍酒店介绍酒店介绍酒店介绍绍"
+                android:background="@color/white"
+                android:lineSpacingExtra="3dp"
+                android:textColor="@color/activity_tv"
+                android:textSize="@dimen/text_normal" />
+
+        </LinearLayout>
+    </ScrollView>
+
+
+</LinearLayout>

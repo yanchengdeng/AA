@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical"
+    android:background="#ffffffff"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="67.0dip">
+
+        <RelativeLayout
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10.0dip">
+
+            <TextView
+                android:textSize="@dimen/text_design_30px"
+                android:textColor="@color/black_tv"
+                android:id="@+id/tv_hotel_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15.0dip"
+                android:text="青岛开发区武夷山路店" />
+
+            <TextView
+                android:textSize="@dimen/text_design_28px"
+                android:textColor="@color/orange"
+                android:id="@+id/tv_integraltype"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+"
+                android:layout_toLeftOf="@+id/tv_integralcount" />
+
+            <TextView
+                android:textSize="15.0sp"
+                android:textColor="@color/orange"
+                android:id="@+id/tv_integralcount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="22.0dip"
+                android:text="159"
+                android:layout_alignParentRight="true" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12.0dip">
+
+            <TextView
+                android:textSize="@dimen/text_design_24px"
+                android:textColor="#ff798394"
+                android:id="@+id/tv_integral_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15.0dip"
+                android:text="2015-05-01" />
+
+            <TextView
+                android:textSize="@dimen/text_design_24px"
+                android:textColor="#ff798394"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="2.0dip"
+                android:text="有效期至"
+                android:layout_toLeftOf="@+id/data_expire" />
+
+            <TextView
+                android:textSize="@dimen/text_design_24px"
+                android:textColor="#ff798394"
+                android:id="@+id/data_expire"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="22.0dip"
+                android:text="2015-12-31"
+                android:layout_alignParentRight="true" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_gravity="bottom"
+        android:background="#ffdcdcdc"
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dip" />
+</LinearLayout>

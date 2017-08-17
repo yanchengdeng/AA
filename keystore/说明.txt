@@ -1,0 +1,48 @@
+KEYSOTER: yancheng  yancheng
+
+
+sha1       70:1A:8B:0B:81:E3:BE:66:EC:12:A1:1E:00:1D:4E:90:C0:0A:84:7D
+
+包名：apartment.wisdom.com
+
+
+smartFit Umeng统计：
+
+
+
+
+
+   JSONObject params = new JSONObject();
+        try {
+            params.put("mobile", phone);
+            params.put("type", SmsType.SMS_TYPE_REGISTER.getType());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        ParkJsonObjectReqeust request = new ParkJsonObjectReqeust(Constants.SMS_SMSSEND, params, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                tvSendCode.setClickable(false);
+                mSVProgressHUD.showSuccessWithStatus(getString(R.string.send_success), SVProgressHUD.SVProgressHUDMaskType.ClearCancel);
+                countDownTimer.start();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mSVProgressHUD.showInfoWithStatus(error.getMessage(), SVProgressHUD.SVProgressHUDMaskType.ClearCancel);
+            }
+        });
+
+        mQueue.add(request);
+
+
+
+
+
+
+
+
+
+
+
+

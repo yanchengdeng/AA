@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@mipmap/home_tab_activity_ic" android:state_selected="false"/>
+    <item android:drawable="@mipmap/home_tab_activity_ic_s" android:state_selected="true" />
+    <item android:drawable="@mipmap/home_tab_activity_ic_s"  android:state_hovered="true"/>
+</selector>

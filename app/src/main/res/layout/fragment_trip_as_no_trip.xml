@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:id="@+id/ll_no_trip_container"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/trip_illustration" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20.0dip"
+            android:text="目前暂无订单"
+            android:textColor="@color/ta_text_black"
+            android:textSize="@dimen/text_design_30px" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="4.0dip"
+            android:text="点击预订酒店，即刻开启您的行程~"
+            android:textColor="@color/app_text_light_black"
+            android:textSize="14.0sp" />
+
+        <TextView
+            android:id="@+id/iv_book_hotel"
+            style="@style/BtnNomalStyle"
+            android:clickable="true"
+            android:text="预订酒店" />
+
+        <TextView
+            android:id="@+id/tv_history_trip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="30.0dip"
+            android:layout_marginTop="10.0dip"
+            android:drawableLeft="@mipmap/trip_time_ic"
+            android:drawablePadding="6.0dip"
+            android:drawableRight="@mipmap/trip_enter_ic"
+            android:text="查看历史行程"
+            android:textSize="@dimen/text_design_28px"
+            android:visibility="gone" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10.0dip"
+            android:drawableLeft="@mipmap/trip_remind_ic"
+            android:drawablePadding="4.0dip"
+            android:text="行程提醒"
+            android:textColor="@color/app_text_black"
+            android:textSize="14.0sp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10.0dip"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/trip_remind_pic" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="您的最近入住日程将在这里呈现"
+            android:textColor="@color/app_text_black"
+            android:textSize="13.0sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="40.0dip"
+            android:drawableLeft="@mipmap/trip_service_ic"
+            android:drawablePadding="4.0dip"
+            android:text="入住服务"
+            android:textColor="@color/app_text_black"
+            android:textSize="14.0sp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10.0dip"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/trip_service_pic" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="70.0dip"
+            android:gravity="center"
+            android:text="您可以在行程助手里方便地完成续住、付房费和\n自助退房等操作"
+            android:textColor="@color/app_text_black"
+            android:textSize="13.0sp" />
+    </LinearLayout>
+</ScrollView>

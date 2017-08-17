@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <RelativeLayout
+        android:id="@+id/guide_ui"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:visibility="visible">
+
+
+        <ImageView
+            android:id="@+id/iv_ad_bg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:scaleType="fitXY"
+            android:src="@mipmap/splash_default" />
+
+        <TextView
+            android:id="@+id/tv_second_jump"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="@dimen/activity_horizontal_margin"
+            android:background="@drawable/bg_dialog_selector_transe_black_empty"
+            android:paddingTop="@dimen/image_padding"
+            android:paddingBottom="@dimen/image_padding"
+            android:paddingLeft="@dimen/image_padding_big"
+            android:paddingRight="@dimen/image_padding_big"
+            android:text="3 跳过"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            android:textSize="@dimen/text_normal" />
+
+
+    </RelativeLayout>
+
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:visibility="gone" />
+
+
+
+    <Button
+        android:id="@+id/btnHome"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="60dp"
+        android:background="@drawable/normal_submit_btn"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:text="@string/start_your_tarvel"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_normal"
+        android:visibility="gone" />
+
+</RelativeLayout>

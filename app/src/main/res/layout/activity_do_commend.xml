@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="apartment.wisdom.com.activities.DoCommendActivity">
+
+    <include layout="@layout/cp_common_title_bar" />
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_above="@+id/bt_submit_comment"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:overScrollMode="never">
+
+            <LinearLayout
+                android:id="@+id/lay_submit"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@color/WHITE"
+                    android:paddingTop="20.0dip"
+                    android:src="@mipmap/illustraion_comment" />
+
+                <TextView
+                    android:id="@+id/tv_hotel_name"
+                    android:layout_width="fill_parent"
+                    android:layout_height="48.0dip"
+                    android:background="#ffffffff"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:paddingBottom="8.0dip"
+                    android:paddingLeft="15.0dip"
+                    android:singleLine="true"
+                    android:text="青岛尚客优大酒店"
+                    android:textColor="@color/black_tv"
+                    android:textSize="@dimen/text_design_32px" />
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="10.0dip"
+                    android:background="@color/backgrund_dark" />
+
+                <RelativeLayout
+                    android:id="@+id/lay_tour_type"
+                    android:layout_width="fill_parent"
+                    android:layout_height="45.0dip"
+                    android:background="#ffffffff"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="15.0dip"
+                        android:text="出游类型"
+                        android:textColor="@color/black_tv"
+                        android:textSize="@dimen/text_design_30px" />
+
+                    <TextView
+                        android:id="@+id/tv_tour_type"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toLeftOf="@+id/image_arrow_right"
+                        android:paddingRight="20.0dip"
+                        android:text="出游类型" />
+
+                    <ImageView
+                        android:id="@+id/image_arrow_right"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="15.0dip"
+                        android:layout_marginTop="3.0dip"
+                        android:src="@mipmap/arrow_right" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="10.0dip"
+                    android:background="@color/backgrund_dark" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#ffffffff"
+                    android:paddingBottom="8.0dip"
+                    android:paddingLeft="15.0dip"
+                    android:paddingRight="15.0dip"
+                    android:paddingTop="10.0dip">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="房间卫生"
+                        android:textColor="@color/black_tv"
+                        android:textSize="@dimen/text_design_28px" />
+
+                    <RatingBar
+                        android:id="@+id/app_star_health"
+                        style="@style/myRatingBarStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginLeft="32.0dip"
+                        android:isIndicator="false"
+                        android:numStars="5" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#ffffffff"
+                    android:paddingBottom="8.0dip"
+                    android:paddingLeft="15.0dip"
+                    android:paddingRight="15.0dip"
+                    android:paddingTop="8.0dip">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="周围环境"
+                        android:textColor="@color/black_tv"
+                        android:textSize="@dimen/text_design_28px" />
+
+                    <RatingBar
+                        android:id="@+id/app_star_env"
+                        style="@style/myRatingBarStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginLeft="32.0dip"
+                        android:isIndicator="false"
+                        android:numStars="5" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#ffffffff"
+                    android:paddingBottom="8.0dip"
+                    android:paddingLeft="15.0dip"
+                    android:paddingRight="15.0dip"
+                    android:paddingTop="8.0dip">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="酒店服务"
+                        android:textColor="@color/black_tv"
+                        android:textSize="@dimen/text_design_28px" />
+
+                    <RatingBar
+                        android:id="@+id/app_star_hotelser"
+                        style="@style/myRatingBarStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginLeft="32.0dip"
+                        android:isIndicator="false"
+                        android:numStars="5" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#ffffffff"
+                    android:paddingBottom="8.0dip"
+                    android:paddingLeft="15.0dip"
+                    android:paddingRight="15.0dip"
+                    android:paddingTop="8.0dip">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="设施服务"
+                        android:textColor="@color/black_tv"
+                        android:textSize="@dimen/text_design_28px" />
+
+                    <RatingBar
+                        android:id="@+id/app_star_instaser"
+                        style="@style/myRatingBarStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginLeft="32.0dip"
+                        android:isIndicator="false"
+                        android:numStars="5" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1.0dip"
+                    android:layout_marginLeft="15.0dip"
+                    android:background="@color/backgrund_dark" />
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:layout_marginTop="10.0dip">
+
+                    <TextView
+                        android:id="@+id/tv_comtent_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="6.0dip"
+                        android:layout_marginTop="3.0dip"
+                        android:lines="1"
+                        android:text="0/150"
+                        android:textColor="@color/BLACK"
+                        android:textSize="@dimen/text_design_20px" />
+
+                    <EditText
+                        android:id="@+id/tv_comment_content"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15.0dip"
+                        android:layout_toLeftOf="@+id/tv_comtent_count"
+                        android:background="@color/WHITE"
+                        android:gravity="center|left|top"
+                        android:hint="写下您的入住体验，帮助千万用户挑选到心仪的酒店"
+                        android:lineSpacingExtra="4.0dip"
+                        android:minLines="3"
+                        android:paddingRight="15.0dip"
+                        android:textColorHint="#ffb7b7b7"
+                        android:textSize="@dimen/text_design_24px" />
+                </RelativeLayout>
+            </LinearLayout>
+        </ScrollView>
+
+        <TextView
+            android:id="@+id/bt_submit_comment"
+            style="@style/BtnNomalStyle"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:text="提交" />
+    </RelativeLayout>
+</LinearLayout>
