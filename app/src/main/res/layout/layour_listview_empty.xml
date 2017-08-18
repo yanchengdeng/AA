@@ -7,7 +7,7 @@
     >
 
     <ImageView
-        android:id="@+id/tv_empty_icon"
+        android:id="@+id/iv_empty_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -15,7 +15,7 @@
 
     <TextView
         android:id="@+id/tv_empty_tips"
-        android:layout_below="@+id/tv_empty_icon"
+        android:layout_below="@+id/iv_empty_icon"
         android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

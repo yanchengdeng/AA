@@ -39,4 +39,5 @@
     <dimen name="text_design_22px">11sp</dimen>
     <dimen name="text_14sp">14sp</dimen>
     <dimen name="text_design_32px">16sp</dimen>
+    <dimen name="gudieview_heigh">6dp</dimen>
 </resources>

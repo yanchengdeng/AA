@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <include layout="@layout/cp_common_title_bar"/>
+
+    <LinearLayout
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:layout_below="@+id/rl_common_bar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="84.0dip"
+            android:layout_height="84.0dip"
+            android:layout_marginTop="40.0dip"
+            android:src="@drawable/ic_launcher" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="47.0dip"
+                android:layout_marginLeft="10.0dip"
+                android:layout_marginTop="35.0dip">
+
+                <TextView
+                    android:textSize="@dimen/text_design_30px"
+                    android:textColor="#ff221815"
+                    android:id="@+id/tv_mobile_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="手机号"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true" />
+
+                <EditText
+                    android:textSize="@dimen/text_design_30px"
+                    android:textColor="@color/BLACK"
+                    android:textColorHint="#66221815"
+                    android:layout_gravity="center_vertical"
+                    android:id="@+id/et_reg_phone"
+                    android:background="@null"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginLeft="45.0dip"
+                    android:hint="11位数字"
+                    android:singleLine="true"
+                    android:maxLength="11"
+                    android:numeric="integer"
+                    android:layout_toRightOf="@+id/tv_mobile_num" />
+            </RelativeLayout>
+
+            <View
+                android:background="#ffebedf0"
+                android:layout_width="fill_parent"
+                android:layout_height="0.5dip" />
+
+            <RelativeLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="47.0dip"
+                android:layout_marginLeft="10.0dip">
+
+                <TextView
+                    android:textSize="@dimen/text_design_30px"
+                    android:textColor="#ff221815"
+                    android:id="@+id/tv_name_register"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="姓名   "
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true" />
+
+                <EditText
+                    android:textSize="@dimen/text_design_30px"
+                    android:textColor="@color/BLACK"
+                    android:textColorHint="#66221815"
+                    android:layout_gravity="center_vertical"
+                    android:id="@+id/et_reg_name"
+                    android:background="@null"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginLeft="45.0dip"
+                    android:hint="不超过6个汉字或20个英文字母"
+                    android:singleLine="true"
+                    android:layout_toRightOf="@+id/tv_name_register" />
+            </RelativeLayout>
+
+            <View
+                android:background="#ffebedf0"
+                android:layout_width="fill_parent"
+                android:layout_height="0.5dip" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/bt_register_next"
+            android:text="下一步: 验证手机号"
+            style="@style/BtnNomalStyle" />
+    </LinearLayout>
+</RelativeLayout>

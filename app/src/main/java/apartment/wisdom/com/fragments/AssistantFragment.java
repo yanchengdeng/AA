@@ -15,16 +15,26 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.bigkoo.svprogresshud.SVProgressHUD;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import apartment.wisdom.com.R;
 import apartment.wisdom.com.activities.BaseActivity;
 import apartment.wisdom.com.activities.HistoryHotelActivity;
+import apartment.wisdom.com.activities.HotelDetailActivity;
 import apartment.wisdom.com.activities.LoginActivity;
 import apartment.wisdom.com.activities.MainActivity;
 import apartment.wisdom.com.adapters.AssistantListAdapter;
 import apartment.wisdom.com.beans.AssistantItemInfo;
+import apartment.wisdom.com.events.LoginOutSuccessEvent;
+import apartment.wisdom.com.events.LoginSuccessEvent;
 import apartment.wisdom.com.utils.LoginUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,7 +46,7 @@ import butterknife.OnClick;
  * Email: yanchengdeng@gmail.com
  * Describle: 旅行助手
  */
-public class AssistantFragment extends Fragment {
+public class AssistantFragment extends Fragment implements BaseQuickAdapter.RequestLoadMoreListener, SwipeRefreshLayout.OnRefreshListener{
 
     @BindView(R.id.tv_order_hotel)
     TextView tvOrderHotel;
@@ -67,31 +77,65 @@ public class AssistantFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_trip_assistant, container, false);
         ButterKnife.bind(this, view);
         tvTittle.setText(getString(R.string.tab_assistant));
-        assistantItemInfoList.add(new AssistantItemInfo());
-        assistantItemInfoList.add(new AssistantItemInfo());
-        assistantItemInfoList.add(new AssistantItemInfo());
-        assistantListAdapter = new AssistantListAdapter(R.layout.item_trip_history_card, assistantItemInfoList);
+        swipeLayout.setOnRefreshListener(this);
+        assistantItemInfoList.add(new AssistantItemInfo(true));
+        assistantItemInfoList.add(new AssistantItemInfo(false));
+        assistantItemInfoList.add(new AssistantItemInfo(false));
+        assistantListAdapter = new AssistantListAdapter(R.layout.item_trip_assistant_card, assistantItemInfoList);
         recycle.setLayoutManager(new LinearLayoutManager(getActivity()));
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
         dividerItemDecoration.setDrawable(getResources().getDrawable(R.drawable.list_line_transe));
         recycle.addItemDecoration(dividerItemDecoration);
         recycle.setAdapter(assistantListAdapter);
+        if (LoginUtils.getLoginStatus()) {
+            swipeLayout.setVisibility(View.VISIBLE);
+            llNoTripContainer.setVisibility(View.GONE);
+        } else {
+            swipeLayout.setVisibility(View.GONE);
+            llNoTripContainer.setVisibility(View.VISIBLE);
+        }
+        EventBus.getDefault().register(this);
+        assistantListAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                ((BaseActivity)getActivity()).openActivity(HotelDetailActivity.class);
+            }
+        });
+
+        assistantListAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
+            @Override
+            public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+                if (view.getId()==R.id.btn_cancle_order){
+                    assistantListAdapter.remove(position);
+                    if (assistantListAdapter.getData().isEmpty()){
+                        swipeLayout.setVisibility(View.GONE);
+                        llNoTripContainer.setVisibility(View.VISIBLE);
+                    }
+                }else if (view.getId()==R.id.btn_app_open_door){
+                    ((BaseActivity)getActivity()).mSVProgressHUD.showSuccessWithStatus("已开门", SVProgressHUD.SVProgressHUDMaskType.Clear);
+                }else if(view.getId()==R.id.btn_auto_out){
+                    ((BaseActivity)getActivity()).mSVProgressHUD.showSuccessWithStatus("已自助退房", SVProgressHUD.SVProgressHUDMaskType.Clear);
+
+                }
+            }
+        });
+
         return view;
     }
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            if (LoginUtils.getLoginStatus()) {
-                swipeLayout.setVisibility(View.VISIBLE);
-                llNoTripContainer.setVisibility(View.GONE);
-            } else {
-                swipeLayout.setVisibility(View.GONE);
-                llNoTripContainer.setVisibility(View.VISIBLE);
-            }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(Object event) {
+        if (event instanceof LoginSuccessEvent){
+            swipeLayout.setVisibility(View.VISIBLE);
+            llNoTripContainer.setVisibility(View.GONE);
+        }else if (event instanceof LoginOutSuccessEvent){
+            swipeLayout.setVisibility(View.GONE);
+            llNoTripContainer.setVisibility(View.VISIBLE);
         }
     }
+
+
 
     @OnClick({R.id.tv_order_hotel, R.id.iv_trip_history, R.id.iv_book_hotel})
     public void onViewClicked(View view) {
@@ -109,5 +153,22 @@ public class AssistantFragment extends Fragment {
                 break;
 
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void onRefresh() {
+        swipeLayout.setRefreshing(false);
+
+    }
+
+    @Override
+    public void onLoadMoreRequested() {
+
     }
 }

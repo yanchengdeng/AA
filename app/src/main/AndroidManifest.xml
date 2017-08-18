@@ -165,7 +165,16 @@
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity android:name=".activities.SelectCouponActivity" />
         <activity android:name=".activities.HistoryHotelActivity" />
-        <activity android:name=".activities.LoginActivity"></activity>
+        <activity android:name=".activities.LoginActivity" />
+        <activity android:name=".activities.ShowHotelPicActivity" />
+        <activity android:name=".activities.ImagePagerActivity" />
+        <activity android:name=".activities.DynamicLoginActivity" />
+        <activity android:name=".activities.DyanicLoginTwoActivity" />
+        <activity android:name=".activities.RegisterOneActivity" />
+        <activity android:name=".activities.ForgetPasswordActivity" />
+        <activity android:name=".activities.ForgetPasswordTwoActivity" />
+        <activity android:name=".activities.RegisterTwoActivity" />
+        <activity android:name=".activities.RegisterThreeActivity"></activity>
     </application>
 
 </manifest>

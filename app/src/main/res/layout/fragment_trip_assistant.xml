@@ -18,7 +18,7 @@
             android:gravity="center"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:text="预定酒店"
+            android:text="预订酒店"
             android:textColor="@color/white"
             tools:ignore="ContentDescription" />
 

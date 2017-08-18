@@ -92,6 +92,7 @@ dependencies {
     compile 'com.contrarywind:Android-PickerView:3.2.6'
     compile 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
     compile 'com.github.alorma:timelineview:2.3.0'
+    compile 'it.sephiroth.android.library.imagezoom:imagezoom:+'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.0.0'
     apt 'com.jakewharton:butterknife-compiler:8.4.0'

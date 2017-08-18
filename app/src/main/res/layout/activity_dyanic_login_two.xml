@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <include layout="@layout/cp_common_title_bar"/>
+
+    <LinearLayout
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:layout_below="@+id/rl_common_bar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="84.0dip"
+            android:layout_height="84.0dip"
+            android:layout_marginTop="30.0dip"
+            android:src="@drawable/ic_launcher" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="47.0dip"
+                android:layout_marginLeft="15.0dip"
+                android:layout_marginTop="45.0dip">
+
+                <TextView
+                    android:textSize="@dimen/text_design_30px"
+                    android:textColor="#ff221815"
+                    android:id="@+id/tv_mobile_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="验证码"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true" />
+
+                <EditText
+                    android:textSize="@dimen/text_design_30px"
+                    android:textColor="@color/BLACK"
+                    android:layout_gravity="center_vertical"
+                    android:id="@+id/et_verification_code"
+                    android:background="@null"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginLeft="40.0dip"
+                    android:hint="6位数字"
+                    android:numeric="integer"
+                    android:layout_toRightOf="@+id/tv_mobile_num" />
+
+                <TextView
+                    android:textSize="@dimen/text_design_30px"
+                    android:textColor="@color/activity_info"
+                    android:id="@+id/tv_verify_code"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10.0dip"
+                    android:text="30s后重新发送"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true" />
+            </RelativeLayout>
+
+            <View
+                android:background="@color/divider_line"
+                android:layout_width="fill_parent"
+                android:layout_height="0.5dip" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/image_login"
+            android:text="登录"
+            style="@style/BtnNomalStyle" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:textSize="@dimen/text_design_24px"
+                android:textColor="#ff798394"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="动态密码将发送至" />
+
+            <TextView
+                android:textSize="@dimen/text_design_24px"
+                android:textColor="@color/orange"
+                android:id="@+id/tv_dynamic_phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5.0dip"
+                android:text="\ 15618262264" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

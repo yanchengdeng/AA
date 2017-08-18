@@ -112,4 +112,19 @@
     <string name="exit_app">退出登录</string>
     <string name="login_out_success">已退出</string>
     <string name="login">登录</string>
+    <string name="no_login">未登录</string>
+    <string name="trip_history">历史行程</string>
+    <string name="no_phone">号码不能为空</string>
+    <string name="phone_regex">手机格式不正确</string>
+    <string name="dynaic_password_login">动态密码登录</string>
+    <string name="no_password">密码不能为空</string>
+    <string name="regex_password">密码为4-20位字母、数字或字符</string>
+    <string name="seconds_later_restart">%ds后重新获取</string>
+    <string name="send_msg">发送验证码</string>
+    <string name="code_no">请输入动态密码</string>
+    <string name="regex_code">动态密码格式不正确</string>
+    <string name="reset_password_success">已重置密码</string>
+    <string name="no_name">姓名不能为空</string>
+    <string name="regiseter_success">注册成功</string>
+    <string name="no_code">验证码不能为空</string>
 </resources>

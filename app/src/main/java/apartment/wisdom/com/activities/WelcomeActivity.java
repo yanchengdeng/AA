@@ -168,6 +168,8 @@ public class WelcomeActivity extends FragmentActivity {
         switch (view.getId()) {
             case R.id.tv_second_jump:
             case R.id.btnHome:
+                tvSecondJump.setClickable(false);
+                btnHome.setClickable(false);
                 SPUtils.getInstance().put(Constants.FRIST_OPEN_APP, false);
                 startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
                 finish();

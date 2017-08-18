@@ -12,7 +12,10 @@ import android.widget.TextView;
 import com.bigkoo.pickerview.TimePickerView;
 import com.bigkoo.svprogresshud.SVProgressHUD;
 import com.blankj.utilcode.util.TimeUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,6 +25,7 @@ import java.util.List;
 
 import apartment.wisdom.com.R;
 import apartment.wisdom.com.commons.Constants;
+import apartment.wisdom.com.events.LoginOutSuccessEvent;
 import apartment.wisdom.com.utils.LoginUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -88,7 +92,14 @@ public class MeInfoActivity extends BaseActivity {
         setContentView(R.layout.activity_me_info);
         ButterKnife.bind(this);
         tvTittle.setText(getString(R.string.personal_info));
+        if (LoginUtils.getLoginStatus()) {
+            tvLoginOut.setVisibility(View.VISIBLE);
+        }else{
+            tvLoginOut.setVisibility(View.GONE);
+        }
     }
+
+
 
     @OnClick({R.id.back, R.id.people_ll, R.id.rl_usename, R.id.rl_birth, R.id.rl_phone, R.id.rl_card, R.id.rl_email,R.id.tv_login_out})
     public void onViewClicked(View view) {
@@ -115,8 +126,9 @@ public class MeInfoActivity extends BaseActivity {
                 openActivity(EditEmailActivity.class, REQUEST_EMAIL);
                 break;
             case R.id.tv_login_out:
-                mSVProgressHUD.showSuccessWithStatus(getString(R.string.login_out_success), SVProgressHUD.SVProgressHUDMaskType.Clear);
+                ToastUtils.showShort(getString(R.string.login_out_success));
                 LoginUtils.setLoginStatus(false);
+                EventBus.getDefault().post(new LoginOutSuccessEvent());
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {

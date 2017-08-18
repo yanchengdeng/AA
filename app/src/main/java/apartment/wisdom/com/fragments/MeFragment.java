@@ -20,17 +20,28 @@ import com.ecloud.pulltozoomview.PullToZoomScrollViewEx;
 import com.flyco.dialog.listener.OnOperItemClickL;
 import com.flyco.dialog.widget.ActionSheetDialog;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import apartment.wisdom.com.R;
 import apartment.wisdom.com.activities.AboutActivity;
 import apartment.wisdom.com.activities.BalanceActivity;
+import apartment.wisdom.com.activities.BaseActivity;
 import apartment.wisdom.com.activities.CommendListActivity;
 import apartment.wisdom.com.activities.CommonInfoActivity;
 import apartment.wisdom.com.activities.HotelOrderListActivity;
+import apartment.wisdom.com.activities.LoginActivity;
 import apartment.wisdom.com.activities.MeInfoActivity;
 import apartment.wisdom.com.activities.MyIntegralActivity;
 import apartment.wisdom.com.activities.TicketListActivity;
 import apartment.wisdom.com.commons.Constants;
+import apartment.wisdom.com.events.LoginOutSuccessEvent;
+import apartment.wisdom.com.events.LoginSuccessEvent;
+import apartment.wisdom.com.utils.LoginUtils;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
+
+import static apartment.wisdom.com.R.id.mine_phone;
 
 
 /**
@@ -66,7 +77,24 @@ public class MeFragment extends Fragment {
         int mScreenWidth = localDisplayMetrics.widthPixels;
         LinearLayout.LayoutParams localObject = new LinearLayout.LayoutParams(mScreenWidth, (int) (9.0F * (mScreenWidth / 16.0F)));
         scrollView.setHeaderLayoutParams(localObject);
+        EventBus.getDefault().register(this);
         return view;
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(Object event) {
+        if (event instanceof LoginSuccessEvent){
+            tvPhone.setText("13067380836");
+            ivLevel.setVisibility(View.VISIBLE);
+            tvMeber.setVisibility(View.VISIBLE);
+            Glide.with(this).load(Constants.JZ_PIC).bitmapTransform(new CropCircleTransformation(context)).crossFade(1000).into(ivHeader);
+        }else if (event instanceof LoginOutSuccessEvent){
+            ivHeader.setImageResource(R.mipmap.mine_head);
+            tvPhone.setText(getString(R.string.no_login));
+            ivLevel.setVisibility(View.INVISIBLE);
+            tvMeber.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void loadViewForCode() {
@@ -77,8 +105,7 @@ public class MeFragment extends Fragment {
         scrollView.setZoomView(zoomView);
         scrollView.setScrollContentView(contentView);
         ivHeader = (ImageView) scrollView.getPullRootView().findViewById(R.id.image_person);
-        tvPhone = (TextView) scrollView.getPullRootView().findViewById(R.id.mine_phone);
-        Glide.with(this).load(Constants.JZ_PIC).bitmapTransform(new CropCircleTransformation(context)).crossFade(1000).into(ivHeader);
+        tvPhone = (TextView) scrollView.getPullRootView().findViewById(mine_phone);
         ivLevel = (ImageView) scrollView.getPullRootView().findViewById(R.id.image_vip_level);
         tvMeber = (TextView) scrollView.getPullRootView().findViewById(R.id.mine_number);
         tvBalence = (TextView) scrollView.getPullRootView().findViewById(R.id.tv_person_balance);
@@ -92,7 +119,11 @@ public class MeFragment extends Fragment {
         scrollView.getPullRootView().findViewById(R.id.people_ll).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(context, MeInfoActivity.class));
+                if (LoginUtils.getLoginStatus()) {
+                    startActivity(new Intent(context, MeInfoActivity.class));
+                }else{
+                    ((BaseActivity)getActivity()).openActivity(LoginActivity.class);
+                }
             }
         });
 
@@ -176,4 +207,9 @@ public class MeFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 }

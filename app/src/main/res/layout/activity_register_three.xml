@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <include  layout="@layout/cp_common_title_bar"/>
+
+    <LinearLayout
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_below="@+id/rl_common_bar"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="84.0dip"
+            android:layout_height="84.0dip"
+            android:layout_marginTop="40.0dip"
+            android:src="@drawable/ic_launcher" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="47.0dip"
+                android:layout_marginLeft="10.0dip"
+                android:layout_marginTop="35.0dip">
+
+                <TextView
+                    android:textSize="@dimen/text_design_30px"
+                    android:textColor="#ff221815"
+                    android:id="@+id/tv_mobile_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="密码"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true" />
+
+                <EditText
+                    android:textSize="@dimen/text_design_30px"
+                    android:textColor="@color/BLACK"
+                    android:textColorHint="#66221815"
+                    android:layout_gravity="center_vertical"
+                    android:id="@+id/et_register_pwd"
+                    android:background="@null"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginLeft="53.0dip"
+                    android:hint="4-20位字母、数字或字符"
+                    android:password="true"
+                    android:digits="@string/onlynum_english"
+                    android:layout_toRightOf="@+id/tv_mobile_num" />
+
+                <View
+                    android:background="#ffebedf0"
+                    android:layout_width="fill_parent"
+                    android:layout_height="0.5dip"
+                    android:layout_alignParentBottom="true" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:orientation="horizontal"
+                android:visibility="gone"
+                android:layout_width="fill_parent"
+                android:layout_height="47.0dip"
+                android:layout_marginLeft="10.0dip">
+
+                <TextView
+                    android:textSize="@dimen/text_design_30px"
+                    android:textColor="#ff221815"
+                    android:id="@+id/tv_mobile_yqm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="邀请码"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true" />
+
+                <EditText
+                    android:textSize="@dimen/text_design_30px"
+                    android:textColor="@color/BLACK"
+                    android:textColorHint="#66221815"
+                    android:layout_gravity="center_vertical"
+                    android:id="@+id/et_register_yqm"
+                    android:background="@null"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginLeft="40.0dip"
+                    android:hint="5位数字,没有可以不填"
+                    android:lines="1"
+                    android:maxLength="8"
+                    android:digits="@string/onlynum_english"
+                    android:layout_toRightOf="@+id/tv_mobile_yqm"
+                    android:inputType="number" />
+
+                <View
+                    android:background="#ffebedf0"
+                    android:layout_width="fill_parent"
+                    android:layout_height="0.5dip"
+                    android:layout_alignParentBottom="true" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/bt_register"
+            android:text="完成注册"
+            style="@style/BtnNomalStyle" />
+    </LinearLayout>
+</RelativeLayout>

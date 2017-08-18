@@ -390,9 +390,9 @@
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:drawablePadding="@dimen/image_padding"
-                            android:drawableRight="@mipmap/xq_wenhao"
-                            android:text="@string/net_price"
-                            android:textColor="@color/activity_info" />
+                            android:drawableLeft="@mipmap/conpon_zh"
+                            android:text="15"
+                            android:textColor="@color/colorAccent" />
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -485,7 +485,6 @@
                         android:background="@color/list_divider_color"
                         android:orientation="horizontal"
                         android:paddingBottom="@dimen/image_padding_big"
-                        android:visibility="gone"
                         android:paddingRight="@dimen/activity_horizontal_margin"
                         android:paddingStart="@dimen/activity_horizontal_margin"
                         android:paddingTop="@dimen/image_padding_big">
@@ -495,9 +494,10 @@
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:drawablePadding="@dimen/image_padding"
-                            android:drawableRight="@mipmap/xq_wenhao"
-                            android:text="@string/net_price"
-                            android:textColor="@color/activity_info" />
+                            android:drawableLeft="@mipmap/conpon_zh"
+                            android:text="13"
+                            android:gravity="center_vertical"
+                            android:textColor="@color/colorAccent" />
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -518,7 +518,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center_horizontal"
-                                    android:text="￥197"
+                                    android:text="￥115"
                                     android:textColor="@color/colorAccent"
                                     android:textSize="@dimen/text_normal_down" />
 
@@ -600,9 +600,9 @@
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:drawablePadding="@dimen/image_padding"
-                            android:drawableRight="@mipmap/xq_wenhao"
-                            android:text="@string/net_price"
-                            android:textColor="@color/activity_info" />
+                            android:drawableLeft="@mipmap/conpon_zh"
+                            android:text="15"
+                            android:textColor="@color/colorAccent" />
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -623,7 +623,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center_horizontal"
-                                    android:text="￥197"
+                                    android:text="￥115"
                                     android:textColor="@color/colorAccent"
                                     android:textSize="@dimen/text_normal_down" />
 

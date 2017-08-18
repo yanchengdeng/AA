@@ -103,6 +103,7 @@ public class DoCommendActivity extends BaseActivity {
                 break;
             case R.id.bt_submit_comment:
                 mSVProgressHUD.showSuccessWithStatus("已提交", SVProgressHUD.SVProgressHUDMaskType.Clear);
+                finish();
                 break;
         }
     }
@@ -119,6 +120,7 @@ public class DoCommendActivity extends BaseActivity {
             @Override
             public void onOperItemClick(AdapterView<?> parent, View view, int position, long id) {
                 tvTourType.setText(stringItems[position]);
+                dialog.dismiss();
             }
         });
     }

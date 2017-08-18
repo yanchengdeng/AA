@@ -3,6 +3,7 @@ package apartment.wisdom.com.activities;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -10,9 +11,19 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bigkoo.svprogresshud.SVProgressHUD;
+import com.blankj.utilcode.util.RegexUtils;
+import com.blankj.utilcode.util.SPUtils;
+import com.blankj.utilcode.util.ToastUtils;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import apartment.wisdom.com.R;
+import apartment.wisdom.com.commons.Constants;
+import apartment.wisdom.com.events.LoginSuccessEvent;
+import apartment.wisdom.com.events.RegisterSuccessEvent;
+import apartment.wisdom.com.events.ResetPasswordSuccessEvent;
 import apartment.wisdom.com.utils.LoginUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -56,6 +67,7 @@ public class LoginActivity extends BaseActivity {
 
     private boolean isOpen = true;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +75,7 @@ public class LoginActivity extends BaseActivity {
         ButterKnife.bind(this);
         imageHidePw.setSelected(isOpen);
         tvTittle.setText(getString(R.string.login));
+        EventBus.getDefault().register(this);
 
     }
 
@@ -73,34 +86,65 @@ public class LoginActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.tv_change_pwstate:
-                if(isOpen){
+                if (isOpen) {
                     //密文
                     etLoginPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                     isOpen = false;
-                }else{
+                } else {
                     //明文
-                    etLoginPwd.setInputType( InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD );
+                    etLoginPwd.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                     isOpen = true;
                 }
-                imageHidePw.setSelected(isOpen);
+                imageHidePw.setSelected(!isOpen);
                 break;
             case R.id.img_nomal_login:
-                mSVProgressHUD.showSuccessWithStatus(getString(R.string.login_success), SVProgressHUD.SVProgressHUDMaskType.Clear);
-                LoginUtils.setLoginStatus(true);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        finish();
+                if (TextUtils.isEmpty(etLoginName.getEditableText().toString().trim())) {
+                    ToastUtils.showShort(R.string.no_phone);
+                } else {
+                    if (RegexUtils.isMobileSimple(etLoginName.getEditableText().toString().trim())) {
+                        if (TextUtils.isEmpty(etLoginPwd.getEditableText().toString())) {
+                            ToastUtils.showShort(R.string.no_password);
+                        } else {
+                            if (etLoginPwd.getEditableText().toString().length() < 4 || etLoginPwd.getEditableText().toString().length() > 20) {
+                                ToastUtils.showShort(R.string.regex_password);
+                            } else {
+                                ToastUtils.showShort(R.string.login_success);
+                                LoginUtils.setLoginStatus(true);
+                                SPUtils.getInstance().put(Constants.LOGIN_USER_PHONE,etLoginName.getEditableText().toString().trim());
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        EventBus.getDefault().post(new LoginSuccessEvent());
+                                    }
+                                }, 1500);
+                            }
+                        }
+                    } else {
+                        ToastUtils.showShort(R.string.phone_regex);
                     }
-                },1500);
+                }
                 break;
             case R.id.tv_dynamic_login:
-
+                openActivity(DynamicLoginActivity.class);
                 break;
             case R.id.tv_forget_pw:
+                openActivity(ForgetPasswordActivity.class);
                 break;
             case R.id.tv_now_register:
+                openActivity(RegisterOneActivity.class);
                 break;
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(Object event) {
+        if (event instanceof RegisterSuccessEvent || event instanceof ResetPasswordSuccessEvent){
+            String phone = SPUtils.getInstance().getString(Constants.LOGIN_USER_PHONE);
+            if (!TextUtils.isEmpty(phone)) {
+                etLoginName.setText(phone);
+            }
+        }else if (event instanceof LoginSuccessEvent){
+            finish();
         }
     }
 }

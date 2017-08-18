@@ -264,6 +264,7 @@ public class HotelDetailActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.image_view:
+                openActivity(ShowHotelPicActivity.class);
                 break;
             case R.id.tv_hotel_detail:
                 openActivity(HotelIntroduceActivity.class);

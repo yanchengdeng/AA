@@ -9,7 +9,6 @@ import android.view.KeyEvent;
 import com.bigkoo.svprogresshud.SVProgressHUD;
 
 
-
 /**
 *
 * Author:
@@ -21,6 +20,11 @@ public class BaseActivity extends AppCompatActivity {
 
     public SVProgressHUD mSVProgressHUD;
     public Context mContext;
+
+
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

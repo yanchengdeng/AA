@@ -5,6 +5,7 @@ public class Constants {
 
     public static final String PASS_STRING = "pass_string";
     public static final String PASS_OBJECT = "pass_object";
+    public static final String PASS_NMAE = "pass_name";
     public static final boolean DEBUG = true;
     public static final String FRIST_OPEN_APP = "is_first_open_app";
     public static int PAGE_SIZE = 10;
@@ -12,6 +13,7 @@ public class Constants {
     public static String JZ_PIC_1 = "http://upload.techweb.com.cn/2017/0801/1501573284355.jpg";
     public static String JZ_PIC_2 = "http://www.imegabox.com/filmimages/216_261/201541175159249237.png";
     public static String IS_LOGIN_STATUS = "is_login_status";
+    public static String LOGIN_USER_PHONE = "login_user_phone";
 
     /*****
      * 支付宝支付参数
