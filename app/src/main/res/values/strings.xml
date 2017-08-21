@@ -8,7 +8,8 @@
     <string name="tab_me">我的</string>
     <string name="my_location">我的位置</string>
     <string name="stay_in">入住</string>
-    <string name="total_night">共%s晚</string>
+    <string name="total_night">共%d晚</string>
+    <string name="month_day">%1$d月%2$d日</string>
     <string name="location_branch_name">位置/品牌/酒店名称</string>
     <string name="search_hotel">查找公寓</string>
     <string name="stay_out">离店</string>
@@ -102,8 +103,8 @@
     <string name="balance_detail">余额明细</string>
     <string name="cost_detail">消费明细</string>
     <string name="recharge_detail">充值明细</string>
-    <string name="balance_pay_tips">推有足够余额用户使用</string>
-    <string name="balance_pay">余额支付</string>
+    <string name="balance_pay_tips">钱包余额%s元</string>
+    <string name="balance_pay">钱包支付</string>
     <string name="pay">支付</string>
     <string name="pay_tips">点击确定支付后，不能再次修改优惠劵，确定要继续支付吗？</string>
     <string name="conpon">优惠券</string>
@@ -127,4 +128,15 @@
     <string name="no_name">姓名不能为空</string>
     <string name="regiseter_success">注册成功</string>
     <string name="no_code">验证码不能为空</string>
+    <string name="no_more_than_five">不能超过5天</string>
+    <string name="sun">日</string>
+    <string name="mon">一</string>
+    <string name="tue">二</string>
+    <string name="wed">三</string>
+    <string name="thu">四</string>
+    <string name="fri">五</string>
+    <string name="sat">六</string>
+    <string name="can_not_select_before_today">今天之前不能选哦</string>
+    <string name="select_date">日期</string>
+    <string name="fill_order">填写订单</string>
 </resources>

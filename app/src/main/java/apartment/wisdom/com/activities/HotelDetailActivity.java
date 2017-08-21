@@ -24,20 +24,27 @@ import com.blankj.utilcode.util.IntentUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.flyco.dialog.listener.OnOperItemClickL;
 import com.flyco.dialog.widget.ActionSheetDialog;
+import com.tubb.calendarselector.library.FullDay;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 
 import apartment.wisdom.com.R;
+import apartment.wisdom.com.adapters.HourTypeRoomAdapter;
+import apartment.wisdom.com.commons.Constants;
+import apartment.wisdom.com.utils.CalendarUtils;
 import apartment.wisdom.com.widgets.views.ColoredSnackbar;
 import apartment.wisdom.com.widgets.views.MyListView;
 import apartment.wisdom.com.widgets.views.PriceShowView;
 import apartment.wisdom.com.widgets.views.ScoreView;
+import apartment.wisdom.com.widgets.views.SelectRoomTypeView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import me.gujun.android.taggroup.TagGroup;
+
+import static apartment.wisdom.com.activities.CalendarChooseActivity.SUCCESS_SELECT_TIME;
 
 /**
  * Author: 邓言诚  Create at : 17/8/13  20:13
@@ -72,10 +79,6 @@ public class HotelDetailActivity extends BaseActivity {
     TextView tvAddress;
     @BindView(R.id.card_map_view)
     CardView cardMapView;
-    @BindView(R.id.tv_type_day)
-    TextView tvTypeDay;
-    @BindView(R.id.tv_type_hour)
-    TextView tvTypeHour;
     @BindView(R.id.tv_stay_in_date)
     TextView tvStayInDate;
     @BindView(R.id.tv_stay_in_week)
@@ -126,8 +129,6 @@ public class HotelDetailActivity extends BaseActivity {
     TextView tvSplendidRoomOrder;
     @BindView(R.id.rl_splendid_room_discount_price)
     RelativeLayout rlSplendidRoomDiscountPrice;
-    @BindView(R.id.ll_all_ui_list)
-    LinearLayout llAllUiList;
     @BindView(R.id.list_time)
     MyListView listTime;
     @BindView(R.id.tv_score)
@@ -164,6 +165,8 @@ public class HotelDetailActivity extends BaseActivity {
     NestedScrollView scrollView;
     @BindView(R.id.coordinatorLayout)
     CoordinatorLayout coordinatorLayout;
+    @BindView(R.id.ll_hour_stand_tips)
+    LinearLayout hourStandTips;
 
 
     boolean[] isShowChile = new boolean[]{false, false, false};
@@ -175,18 +178,68 @@ public class HotelDetailActivity extends BaseActivity {
     ScoreView tvScoreFw;
     @BindView(R.id.tv_score_xjb)
     ScoreView tvScoreXjb;
+    @BindView(R.id.select_room_type)
+    SelectRoomTypeView selectRoomType;
+    @BindView(R.id.ll_all_ui_list)
+    LinearLayout llAllUiList;
+
+    private static final int REQUEST_CODE_PICK_CITY = 0x1111;
+    private FullDay stant_in, stant_out;
+    private int diffdays = 1;
+    private static final int REQUEST_SELECT_DATE = 0x1112;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hotel_detail);
         ButterKnife.bind(this);
+        stant_in = CalendarUtils.getInstant().getDefalutStandIn();
+        stant_out = CalendarUtils.getInstant().getDefaulStandOut();
         Snackbar snackbar = Snackbar.make(imageView, "已有12人浏览", Toast.LENGTH_SHORT);
         ColoredSnackbar.alert(snackbar).show();
         setCollapsingToolbarLayoutTitle(getString(R.string.hotel_detail));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        listTime.setAdapter(new HourTypeRoomAdapter(this, null));
+        selectRoomType.rlDay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectRoomType.setSelectDay();
+                llAllUiList.setVisibility(View.VISIBLE);
+                listTime.setVisibility(View.GONE);
+                rlStayOut.setVisibility(View.VISIBLE);
+                tvStayDays.setVisibility(View.VISIBLE);
+                hourStandTips.setVisibility(View.GONE);
+
+            }
+        });
+
+        selectRoomType.rlHour.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectRoomType.setSelectHour();
+                llAllUiList.setVisibility(View.GONE);
+                listTime.setVisibility(View.VISIBLE);
+                rlStayOut.setVisibility(View.GONE);
+                tvStayDays.setVisibility(View.GONE);
+                hourStandTips.setVisibility(View.VISIBLE);
+            }
+        });
+
+        initData();
     }
+
+
+    private void initData() {
+        tvStayDays.setText(String.format(getString(R.string.total_night), diffdays));
+        tvStayInDate.setText(String.format(getString(R.string.month_day), new Object[]{stant_in.getMonth(), stant_in.getDay()}));
+        tvStayOutDate.setText(String.format(getString(R.string.month_day), new Object[]{stant_out.getMonth(), stant_out.getDay()}));
+        tvStayInWeek.setText(String.valueOf(stant_in.getDay()));
+        tvStayOutWeek.setText(String.valueOf(stant_out.getDay()));
+        tvStayInWeek.setText(CalendarUtils.getInstant().getWeekNameByDate(stant_in));
+        tvStayOutWeek.setText(CalendarUtils.getInstant().getWeekNameByDate(stant_out));
+    }
+
 
 
     // to change the title's font size of toolbar layout
@@ -257,10 +310,19 @@ public class HotelDetailActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_SELECT_DATE && resultCode == SUCCESS_SELECT_TIME) {
+            if (data != null) {
+                stant_in = data.getParcelableExtra(Constants.PASS_STAND_IN);
+                stant_out = data.getParcelableExtra(Constants.PASS_STAND_OUT);
+                diffdays = data.getExtras().getInt(Constants.STAND_IN_OUT_DISTANCE, 1);
+                initData();
+            }
+        }else{
+            UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
+        }
     }
 
-    @OnClick({R.id.image_view, R.id.tv_hotel_detail, R.id.tv_hotel_call, R.id.iv_map, R.id.tv_address, R.id.tv_type_day, R.id.tv_type_hour, R.id.rl_stay_in, R.id.rl_stay_out, R.id.rl_normal_room_tittle, R.id.tv_normal_room_order, R.id.rl_stand_room_tittle, R.id.tv_stand_room_order, R.id.rl_splendid_room_tittle, R.id.tv_splendid_room_order, R.id.tv_look_for_all_comments})
+    @OnClick({R.id.image_view, R.id.tv_hotel_detail, R.id.tv_hotel_call, R.id.iv_map, R.id.tv_address, R.id.rl_stay_in, R.id.rl_stay_out, R.id.rl_normal_room_tittle, R.id.tv_normal_room_order, R.id.rl_stand_room_tittle, R.id.tv_stand_room_order, R.id.rl_splendid_room_tittle, R.id.tv_splendid_room_order, R.id.tv_look_for_all_comments})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.image_view:
@@ -276,28 +338,29 @@ public class HotelDetailActivity extends BaseActivity {
             case R.id.tv_address:
                 openActivity(MapActivity.class);
                 break;
-            case R.id.tv_type_day:
-                break;
-            case R.id.tv_type_hour:
-                break;
             case R.id.rl_stay_in:
-                break;
             case R.id.rl_stay_out:
+                Intent intent = new Intent(mContext, CalendarChooseActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(Constants.PASS_STAND_IN, stant_in);
+                bundle.putParcelable(Constants.PASS_STAND_OUT, stant_out);
+                intent.putExtras(bundle);
+                startActivityForResult(intent, REQUEST_SELECT_DATE);
                 break;
             case R.id.rl_normal_room_tittle:
                 isShowChile[0] = !isShowChile[0];
                 tvNormalPriceTittle.setShowStatus(isShowChile[0]);
-                rlNormalRoomDiscountPrice.setVisibility(isShowChile[0]?View.VISIBLE: View.GONE);
+                rlNormalRoomDiscountPrice.setVisibility(isShowChile[0] ? View.VISIBLE : View.GONE);
                 break;
             case R.id.rl_stand_room_tittle:
                 isShowChile[1] = !isShowChile[1];
                 tvStandPriceTittle.setShowStatus(isShowChile[1]);
-                rlStandRoomDiscountPrice.setVisibility(isShowChile[1]?View.VISIBLE: View.GONE);
+                rlStandRoomDiscountPrice.setVisibility(isShowChile[1] ? View.VISIBLE : View.GONE);
                 break;
             case R.id.rl_splendid_room_tittle:
                 isShowChile[2] = !isShowChile[2];
                 tvSplendidPriceTittle.setShowStatus(isShowChile[2]);
-                rlSplendidRoomDiscountPrice.setVisibility(isShowChile[2]?View.VISIBLE: View.GONE);
+                rlSplendidRoomDiscountPrice.setVisibility(isShowChile[2] ? View.VISIBLE : View.GONE);
                 break;
             case R.id.tv_normal_room_order:
                 openActivity(PreOrderActivity.class);
@@ -328,6 +391,7 @@ public class HotelDetailActivity extends BaseActivity {
             }
         });
     }
+
 
 
 }

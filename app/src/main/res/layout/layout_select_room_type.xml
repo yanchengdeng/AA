@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:background="@color/app_all_bg"
+    android:orientation="horizontal">
+
+    <RelativeLayout
+        android:id="@+id/rl_day"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/tv_type_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="@string/day_room"
+            android:textColor="@color/colorAccent" />
+
+        <TextView
+            android:id="@+id/tv_type_day_line"
+            android:layout_width="40dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:background="@color/colorAccent"
+            android:layout_height="1dp" />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="1dp"
+        android:layout_gravity="center_vertical"
+        android:background="@color/basic_list_spliter"
+        android:layout_height="30dp"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_hour"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/tv_type_hour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="@string/hour_room"
+            android:textColor="@color/activity_tv" />
+
+        <TextView
+            android:id="@+id/tv_type_hour_line"
+            android:layout_width="40dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:background="@color/colorAccent"
+            android:visibility="invisible"
+            android:layout_height="1dp" />
+
+    </RelativeLayout>
+</LinearLayout>

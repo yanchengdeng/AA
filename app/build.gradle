@@ -10,6 +10,11 @@ android {
             storePassword 'yancheng'
         }
     }
+
+    lintOptions{
+        checkReleaseBuilds false
+        abortOnError false
+    }
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     aaptOptions.cruncherEnabled = false
@@ -96,4 +101,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.0.0'
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
+    compile 'com.tubb.calendarselector.library:calendar-selector:0.2.3'
 }

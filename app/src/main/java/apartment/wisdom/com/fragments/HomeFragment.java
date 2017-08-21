@@ -20,6 +20,7 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.blankj.utilcode.util.ToastUtils;
 import com.jude.rollviewpager.RollPagerView;
+import com.tubb.calendarselector.library.FullDay;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,11 +34,14 @@ import apartment.wisdom.com.activities.SearchHotalResultActivity;
 import apartment.wisdom.com.adapters.GalleryPagerAdapter;
 import apartment.wisdom.com.commons.Constants;
 import apartment.wisdom.com.services.LocationService;
+import apartment.wisdom.com.utils.CalendarUtils;
+import apartment.wisdom.com.widgets.views.SelectRoomTypeView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static android.app.Activity.RESULT_OK;
+import static apartment.wisdom.com.activities.CalendarChooseActivity.SUCCESS_SELECT_TIME;
 
 /**
  * Author: 邓言诚  Create at : 17/8/7  16:53
@@ -49,10 +53,6 @@ public class HomeFragment extends Fragment {
 
     @BindView(R.id.roll_view_pager)
     RollPagerView rollViewPager;
-    @BindView(R.id.tv_type_day)
-    TextView tvTypeDay;
-    @BindView(R.id.tv_type_hour)
-    TextView tvTypeHour;
     @BindView(R.id.tv_location)
     TextView tvLocation;
     @BindView(R.id.tv_go_location)
@@ -79,12 +79,18 @@ public class HomeFragment extends Fragment {
     ImageView ivJifen;
     @BindView(R.id.coordinatorLayout)
     CoordinatorLayout coordinatorLayout;
+    @BindView(R.id.select_room_type)
+    SelectRoomTypeView selectRoomType;
     private Context context;
     private LocationService locationService;
     private BDLocationListener locationListener;
 
-    private static final int REQUEST_CODE_PICK_CITY = 233;
+    private static final int REQUEST_CODE_PICK_CITY = 0x1111;
 
+    private FullDay stant_in, stant_out;
+    private int diffdays = 1;
+
+    private static final int REQUEST_SELECT_DATE = 0x1112;
 
 
     @Override
@@ -97,6 +103,9 @@ public class HomeFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         startLocationService();
+        stant_in = CalendarUtils.getInstant().getDefalutStandIn();
+        stant_out = CalendarUtils.getInstant().getDefaulStandOut();
+
     }
 
     private void startLocationService() {
@@ -109,7 +118,7 @@ public class HomeFragment extends Fragment {
         locationService.start();// 定位SDK
     }
 
-    private BDLocationListener getmListener(){
+    private BDLocationListener getmListener() {
         BDLocationListener mListener = new BDLocationListener() {
 
 
@@ -158,8 +167,38 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, view);
+        initData();
         getAd();
         return view;
+    }
+
+    private void initData() {
+        tvStayDays.setText(String.format(getString(R.string.total_night), diffdays));
+        tvStayInDate.setText(String.format(getString(R.string.month_day), new Object[]{stant_in.getMonth(), stant_in.getDay()}));
+        tvStayOutDate.setText(String.format(getString(R.string.month_day), new Object[]{stant_out.getMonth(), stant_out.getDay()}));
+        tvStayInWeek.setText(String.valueOf(stant_in.getDay()));
+        tvStayOutWeek.setText(String.valueOf(stant_out.getDay()));
+        tvStayInWeek.setText(CalendarUtils.getInstant().getWeekNameByDate(stant_in));
+        tvStayOutWeek.setText(CalendarUtils.getInstant().getWeekNameByDate(stant_out));
+
+        selectRoomType.rlDay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectRoomType.setSelectDay();
+                tvStayDays.setVisibility(View.VISIBLE);
+                rlStayOut.setVisibility(View.VISIBLE);
+            }
+        });
+
+        selectRoomType.rlHour.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectRoomType.setSelectHour();
+                tvStayDays.setVisibility(View.GONE);
+                rlStayOut.setVisibility(View.GONE);
+            }
+        });
+
     }
 
     private void getAd() {
@@ -170,35 +209,23 @@ public class HomeFragment extends Fragment {
         rollViewPager.setAdapter(new GalleryPagerAdapter(adInfoses, getActivity()));
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-    }
 
-    @OnClick({R.id.tv_location, R.id.tv_type_day, R.id.tv_type_hour, R.id.rl_stay_in, R.id.rl_stay_out, R.id.tv_go_location, R.id.tv_choose_condition, R.id.bt_search_hotel, R.id.iv_jifen})
+
+    @OnClick({R.id.tv_location, R.id.rl_stay_in, R.id.rl_stay_out, R.id.tv_go_location, R.id.tv_choose_condition, R.id.bt_search_hotel, R.id.iv_jifen})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_location:
                 startActivityForResult(new Intent(context, CityPickedActivity.class),
                         REQUEST_CODE_PICK_CITY);
                 break;
-            case R.id.tv_type_day:
-                tvTypeDay.setBackground(getResources().getDrawable(R.drawable.homepager_select_right1));
-                tvTypeHour.setBackgroundColor(getResources().getColor(R.color.white));
-                tvStayDays.setVisibility(View.VISIBLE);
-                rlStayOut.setVisibility(View.VISIBLE);
-                break;
-            case R.id.tv_type_hour:
-                tvTypeHour.setBackground(getResources().getDrawable(R.drawable.homepager_select_left1));
-                tvTypeDay.setBackgroundColor(getResources().getColor(R.color.white));
-                tvStayDays.setVisibility(View.GONE);
-                rlStayOut.setVisibility(View.GONE);
-                break;
             case R.id.rl_stay_in:
-                ((BaseActivity) context).openActivity(CalendarChooseActivity.class);
-                break;
             case R.id.rl_stay_out:
-                ((BaseActivity) context).openActivity(CalendarChooseActivity.class);
+                Intent intent = new Intent(getActivity(), CalendarChooseActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(Constants.PASS_STAND_IN, stant_in);
+                bundle.putParcelable(Constants.PASS_STAND_OUT, stant_out);
+                intent.putExtras(bundle);
+                startActivityForResult(intent, REQUEST_SELECT_DATE);
                 break;
             case R.id.tv_go_location:
                 locationService.start();
@@ -221,6 +248,13 @@ public class HomeFragment extends Fragment {
             if (data != null) {
                 String city = data.getStringExtra(CityPickedActivity.KEY_PICKED_CITY);
                 tvLocation.setText(city);
+            }
+        } else if (requestCode == REQUEST_SELECT_DATE && resultCode == SUCCESS_SELECT_TIME) {
+            if (data != null) {
+                stant_in = data.getParcelableExtra(Constants.PASS_STAND_IN);
+                stant_out = data.getParcelableExtra(Constants.PASS_STAND_OUT);
+                diffdays = data.getExtras().getInt(Constants.STAND_IN_OUT_DISTANCE, 1);
+                initData();
             }
         }
     }

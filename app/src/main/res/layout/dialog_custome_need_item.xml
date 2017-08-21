@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/divider"
+        android:padding="@dimen/image_padding_big"
+        android:text="@string/app_name"
+        android:textColor="@color/activity_tv"
+        android:textSize="@dimen/text_normal_up" />
+
+    <apartment.wisdom.com.widgets.views.MyGridView
+        android:id="@+id/lv_custome"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnWidth="90dp"
+        android:numColumns="2"
+        android:horizontalSpacing="@dimen/image_padding_big"
+        android:verticalSpacing="@dimen/image_padding_big"
+        android:listSelector="@android:color/transparent" />
+
+
+</LinearLayout>
