@@ -1,5 +1,6 @@
 package apartment.wisdom.com.fragments;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -7,6 +8,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,26 +18,43 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.bigkoo.svprogresshud.SVProgressHUD;
+import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.flyco.dialog.listener.OnBtnClickL;
+import com.flyco.dialog.widget.NormalDialog;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.cache.CacheMode;
+import com.lzy.okgo.model.Response;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import apartment.wisdom.com.R;
 import apartment.wisdom.com.activities.BaseActivity;
 import apartment.wisdom.com.activities.HistoryHotelActivity;
-import apartment.wisdom.com.activities.HotelDetailActivity;
+import apartment.wisdom.com.activities.HotelOrderDetailActivity;
 import apartment.wisdom.com.activities.LoginActivity;
 import apartment.wisdom.com.activities.MainActivity;
 import apartment.wisdom.com.adapters.AssistantListAdapter;
-import apartment.wisdom.com.beans.AssistantItemInfo;
+import apartment.wisdom.com.beans.AAResponse;
+import apartment.wisdom.com.beans.CancleOrderInfo;
+import apartment.wisdom.com.beans.HotelOrderItem;
+import apartment.wisdom.com.beans.HotelOrderList;
+import apartment.wisdom.com.beans.UserInfo;
+import apartment.wisdom.com.commons.Constants;
 import apartment.wisdom.com.events.LoginOutSuccessEvent;
 import apartment.wisdom.com.events.LoginSuccessEvent;
+import apartment.wisdom.com.events.PayOrRechargeSuccess;
 import apartment.wisdom.com.utils.LoginUtils;
+import apartment.wisdom.com.utils.NewsCallback;
+import apartment.wisdom.com.utils.ParamsUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -46,7 +65,7 @@ import butterknife.OnClick;
  * Email: yanchengdeng@gmail.com
  * Describle: 旅行助手
  */
-public class AssistantFragment extends Fragment implements BaseQuickAdapter.RequestLoadMoreListener, SwipeRefreshLayout.OnRefreshListener{
+public class AssistantFragment extends Fragment implements BaseQuickAdapter.RequestLoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.tv_order_hotel)
     TextView tvOrderHotel;
@@ -69,7 +88,9 @@ public class AssistantFragment extends Fragment implements BaseQuickAdapter.Requ
 
     private AssistantListAdapter assistantListAdapter;
 
-    private List<AssistantItemInfo> assistantItemInfoList = new ArrayList<>();
+    private List<HotelOrderItem> assistantItemInfoList = new ArrayList<>();
+    private View noDateView;
+    private int pageNum = 1;
 
     @Nullable
     @Override
@@ -77,12 +98,12 @@ public class AssistantFragment extends Fragment implements BaseQuickAdapter.Requ
         View view = inflater.inflate(R.layout.fragment_trip_assistant, container, false);
         ButterKnife.bind(this, view);
         tvTittle.setText(getString(R.string.tab_assistant));
+
         swipeLayout.setOnRefreshListener(this);
-        assistantItemInfoList.add(new AssistantItemInfo(true));
-        assistantItemInfoList.add(new AssistantItemInfo(false));
-        assistantItemInfoList.add(new AssistantItemInfo(false));
-        assistantListAdapter = new AssistantListAdapter(R.layout.item_trip_assistant_card, assistantItemInfoList);
+        assistantListAdapter = new AssistantListAdapter(getActivity(), R.layout.item_trip_assistant_card, assistantItemInfoList);
         recycle.setLayoutManager(new LinearLayoutManager(getActivity()));
+        noDateView = getActivity().getLayoutInflater().inflate(R.layout.layour_listview_empty, (ViewGroup) recycle.getParent(), false);
+        ((TextView) noDateView.findViewById(R.id.tv_empty_tips)).setText("暂无行程记录");
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
         dividerItemDecoration.setDrawable(getResources().getDrawable(R.drawable.list_line_transe));
         recycle.addItemDecoration(dividerItemDecoration);
@@ -90,6 +111,7 @@ public class AssistantFragment extends Fragment implements BaseQuickAdapter.Requ
         if (LoginUtils.getLoginStatus()) {
             swipeLayout.setVisibility(View.VISIBLE);
             llNoTripContainer.setVisibility(View.GONE);
+            getTripList();
         } else {
             swipeLayout.setVisibility(View.GONE);
             llNoTripContainer.setVisibility(View.VISIBLE);
@@ -98,24 +120,24 @@ public class AssistantFragment extends Fragment implements BaseQuickAdapter.Requ
         assistantListAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                ((BaseActivity)getActivity()).openActivity(HotelDetailActivity.class);
+//                ((BaseActivity) getActivity()).openActivity(HotelDetailActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString(Constants.PASS_STRING, assistantListAdapter.getData().get(position).orderNo);
+                ((BaseActivity) getActivity()).openActivity(HotelOrderDetailActivity.class, bundle);
             }
         });
 
         assistantListAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
             @Override
             public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
-                if (view.getId()==R.id.btn_cancle_order){
-                    assistantListAdapter.remove(position);
-                    if (assistantListAdapter.getData().isEmpty()){
-                        swipeLayout.setVisibility(View.GONE);
-                        llNoTripContainer.setVisibility(View.VISIBLE);
-                    }
-                }else if (view.getId()==R.id.btn_app_open_door){
-                    ((BaseActivity)getActivity()).mSVProgressHUD.showSuccessWithStatus("已开门", SVProgressHUD.SVProgressHUDMaskType.Clear);
-                }else if(view.getId()==R.id.btn_auto_out){
-                    ((BaseActivity)getActivity()).mSVProgressHUD.showSuccessWithStatus("已自助退房", SVProgressHUD.SVProgressHUDMaskType.Clear);
-
+                if (view.getId() == R.id.btn_cancle_order) {
+                    getCancleInfo(position);
+                } else if (view.getId() == R.id.btn_app_open_door) {
+                    ToastUtils.showShort(R.string.do_later);
+                } else if (view.getId() == R.id.btn_auto_out) {
+                    autoCheckout(position);
+                }else if (view.getId()==R.id.btn_check_in_code){
+                    showCheckInCode(assistantListAdapter.getData().get(position).checkInNo);
                 }
             }
         });
@@ -123,18 +145,181 @@ public class AssistantFragment extends Fragment implements BaseQuickAdapter.Requ
         return view;
     }
 
+    //弹出取卡码
+    private void showCheckInCode(String checkInNo) {
+        final NormalDialog dialog = new NormalDialog(getActivity());
+        dialog.content("您的入住码："+checkInNo)//
+                .btnNum(1)
+                .btnText("知道了")//
+                .show();
+
+        dialog.setOnBtnClickL(new OnBtnClickL() {
+            @Override
+            public void onBtnClick() {
+                dialog.dismiss();
+            }
+        });
+    }
+
+    //自助退房
+    private void autoCheckout(final int position) {
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("orderNo", assistantListAdapter.getData().get(position).orderNo);
+        OkGo.<AAResponse<HotelOrderList>>post(Constants.Net.URL)//
+                .cacheMode(CacheMode.NO_CACHE)
+                .params("data", ParamsUtils.getParams(data, "checkOutRoom"))
+                .execute(new NewsCallback<AAResponse<HotelOrderList>>() {
+                    @Override
+                    public void onSuccess(Response<AAResponse<HotelOrderList>> response) {
+                        assistantListAdapter.remove(position);
+                        if (assistantListAdapter.getData().isEmpty()) {
+                            swipeLayout.setVisibility(View.GONE);
+                            llNoTripContainer.setVisibility(View.VISIBLE);
+                        }
+                        ((BaseActivity) getActivity()).mSVProgressHUD.showSuccessWithStatus("已自助退房", SVProgressHUD.SVProgressHUDMaskType.Clear);
+                    }
+
+                    @Override
+                    public void onError(Response<AAResponse<HotelOrderList>> response) {
+                        ToastUtils.showShort(response.getException().getMessage());
+                    }
+                });
+    }
+
+
+    private void getCancleInfo(final  int canclePostiont) {
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("orderNo", assistantListAdapter.getData().get(canclePostiont).orderNo);
+//        data.put("refundReason", getActivity().getString(R.string.cancle_reason));
+        OkGo.<AAResponse<CancleOrderInfo>>post(Constants.Net.URL)//
+                .cacheMode(CacheMode.NO_CACHE)
+                .params("data", ParamsUtils.getParams(data, "reqCancelOrder"))
+                .execute(new NewsCallback<AAResponse<CancleOrderInfo>>() {
+                    @Override
+                    public void onSuccess(Response<AAResponse<CancleOrderInfo>> response) {
+                        LogUtils.w("dyc", response.body());
+                        CancleOrderInfo cancleOrderInfo = response.body().data;
+                        showCancleDialog(cancleOrderInfo.returnMsg,canclePostiont);
+                    }
+
+                    @Override
+                    public void onError(Response<AAResponse<CancleOrderInfo>> response) {
+                        ToastUtils.showShort(response.getException().getMessage());
+                    }
+                });
+
+    }
+
+
+    private void showCancleDialog(String returnMsg, final int canclePostiont) {
+        final NormalDialog dialog = new NormalDialog(getActivity());
+        dialog.isTitleShow(false)//
+                .bgColor(Color.parseColor("#ffffff"))//
+                .cornerRadius(5)//
+                .content(returnMsg)//
+                .contentGravity(Gravity.CENTER)//
+                .contentTextColor(Color.parseColor("#222222"))//
+                .dividerColor(Color.parseColor("#222222"))//
+                .btnTextSize(15.5f, 15.5f)//
+                .btnTextColor(Color.parseColor("#222222"), Color.parseColor("#ff0000"))//
+                .widthScale(0.85f)//
+                .show();
+
+        dialog.setOnBtnClickL(
+                new OnBtnClickL() {
+                    @Override
+                    public void onBtnClick() {
+                        dialog.dismiss();
+                    }
+                },
+                new OnBtnClickL() {
+                    @Override
+                    public void onBtnClick() {
+                        dialog.dismiss();
+                        doCancleOrder(canclePostiont);
+                    }
+                });
+    }
+
+    private void getTripList() {
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("username", LoginUtils.getUserInfo().cardNo);
+        data.put("pageNum", pageNum);
+        data.put("pageSize", Constants.PAGE_SIZE);
+        OkGo.<AAResponse<HotelOrderList>>post(Constants.Net.URL)//
+                .cacheMode(CacheMode.NO_CACHE)
+                .params("data", ParamsUtils.getParams(data, "getCurrTrip"))
+                .execute(new NewsCallback<AAResponse<HotelOrderList>>() {
+                    @Override
+                    public void onSuccess(Response<AAResponse<HotelOrderList>> response) {
+                        LogUtils.w("dyc", response.body());
+                        HotelOrderList hotelOrderList = response.body().data;
+                        if (hotelOrderList != null) {
+                            if (hotelOrderList.orderList.isEmpty()) {
+                                assistantListAdapter.setNewData(null);
+                                assistantListAdapter.setEmptyView(noDateView);
+                                assistantListAdapter.loadMoreComplete();
+                                assistantListAdapter.loadMoreEnd(true);
+                            } else {
+                                if (pageNum == 1) {
+                                    assistantListAdapter.setNewData(hotelOrderList.orderList);
+                                } else {
+                                    assistantListAdapter.addData(hotelOrderList.orderList);
+                                }
+                                pageNum++;
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Response<AAResponse<HotelOrderList>> response) {
+                        ToastUtils.showShort(response.getException().getMessage());
+                        assistantListAdapter.setNewData(null);
+                        assistantListAdapter.setEmptyView(noDateView);
+                    }
+                });
+    }
+
+    //取消订单
+    private void doCancleOrder(final int canclePostiont) {
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("orderNo", assistantListAdapter.getData().get(canclePostiont).orderNo);
+//        data.put("refundReason", getActivity().getString(R.string.cancle_reason));
+        OkGo.<AAResponse<UserInfo>>post(Constants.Net.URL)//
+                .cacheMode(CacheMode.NO_CACHE)
+                .params("data", ParamsUtils.getParams(data, "confirmCancelOrder"))
+                .execute(new NewsCallback<AAResponse<UserInfo>>() {
+                    @Override
+                    public void onSuccess(Response<AAResponse<UserInfo>> response) {
+                        LogUtils.w("dyc", response.body());
+                        assistantListAdapter.remove(canclePostiont);
+                        if (assistantListAdapter.getData().isEmpty()) {
+                            swipeLayout.setVisibility(View.GONE);
+                            llNoTripContainer.setVisibility(View.VISIBLE);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Response<AAResponse<UserInfo>> response) {
+                        ToastUtils.showShort(response.getException().getMessage());
+                    }
+                });
+    }
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(Object event) {
-        if (event instanceof LoginSuccessEvent){
+        if (event instanceof LoginSuccessEvent ||event instanceof PayOrRechargeSuccess) {
             swipeLayout.setVisibility(View.VISIBLE);
             llNoTripContainer.setVisibility(View.GONE);
-        }else if (event instanceof LoginOutSuccessEvent){
+            pageNum = 1;
+            assistantListAdapter.getData().clear();
+            getTripList();
+        } else if (event instanceof LoginOutSuccessEvent) {
             swipeLayout.setVisibility(View.GONE);
             llNoTripContainer.setVisibility(View.VISIBLE);
         }
     }
-
 
 
     @OnClick({R.id.tv_order_hotel, R.id.iv_trip_history, R.id.iv_book_hotel})
@@ -149,7 +334,11 @@ public class AssistantFragment extends Fragment implements BaseQuickAdapter.Requ
                 }
                 break;
             case R.id.iv_trip_history:
-                ((BaseActivity) getActivity()).openActivity(HistoryHotelActivity.class);
+                if (LoginUtils.getLoginStatus()) {
+                    ((BaseActivity) getActivity()).openActivity(HistoryHotelActivity.class);
+                } else {
+                    ((MainActivity) getActivity()).openActivity(LoginActivity.class);
+                }
                 break;
 
         }
@@ -164,11 +353,14 @@ public class AssistantFragment extends Fragment implements BaseQuickAdapter.Requ
     @Override
     public void onRefresh() {
         swipeLayout.setRefreshing(false);
-
+        pageNum = 1;
+        assistantListAdapter.getData().clear();
+        getTripList();
     }
 
     @Override
     public void onLoadMoreRequested() {
+        getTripList();
 
     }
 }

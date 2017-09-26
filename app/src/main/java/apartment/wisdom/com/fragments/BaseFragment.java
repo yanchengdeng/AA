@@ -15,6 +15,13 @@ public class BaseFragment extends Fragment {
 	private Context context;
 	private ViewGroup container;
 
+	/**
+	 * 是否加载完成
+	 * 当执行完onViewCreated方法后即为true
+	 */
+	protected boolean mIsImmersion;
+
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -22,7 +29,7 @@ public class BaseFragment extends Fragment {
 	}
 
 	@Override
-	public final View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		this.inflater = inflater;
 		this.container = container;
 		onCreateView(savedInstanceState);
@@ -31,6 +38,16 @@ public class BaseFragment extends Fragment {
 		return contentView;
 	}
 
+
+
+	/**
+	 * 是否在Fragment使用沉浸式
+	 *
+	 * @return the boolean
+	 */
+	protected boolean isImmersionBarEnabled() {
+		return true;
+	}
 	protected void onCreateView(Bundle savedInstanceState) {
 
 	}
@@ -81,4 +98,8 @@ public class BaseFragment extends Fragment {
 		}
 	}
 
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+	}
 }

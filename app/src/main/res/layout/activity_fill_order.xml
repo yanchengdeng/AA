@@ -37,7 +37,7 @@
                     android:paddingRight="@dimen/activity_horizontal_margin"
                     android:paddingTop="10.0dip"
                     android:singleLine="true"
-                    android:text="时尚大酒店"
+                    android:text="时尚大公寓"
                     android:textColor="@color/app_text_black"
                     android:textSize="@dimen/text_design_30px" />
 
@@ -48,7 +48,49 @@
                     android:layout_height="10.0dip"
                     android:background="@color/list_second_divider_color" />
 
-              <!--  <include layout="@layout/layout_coupon" />-->
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/ll_pesonal_custome"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:background="@color/list_second_divider_color"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10.0dip"
+                        android:background="@color/white"
+                        android:orientation="horizontal"
+                        android:paddingRight="@dimen/activity_horizontal_margin">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                            android:ems="4"
+                            android:paddingBottom="15.0dip"
+                            android:paddingTop="15.0dip"
+                            android:singleLine="true"
+                            android:text="个性配置"
+                            android:textColor="@color/app_text_black"
+                            android:textSize="@dimen/text_design_28px" />
+
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:drawablePadding="5.0dip"
+                            android:drawableRight="@mipmap/arrow_right"
+                            android:gravity="right"
+                            android:hint="查看"
+                            android:paddingBottom="15.0dip"
+                            android:paddingTop="15.0dip"
+                            android:singleLine="true"
+                            android:textColor="@color/app_blue"
+                            android:textColorHint="@color/app_text_light_black"
+                            android:textSize="@dimen/text_design_26px" />
+                    </LinearLayout>
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="fill_parent"
@@ -117,7 +159,7 @@
                             android:layout_height="wrap_content"
                             android:background="@null"
                             android:ellipsize="end"
-                            android:hint="需要告知酒店的特殊要求"
+                            android:hint="需要告知公寓的特殊要求"
                             android:paddingBottom="10.0dip"
                             android:paddingTop="10.0dip"
                             android:singleLine="true"
@@ -157,7 +199,7 @@
                         android:id="@+id/tv_arrive_warn"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:text="请于入住日中午12:00后办理入住，如提前到店，视酒店空房情况安排。"
+                        android:text="请于入住日中午12:00后办理入住，如提前到店，视公寓空房情况安排。"
                         android:textColor="@color/app_text_light_black"
                         android:textSize="@dimen/text_design_22px" />
                 </LinearLayout>

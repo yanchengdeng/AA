@@ -71,7 +71,7 @@
                         android:drawablePadding="@dimen/image_padding"
                         android:layout_marginStart="@dimen/image_padding"
                         android:gravity="center_vertical"
-                        android:text="6张"
+                        android:text="0张"
                         android:textColor="@color/white"
                         android:textSize="@dimen/text_small" />
 

@@ -9,7 +9,7 @@ public class PayInfo {
 
     private WXPayInfo wxpayinfo;
 
-    private AliPayInfo alipayinfo;
+    private String orderStr;
 
     public WXPayInfo getWxpayinfo() {
         return wxpayinfo;
@@ -19,11 +19,11 @@ public class PayInfo {
         this.wxpayinfo = wxpayinfo;
     }
 
-    public AliPayInfo getPay() {
-        return alipayinfo;
+    public String getOrderStr() {
+        return orderStr;
     }
 
-    public void setPay(AliPayInfo pay) {
-        this.alipayinfo = pay;
+    public void setOrderStr(String orderStr) {
+        this.orderStr = orderStr;
     }
 }

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/activity_horizontal_margin"
+    android:background="@drawable/bg_comment"
+    android:padding="@dimen/activity_horizontal_margin">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_room_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="8003"
+                android:textColor="@color/colorAccent"
+                android:textSize="@dimen/text_larger"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="号"
+                android:textColor="@color/colorAccent"
+                android:textSize="@dimen/text_small" />
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/tv_room_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="二楼"
+            android:textColor="#ff798394"
+            android:textSize="@dimen/text_normal_down" />
+    </LinearLayout>
+
+
+    <ImageView
+        android:id="@+id/iv_select"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:src="@mipmap/room_sele_ic" />
+</RelativeLayout>

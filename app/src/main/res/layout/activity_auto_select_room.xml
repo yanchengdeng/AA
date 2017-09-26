@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="40dp"
+        android:orientation="vertical"
+        tools:context="apartment.wisdom.com.activities.AutoSelectRoomActivity">
+
+        <include layout="@layout/cp_common_title_bar" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:text="关键字筛选:"
+            android:textColor="@color/activity_tv"
+            android:textSize="@dimen/text_normal" />
+
+        <GridView
+            android:id="@+id/recycle_condition"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:cacheColorHint="@android:color/transparent"
+            android:horizontalSpacing="@dimen/activity_horizontal_margin"
+            android:numColumns="4"
+            android:verticalSpacing="@dimen/activity_horizontal_margin" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:text="根据您的偏好，系统推荐以下房间"
+            android:textColor="@color/activity_tv"
+            android:textSize="@dimen/text_normal" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycle_rooms"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/ll_bottom_btn"
+        android:background="@color/list_divider_color" />
+
+    <LinearLayout
+        android:id="@+id/ll_bottom_btn"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_cancle_select"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="取消选房"
+            android:textColor="@color/activity_tv"
+            android:textSize="@dimen/text_normal" />
+
+        <TextView
+            android:layout_width="1dp"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:background="@color/list_divider_color" />
+
+        <TextView
+            android:id="@+id/tv_submit_btn"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="确定(0/1)"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/text_normal" />
+    </LinearLayout>
+
+</RelativeLayout>

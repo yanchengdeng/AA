@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/activity_horizontal_margin">
+
+    <TextView
+        android:id="@+id/tv_hotel_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawablePadding="@dimen/image_padding"
+        android:drawableRight="@mipmap/arrow_circle_right"
+        android:gravity="center_vertical"
+        android:text="@string/type_normal_room"
+        android:textColor="@color/activity_tv"
+        android:textSize="@dimen/text_normal" />
+
+
+    <TextView
+        android:id="@+id/tv_room_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_below="@+id/tv_hotel_name"
+        android:textColor="@color/colorAccent"
+        android:textSize="@dimen/text_small" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:text="@string/unit_rmb"
+                android:textColor="@color/colorAccent"
+                android:textSize="@dimen/text_normal_down" />
+
+
+            <TextView
+                android:id="@+id/tv_normal_room_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="132"
+                android:textColor="@color/colorAccent"
+                android:textSize="@dimen/text_larger" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:text="起"
+                android:textColor="@color/colorAccent"
+                android:textSize="@dimen/text_normal_down" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_normal_room_order"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:background="@drawable/normal_submit_btn_small"
+            android:paddingBottom="4dp"
+            android:paddingEnd="@dimen/image_padding_big"
+            android:paddingStart="@dimen/image_padding_big"
+            android:paddingTop="4dp"
+            android:text="@string/pre_order"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_small" />
+
+    </LinearLayout>
+
+</RelativeLayout>

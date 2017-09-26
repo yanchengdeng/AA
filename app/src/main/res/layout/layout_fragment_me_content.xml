@@ -24,7 +24,7 @@
         android:paddingLeft="14.0dip"
         android:paddingRight="10.0dip"
         android:paddingTop="13.0dip"
-        android:text="酒店订单"
+        android:text="公寓订单"
         android:textColor="@color/ta_list_black"
         android:textSize="@dimen/text_14sp" />
 
@@ -62,7 +62,7 @@
             android:drawablePadding="13.0dip"
             android:drawableRight="@mipmap/arrow_right"
             android:gravity="right"
-            android:text="常用旅客、地址、发票"
+            android:text="常用旅客"
             android:textColor="#ff798394"
             android:textSize="12.0sp" />
     </LinearLayout>
@@ -123,7 +123,7 @@
             android:layout_weight="1.0"
             android:drawablePadding="13.0dip"
             android:gravity="right"
-            android:text="4006-456-999"
+            android:text="@string/custome_phone"
             android:textColor="@color/theme_color"
             android:textSize="12.0sp" />
     </LinearLayout>

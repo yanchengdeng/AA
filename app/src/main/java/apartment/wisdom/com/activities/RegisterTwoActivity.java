@@ -10,14 +10,24 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.ToastUtils;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.cache.CacheMode;
+import com.lzy.okgo.model.Response;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import apartment.wisdom.com.R;
+import apartment.wisdom.com.beans.AAResponse;
+import apartment.wisdom.com.beans.UserInfo;
 import apartment.wisdom.com.commons.Constants;
 import apartment.wisdom.com.events.RegisterSuccessEvent;
+import apartment.wisdom.com.utils.NewsCallback;
+import apartment.wisdom.com.utils.ParamsUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -86,17 +96,60 @@ public class RegisterTwoActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.bt_retry_code:
-                countDownTimer.start();
+                sendCode();
                 break;
             case R.id.bt_register_next:
+
                 if (TextUtils.isEmpty(etVerificationCode.getEditableText().toString())) {
                     ToastUtils.showShort(R.string.code_no);
                 }else if (etVerificationCode.getEditableText().toString().trim().length()==6){
-                    openActivity(RegisterThreeActivity.class,getIntent().getExtras());
+                    checkCode(etVerificationCode.getEditableText().toString());
                 }else{
                     ToastUtils.showShort(R.string.regex_code);
                 }
                 break;
         }
+    }
+
+    //校验短信信息
+    private void checkCode(String code) {
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("mobilePhone", phone);
+        data.put("validateCode",code);
+        OkGo.<AAResponse<UserInfo>>post(Constants.Net.URL)//
+                .cacheMode(CacheMode.NO_CACHE)
+                .params("data", ParamsUtils.getParams(data,"checkCode"))
+                .execute(new NewsCallback<AAResponse<UserInfo>>() {
+                    @Override
+                    public void onSuccess(Response<AAResponse<UserInfo>> response) {
+                        openActivity(RegisterThreeActivity.class,getIntent().getExtras());
+                    }
+
+                    @Override
+                    public void onError(Response<AAResponse<UserInfo>> response) {
+                        ToastUtils.showShort(response.getException().getMessage());
+                    }
+                });
+    }
+
+    //发送验证码
+    private void sendCode() {
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("mobilePhone", phone);
+        OkGo.<AAResponse<UserInfo>>post(Constants.Net.URL)//
+                .cacheMode(CacheMode.NO_CACHE)
+                .params("data", ParamsUtils.getParams(data,"getCheckCode"))
+                .execute(new NewsCallback<AAResponse<UserInfo>>() {
+                    @Override
+                    public void onSuccess(Response<AAResponse<UserInfo>> response) {
+                        countDownTimer.start();
+                        ToastUtils.showShort(R.string.code_success);
+                    }
+
+                    @Override
+                    public void onError(Response<AAResponse<UserInfo>> response) {
+                        ToastUtils.showShort(response.getException().getMessage());
+                    }
+                });
     }
 }

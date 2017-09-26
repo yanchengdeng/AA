@@ -10,15 +10,26 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.cache.CacheMode;
+import com.lzy.okgo.model.Response;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import apartment.wisdom.com.R;
 import apartment.wisdom.com.adapters.PeopleListAdapter;
-import apartment.wisdom.com.beans.PeopleItemInfo;
+import apartment.wisdom.com.beans.AAResponse;
+import apartment.wisdom.com.beans.CustomPeopleList;
 import apartment.wisdom.com.commons.Constants;
+import apartment.wisdom.com.utils.LoginUtils;
+import apartment.wisdom.com.utils.NewsCallback;
+import apartment.wisdom.com.utils.ParamsUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -47,7 +58,7 @@ public class CommonInfoActivity extends BaseActivity {
     private static final int REQUEST_UPDATE_PEOPLE = 0x012;
 
     private PeopleListAdapter peopleListAdapter;
-    private List<PeopleItemInfo>  peopleItemInfos = new ArrayList<>();
+    private List<CustomPeopleList.CustomPeopleItem> peopleItemInfos = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +66,10 @@ public class CommonInfoActivity extends BaseActivity {
         setContentView(R.layout.activity_common_info);
         ButterKnife.bind(this);
         tvTittle.setText(getString(R.string.common_info));
-        peopleItemInfos.add(new PeopleItemInfo());
-        peopleItemInfos.add(new PeopleItemInfo());
-        peopleListAdapter = new PeopleListAdapter(R.layout.adapter_people_layout,peopleItemInfos);
+        peopleListAdapter = new PeopleListAdapter(R.layout.adapter_people_layout, peopleItemInfos);
 
         recycle.setLayoutManager(new LinearLayoutManager(this));
-        DividerItemDecoration itemDecoration = new DividerItemDecoration(mContext,DividerItemDecoration.VERTICAL);
+        DividerItemDecoration itemDecoration = new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL);
         itemDecoration.setDrawable(getResources().getDrawable(R.drawable.list_line_diver));
         recycle.addItemDecoration(itemDecoration);
         recycle.setAdapter(peopleListAdapter);
@@ -70,11 +79,47 @@ public class CommonInfoActivity extends BaseActivity {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(Constants.PASS_OBJECT,peopleItemInfos.get(position));
-                openActivity(AdPeopleActivity.class,bundle,REQUEST_UPDATE_PEOPLE);
+                bundle.putSerializable(Constants.PASS_OBJECT, peopleItemInfos.get(position));
+                openActivity(AdPeopleActivity.class, bundle, REQUEST_UPDATE_PEOPLE);
             }
         });
+
+        getAllCustomeInfo();
     }
+
+    //常用信息
+    private void getAllCustomeInfo() {
+
+        mSVProgressHUD.showWithStatus(getString(R.string.loading));
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("username", LoginUtils.getUserInfo().cardNo);
+        OkGo.<AAResponse<CustomPeopleList>>post(Constants.Net.URL)//
+                .cacheMode(CacheMode.NO_CACHE)
+                .params("data", ParamsUtils.getParams(data, "queryCommonInfo"))
+                .execute(new NewsCallback<AAResponse<CustomPeopleList>>() {
+                    @Override
+                    public void onSuccess(Response<AAResponse<CustomPeopleList>> response) {
+                        LogUtils.w("dyc", response.body());
+                        mSVProgressHUD.dismiss();
+                        CustomPeopleList customPeopleList = response.body().data;
+                        if (customPeopleList != null && !customPeopleList.contacList.isEmpty()) {
+                            peopleItemInfos = customPeopleList.contacList;
+                            peopleListAdapter.setNewData(peopleItemInfos);
+                        }else{
+                            peopleListAdapter.setNewData(null);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Response<AAResponse<CustomPeopleList>> response) {
+                        //Failed to connect to /116.62.124.66:80
+                        ToastUtils.showShort(response.getException().getMessage());
+                        mSVProgressHUD.dismiss();
+                    }
+                });
+    }
+
+    //com.lzy.okgo.model.Response
 
     @OnClick({R.id.back, R.id.tv_add_people})
     public void onViewClicked(View view) {
@@ -83,7 +128,7 @@ public class CommonInfoActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.tv_add_people:
-                openActivity(AdPeopleActivity.class,REQUEST_ADD_PEAPLE);
+                openActivity(AdPeopleActivity.class, REQUEST_ADD_PEAPLE);
                 break;
         }
     }
@@ -91,14 +136,13 @@ public class CommonInfoActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_ADD_PEAPLE){
-            if (resultCode==AdPeopleActivity.RESULT_ADD_SUCCESS){
-                peopleItemInfos.add(new PeopleItemInfo());
-                peopleListAdapter.notifyItemInserted(peopleItemInfos.size()-1);
+        if (requestCode == REQUEST_ADD_PEAPLE) {
+            if (resultCode == AdPeopleActivity.RESULT_ADD_SUCCESS) {
+                getAllCustomeInfo();
             }
-        }else if (requestCode==REQUEST_UPDATE_PEOPLE){
-            if (resultCode ==AdPeopleActivity.RESULT_UPDATE_SUCCESS){
-                peopleListAdapter.notifyItemChanged(peopleItemInfos.size()-1);
+        } else if (requestCode == REQUEST_UPDATE_PEOPLE) {
+            if (resultCode == AdPeopleActivity.RESULT_UPDATE_SUCCESS) {
+                getAllCustomeInfo();
             }
         }
     }

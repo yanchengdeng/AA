@@ -2,77 +2,25 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/ll_activity"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical">
 
-    <include layout="@layout/cp_common_title_bar"/>
+    <include layout="@layout/cp_common_title_bar" />
 
-
-    <ImageView
-        android:id="@+id/img"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/ad_heigh"
-        android:scaleType="fitXY"
-        android:layout_margin="@dimen/activity_horizontal_margin"
-        android:src="@mipmap/splash_default" />
-
-
-    <TextView
-        android:id="@+id/tv_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:text="九寨沟地震暖心活动"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:textColor="@color/activity_tv"
-        android:textSize="@dimen/text_normal_up" />
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_horizontal_margin"
-        android:layout_marginBottom="@dimen/image_padding"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
+        <include layout="@layout/layour_listview_empty"></include>
 
-
-
-        <TextView
-            android:id="@+id/tv_tag"
-            android:layout_width="wrap_content"
-            android:layout_centerVertical="true"
-            android:gravity="center"
-            android:layout_alignBaseline="@+id/tv_content"
-            android:textColor="@color/white"
-            android:paddingStart="3dp"
-            android:textSize="@dimen/text_normal_down"
-            android:text="@string/tab_activity"
-            android:background="@drawable/normal_submit_btn"
-            android:layout_height="wrap_content" />
-
-
-        <TextView
-            android:id="@+id/tv_content"
-            android:textColor="@color/activity_info"
-            android:textSize="@dimen/text_normal_down"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/tv_tag"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:text="众志成城，尚美与你同行众志成城，尚美与你同行众志成城，尚美与你同行众志成城，尚美与你同行众志成城，尚美与你同行" />
+        <WebView
+            android:id="@+id/webView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
     </RelativeLayout>
-
-
-    <Button
-        android:id="@+id/btn_join"
-        style="@style/BtnNomalStyle"
-        android:layout_margin="@dimen/activity_horizontal_margin"
-        android:text="@string/order_imm" />
 
 
 </LinearLayout>

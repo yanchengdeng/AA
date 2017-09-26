@@ -15,6 +15,8 @@ import java.util.List;
 
 import apartment.wisdom.com.R;
 import apartment.wisdom.com.adapters.PhotoGridViewAdapter;
+import apartment.wisdom.com.beans.HotelListInfo;
+import apartment.wisdom.com.commons.Constants;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -36,24 +38,27 @@ public class ShowHotelPicActivity extends BaseActivity {
 
     private PhotoGridViewAdapter photoGridViewAdapter;
     private List<String> photos = new ArrayList<>();
+    private  ArrayList<HotelListInfo.HotelListItem.StoreImageInfo> storeImageList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_hotel_pic);
         ButterKnife.bind(this);
-        tvTittle.setText("酒店照片(6张)");
-        photos.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1502997811859&di=61393767367f3ab4bfd80fad86a61b5c&imgtype=0&src=http%3A%2F%2Ffile2.sheencity.com%2Fdata%2Fbig%2F2014-04%2F16%2F60761ec86d85133d4629849a338d0c76.jpg");
-        photos.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1502997811859&di=61393767367f3ab4bfd80fad86a61b5c&imgtype=0&src=http%3A%2F%2Ffile2.sheencity.com%2Fdata%2Fbig%2F2014-04%2F16%2F60761ec86d85133d4629849a338d0c76.jpg");
-        photos.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1502997811859&di=61393767367f3ab4bfd80fad86a61b5c&imgtype=0&src=http%3A%2F%2Ffile2.sheencity.com%2Fdata%2Fbig%2F2014-04%2F16%2F60761ec86d85133d4629849a338d0c76.jpg");
-        photos.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1502997811859&di=61393767367f3ab4bfd80fad86a61b5c&imgtype=0&src=http%3A%2F%2Ffile2.sheencity.com%2Fdata%2Fbig%2F2014-04%2F16%2F60761ec86d85133d4629849a338d0c76.jpg");
-        photos.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1502997811859&di=61393767367f3ab4bfd80fad86a61b5c&imgtype=0&src=http%3A%2F%2Ffile2.sheencity.com%2Fdata%2Fbig%2F2014-04%2F16%2F60761ec86d85133d4629849a338d0c76.jpg");
-        photos.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1502997811859&di=61393767367f3ab4bfd80fad86a61b5c&imgtype=0&src=http%3A%2F%2Ffile2.sheencity.com%2Fdata%2Fbig%2F2014-04%2F16%2F60761ec86d85133d4629849a338d0c76.jpg");
-        photos.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1502997811859&di=61393767367f3ab4bfd80fad86a61b5c&imgtype=0&src=http%3A%2F%2Ffile2.sheencity.com%2Fdata%2Fbig%2F2014-04%2F16%2F60761ec86d85133d4629849a338d0c76.jpg");
-        photos.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1502997811859&di=61393767367f3ab4bfd80fad86a61b5c&imgtype=0&src=http%3A%2F%2Ffile2.sheencity.com%2Fdata%2Fbig%2F2014-04%2F16%2F60761ec86d85133d4629849a338d0c76.jpg");
-        photoGridViewAdapter = new PhotoGridViewAdapter(mContext,R.layout.adapter_photo_layout,photos);
-        recycle.setLayoutManager(new GridLayoutManager(mContext,2));
-        recycle.setAdapter(photoGridViewAdapter);
+        storeImageList = (ArrayList<HotelListInfo.HotelListItem.StoreImageInfo>) getIntent().getSerializableExtra(Constants.PASS_OBJECT);
+        tvTittle.setText("公寓照片(1张)");
+        if (storeImageList!=null && storeImageList.size()>0){
+            tvTittle.setText(String.format("公寓照片(%d张)",new Object[]{storeImageList.size()}));
+            for (HotelListInfo.HotelListItem.StoreImageInfo item:storeImageList){
+                photos.add(item.storeImage);
+            }
+            photoGridViewAdapter = new PhotoGridViewAdapter(mContext,R.layout.adapter_photo_layout,photos);
+            recycle.setLayoutManager(new GridLayoutManager(mContext,2));
+            recycle.setAdapter(photoGridViewAdapter);
+        }else{
+
+        }
+
 
         photoGridViewAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override

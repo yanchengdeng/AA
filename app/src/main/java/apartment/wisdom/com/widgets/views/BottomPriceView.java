@@ -23,7 +23,7 @@ public class BottomPriceView extends LinearLayout {
 
     private Context context;
 
-    private TextView tvPrice ;
+    public TextView tvPrice ;
     public CheckBox checkBox;
     public Button btnOrder;
     public BottomPriceView(Context context) {

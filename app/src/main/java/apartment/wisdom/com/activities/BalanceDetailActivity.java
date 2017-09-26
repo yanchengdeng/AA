@@ -2,7 +2,6 @@ package apartment.wisdom.com.activities;
 
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -13,6 +12,7 @@ import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
 
 import apartment.wisdom.com.R;
 import apartment.wisdom.com.fragments.BalanceDetailFragment;
+import apartment.wisdom.com.fragments.ReChargeDetailFragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -22,7 +22,7 @@ import butterknife.OnClick;
  * Email: yanchengdeng@gmail.com
  * Describle: 余额明细
  */
-public class BalanceDetailActivity extends AppCompatActivity {
+public class BalanceDetailActivity extends BaseActivity {
 
     @BindView(R.id.back)
     ImageView back;
@@ -48,7 +48,7 @@ public class BalanceDetailActivity extends AppCompatActivity {
         FragmentPagerItemAdapter adapter = new FragmentPagerItemAdapter(
                 getSupportFragmentManager(), FragmentPagerItems.with(this)
                 .add(getString(R.string.cost_detail), BalanceDetailFragment.class)
-                .add(getString(R.string.recharge_detail), BalanceDetailFragment.class)
+                .add(getString(R.string.recharge_detail), ReChargeDetailFragment.class)
                 .create());
 
         viewpager.setAdapter(adapter);

@@ -12,15 +12,24 @@
         android:layout_margin="@dimen/activity_horizontal_margin">
 
         <TextView
+            android:id="@+id/tv_hotel_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
             android:drawablePadding="@dimen/image_padding"
             android:drawableRight="@mipmap/arrow_circle_right"
             android:gravity="center_vertical"
             android:text="@string/type_normal_room"
             android:textColor="@color/activity_tv"
             android:textSize="@dimen/text_normal" />
+
+        <TextView
+            android:id="@+id/tv_room_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_hotel_name"
+            android:textColor="@color/colorAccent"
+            android:text="0间"
+            android:textSize="@dimen/text_small" />
 
     </RelativeLayout>
 

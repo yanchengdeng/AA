@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:text="邓言诚"
+        android:text=""
         android:textColor="@color/activity_tv"
         android:textSize="@dimen/text_normal_up" />
 
@@ -24,7 +24,7 @@
         android:layout_centerVertical="true"
         android:layout_marginTop="@dimen/image_padding"
         android:drawableLeft="@mipmap/message_phone_ic"
-        android:text="13067380836"
+        android:text=""
         android:textColor="@color/activity_info"
         android:textSize="@dimen/text_normal" />
 

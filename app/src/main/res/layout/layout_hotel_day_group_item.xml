@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/activity_horizontal_margin">
+
+    <TextView
+        android:id="@+id/tv_hotel_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawablePadding="@dimen/image_padding"
+        android:drawableRight="@mipmap/arrow_circle_right"
+        android:gravity="center_vertical"
+        android:text="@string/type_normal_room"
+        android:textColor="@color/activity_tv"
+        android:textSize="@dimen/text_normal" />
+
+
+    <TextView
+        android:id="@+id/tv_room_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_below="@+id/tv_hotel_name"
+        android:textColor="@color/colorAccent"
+        android:textSize="@dimen/text_small" />
+
+    <apartment.wisdom.com.widgets.views.PriceShowView
+        android:id="@+id/tv_price_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true" />
+
+</RelativeLayout>

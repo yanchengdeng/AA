@@ -24,33 +24,37 @@
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.GET_TASKS" />
 
     <application
         android:name=".AAApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/mxs_logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/mxs_round_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
 
-        <!--
-        添加Umeng 统计
-        <meta-data
-            android:name="UMENG_APPKEY"
-            android:value="5993901e7666135c63000317" />
-             <meta-data
-            android:name="UMENG_CHANNEL"
-            android:value="Channel ID" />
-        -->
+        /**注意参数统一性 FileProvider.getUriForFile(appContext, "net.xxx.app.provider", apkFile);*/
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="apartment.wisdom.com.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+
+        <service android:name=".services.UpdateService" />
+
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="PvyN3Dn6UR8QIGrjPLlZBtHAYPiR5YFS" />
-        //key:开发者申请的Key
+
+
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
@@ -70,15 +74,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.MainActivity" />
-        <activity android:name=".activities.ActivityDetailActivity" />
-        <activity android:name=".activities.SearchHotalResultActivity" />
-        <activity android:name=".activities.CalendarChooseActivity" />
+        <activity
+            android:name=".activities.MainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.ActivityDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.SearchHotalResultActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.CalendarChooseActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.CityPickedActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
             android:name=".activities.HotelDetailActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <!-- umeng分享 -->
@@ -87,7 +101,8 @@
         <!-- umengAppKey，记得替换成自己的 -->
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="5126ff896c738f2bfa000438" />
+            android:screenOrientation="portrait"
+            android:value="5993901e7666135c63000317" />
 
         <activity
             android:name="com.umeng.socialize.media.WBShareCallBackActivity"
@@ -135,46 +150,119 @@
             android:exported="false"
             android:screenOrientation="behind"
             android:windowSoftInputMode="adjustResize|stateHidden" />
-        <activity android:name=".activities.CommendListActivity" />
-        <activity android:name=".activities.HotelIntroduceActivity" />
-        <activity android:name=".activities.MapActivity" />
-        <activity android:name=".activities.PreOrderActivity" />
-        <activity android:name=".activities.PayActivity" />
-        <activity android:name=".activities.BalanceActivity" />
-        <activity android:name=".activities.TicketListActivity" />
-        <activity android:name=".activities.MyIntegralActivity" />
-        <activity android:name=".activities.HotelOrderListActivity" />
-        <activity android:name=".activities.CommonInfoActivity" />
-        <activity android:name=".activities.AboutActivity" />
-        <activity android:name=".activities.MeInfoActivity" />
-        <activity android:name=".activities.EditEmailActivity" />
+        <activity
+            android:name=".activities.CommendListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.HotelIntroduceActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.MapActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.PreOrderActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.PayActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.BalanceActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.TicketListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.MyIntegralActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.HotelOrderListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.CommonInfoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.AboutActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.MeInfoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.EditEmailActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name="me.nereo.multi_image_selector.MultiImageSelectorActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activities.EditNameActivity" />
-        <activity android:name=".activities.EditCardActivity" />
-        <activity android:name=".activities.AdPeopleActivity" />
-        <activity android:name=".activities.HotelOrderDetailActivity" />
+        <activity
+            android:name=".activities.EditNameActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.EditCardActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.AdPeopleActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.HotelOrderDetailActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.DoCommendActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
-        <activity android:name=".activities.IntegralDetailActivity" />
-        <activity android:name=".activities.RechagerActivity" />
+        <activity
+            android:name=".activities.IntegralDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.RechagerActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.BalanceDetailActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
-        <activity android:name=".activities.SelectCouponActivity" />
-        <activity android:name=".activities.HistoryHotelActivity" />
-        <activity android:name=".activities.LoginActivity" />
-        <activity android:name=".activities.ShowHotelPicActivity" />
-        <activity android:name=".activities.ImagePagerActivity" />
-        <activity android:name=".activities.DynamicLoginActivity" />
-        <activity android:name=".activities.DyanicLoginTwoActivity" />
-        <activity android:name=".activities.RegisterOneActivity" />
-        <activity android:name=".activities.ForgetPasswordActivity" />
-        <activity android:name=".activities.ForgetPasswordTwoActivity" />
-        <activity android:name=".activities.RegisterTwoActivity" />
-        <activity android:name=".activities.RegisterThreeActivity"></activity>
+        <activity
+            android:name=".activities.SelectCouponActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.HistoryHotelActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.LoginActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.ShowHotelPicActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.ImagePagerActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.DynamicLoginActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.DyanicLoginTwoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.RegisterOneActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.ForgetPasswordActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.ForgetPasswordTwoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.RegisterTwoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.RegisterThreeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.PayOrderDetailListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.MyCommendListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.AutoSelectRoomActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

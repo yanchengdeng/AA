@@ -11,20 +11,32 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bigkoo.svprogresshud.SVProgressHUD;
 import com.blankj.utilcode.util.RegexUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.google.gson.Gson;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.cache.CacheMode;
+import com.lzy.okgo.model.Response;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import apartment.wisdom.com.R;
+import apartment.wisdom.com.beans.AAResponse;
+import apartment.wisdom.com.beans.UserInfo;
 import apartment.wisdom.com.commons.Constants;
 import apartment.wisdom.com.events.LoginSuccessEvent;
 import apartment.wisdom.com.events.RegisterSuccessEvent;
 import apartment.wisdom.com.events.ResetPasswordSuccessEvent;
 import apartment.wisdom.com.utils.LoginUtils;
+import apartment.wisdom.com.utils.NewsCallback;
+import apartment.wisdom.com.utils.ParamsUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -99,28 +111,21 @@ public class LoginActivity extends BaseActivity {
                 break;
             case R.id.img_nomal_login:
                 if (TextUtils.isEmpty(etLoginName.getEditableText().toString().trim())) {
-                    ToastUtils.showShort(R.string.no_phone);
+                    ToastUtils.showShort(R.string.no_phone_card);
                 } else {
-                    if (RegexUtils.isMobileSimple(etLoginName.getEditableText().toString().trim())) {
+                    if (RegexUtils.isMobileSimple(etLoginName.getEditableText().toString().trim()) || isUserCardNo(etLoginName.getEditableText().toString().trim())) {
                         if (TextUtils.isEmpty(etLoginPwd.getEditableText().toString())) {
                             ToastUtils.showShort(R.string.no_password);
                         } else {
-                            if (etLoginPwd.getEditableText().toString().length() < 4 || etLoginPwd.getEditableText().toString().length() > 20) {
+                            if (etLoginPwd.getEditableText().toString().trim().length() < 4 || etLoginPwd.getEditableText().toString().trim().length() > 20) {
                                 ToastUtils.showShort(R.string.regex_password);
                             } else {
-                                ToastUtils.showShort(R.string.login_success);
-                                LoginUtils.setLoginStatus(true);
-                                SPUtils.getInstance().put(Constants.LOGIN_USER_PHONE,etLoginName.getEditableText().toString().trim());
-                                new Handler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        EventBus.getDefault().post(new LoginSuccessEvent());
-                                    }
-                                }, 1500);
+
+                                doLogin(etLoginName.getEditableText().toString().trim(), etLoginPwd.getEditableText().toString());
                             }
                         }
                     } else {
-                        ToastUtils.showShort(R.string.phone_regex);
+                        ToastUtils.showShort(R.string.phone_card_regex);
                     }
                 }
                 break;
@@ -136,15 +141,59 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
+    private void doLogin(String phone, String password) {
+        mSVProgressHUD.showWithStatus("登陆中...", SVProgressHUD.SVProgressHUDMaskType.Clear);
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("username", phone);
+        data.put("pwd", password);
+        OkGo.<AAResponse<UserInfo>>post(Constants.Net.URL)//
+                .cacheMode(CacheMode.NO_CACHE)       //上拉不需要缓存
+                .params("data", ParamsUtils.getParams(data, "login"))
+                .execute(new NewsCallback<AAResponse<UserInfo>>() {
+                    @Override
+                    public void onSuccess(Response<AAResponse<UserInfo>> response) {
+                        UserInfo userInfo = response.body().data;
+                        mSVProgressHUD.dismiss();
+                        if (userInfo==null){
+                            return;
+                        }
+                        SPUtils.getInstance().put(Constants.USER_INFO,new Gson().toJson(userInfo));
+                        LoginUtils.setLoginStatus(true);
+                        SPUtils.getInstance().put(Constants.LOGIN_USER_PHONE, etLoginName.getEditableText().toString().trim());
+                        ToastUtils.showShort(R.string.login_success);
+                        EventBus.getDefault().post(new LoginSuccessEvent());
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                finish();
+                            }
+                        }, 1500);
+                    }
+
+                    @Override
+                    public void onError(Response<AAResponse<UserInfo>> response) {
+                        ToastUtils.showShort(response.getException().getMessage());
+                        mSVProgressHUD.dismiss();
+                    }
+                });
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(Object event) {
-        if (event instanceof RegisterSuccessEvent || event instanceof ResetPasswordSuccessEvent){
+        if (event instanceof RegisterSuccessEvent || event instanceof ResetPasswordSuccessEvent) {
             String phone = SPUtils.getInstance().getString(Constants.LOGIN_USER_PHONE);
             if (!TextUtils.isEmpty(phone)) {
                 etLoginName.setText(phone);
             }
-        }else if (event instanceof LoginSuccessEvent){
+        } else if (event instanceof LoginSuccessEvent) {
             finish();
         }
+    }
+
+
+    private boolean isUserCardNo(String card) {
+        String regex = "^[M]\\d{9}";
+
+        return card.matches(regex);
     }
 }

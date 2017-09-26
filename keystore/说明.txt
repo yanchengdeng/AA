@@ -9,35 +9,59 @@ sha1       70:1A:8B:0B:81:E3:BE:66:EC:12:A1:1E:00:1D:4E:90:C0:0A:84:7D
 smartFit Umeng统计：
 
 
+                       协议功能码(getCheckCode-获取验证码，register-注册会员，login-会员登录
+                       ，dynamicLogin-动态密码登录，checkCode-校验验证码，
+                       resetPwd-重置密码，saveUser-保存用户，
+                        getTopAd-获取页顶图片，queryStore-查询公寓，selecStore-选择公寓，
+                       storeEvaluate-公寓评价，selectRoom-标准房间、豪华房间配置、
+                       submitOrder-提交订单、orderInfo-订单详情、
+                       confirmPay-确认支付、selfHelpSelectRoom-自助选房、
+                       saveSelectRoom-选房保存、getActivity-获取活动列表信息
+                       ，getCurrTrip-获取当前行程信息、cancelOrder-取消订单、
+                       checkOutRoom-自助退房、getSelfConfig-获取个性化配置、
+                       continueLive-续住、historyTrip-历史行程、delHistoryTrip-历史行程删除、
+                       tripReview-行程点评、saveUser-保存用户信息，
+                       queryCommonInfo-查询常用信息，saveCommonInfo-保存常用信息，
+                       delCommonInfo-删除常用信息，myReview-我的点评，
+                       storeOrder-公寓订单，recharge Price -充值价位,walletRecharge-立即充值，
+                       cardConsumeDetail-消费明细，
+                       cardRechargeDetail-充值明细，getCoupon-获取优惠券信息)
+
+                       reqCancelOrder-申请取消订单、confirmCancelOrder-确认取消订单
+
+
+ noDateView = getLayoutInflater().inflate(R.layout.layour_listview_empty, (ViewGroup) rvList.getParent(), false);
+
+ //设置为空
+   adapter.setNewData(null);
+   adapter.setEmptyView(noDateView);
+
+
+     Map<String, Object> data = new HashMap<String, Object>();
+          data.put("", "");
+          OkGo.<AAResponse<UserInfo>>post(Constants.Net.URL)//
+                  .cacheMode(CacheMode.NO_CACHE)
+                  .params("data", ParamsUtils.getParams(data,"getStartUpAd"))
+                  .execute(new NewsCallback<AAResponse<UserInfo>>() {
+                      @Override
+                      public void onSuccess(Response<AAResponse<UserInfo>> response) {
+                          LogUtils.w("dyc",response.body());
+
+                      }
+
+                      @Override
+                      public void onError(Response<AAResponse<UserInfo>> response) {
+                          ToastUtils.showShort(response.getException().getMessage());
+                      }
+                  });
 
 
 
-   JSONObject params = new JSONObject();
-        try {
-            params.put("mobile", phone);
-            params.put("type", SmsType.SMS_TYPE_REGISTER.getType());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        ParkJsonObjectReqeust request = new ParkJsonObjectReqeust(Constants.SMS_SMSSEND, params, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                tvSendCode.setClickable(false);
-                mSVProgressHUD.showSuccessWithStatus(getString(R.string.send_success), SVProgressHUD.SVProgressHUDMaskType.ClearCancel);
-                countDownTimer.start();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                mSVProgressHUD.showInfoWithStatus(error.getMessage(), SVProgressHUD.SVProgressHUDMaskType.ClearCancel);
-            }
-        });
 
-        mQueue.add(request);
-
-
-
-
+ @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(RegisterSuccessEvent event) {
+        finish();
+    }
 
 
 

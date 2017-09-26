@@ -51,15 +51,17 @@ public class PriceShowView extends LinearLayout {
      * 设置价格显示状态
      * @param isClick false 正常显示   true   按下显示模板
      */
-    public void  setShowStatus(boolean isClick){
+    public void  setShowStatus(boolean isClick,String price){
         if (!isClick){
             tvPrice.getPaint().setFlags(0);
+            tvPrice.setText(price);
             tvPriceTips.setText(context.getString(R.string.tag_start));
             tvPriceTips.setTextColor(context.getResources().getColor(R.color.colorPrimary));
             ivArrow.setImageResource(R.mipmap.arrow_right);
         }else{
             tvPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG );
             tvPriceTips.setText(context.getString(R.string.door_price));
+            tvPrice.setText(price);
             tvPriceTips.setTextColor(context.getResources().getColor(R.color.activity_info));
             ivArrow.setImageResource(R.mipmap.arrow_down);
         }

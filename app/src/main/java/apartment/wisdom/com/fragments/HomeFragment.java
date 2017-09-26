@@ -1,12 +1,19 @@
 package apartment.wisdom.com.fragments;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.ColorUtils;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,11 +26,18 @@ import android.widget.TextView;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.blankj.utilcode.util.ToastUtils;
+import com.flyco.dialog.listener.OnBtnClickL;
+import com.flyco.dialog.widget.MaterialDialog;
+import com.gyf.barlibrary.ImmersionBar;
 import com.jude.rollviewpager.RollPagerView;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.cache.CacheMode;
+import com.lzy.okgo.model.Response;
 import com.tubb.calendarselector.library.FullDay;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import apartment.wisdom.com.AAApplication;
 import apartment.wisdom.com.R;
@@ -32,22 +46,33 @@ import apartment.wisdom.com.activities.CalendarChooseActivity;
 import apartment.wisdom.com.activities.CityPickedActivity;
 import apartment.wisdom.com.activities.SearchHotalResultActivity;
 import apartment.wisdom.com.adapters.GalleryPagerAdapter;
+import apartment.wisdom.com.beans.AAResponse;
+import apartment.wisdom.com.beans.HomeAdInfo;
+import apartment.wisdom.com.beans.HomeAdInfoList;
 import apartment.wisdom.com.commons.Constants;
+import apartment.wisdom.com.enums.DayHourRoomType;
 import apartment.wisdom.com.services.LocationService;
 import apartment.wisdom.com.utils.CalendarUtils;
+import apartment.wisdom.com.utils.NewsCallback;
+import apartment.wisdom.com.utils.ParamsUtils;
 import apartment.wisdom.com.widgets.views.SelectRoomTypeView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.RuntimePermissions;
 
 import static android.app.Activity.RESULT_OK;
 import static apartment.wisdom.com.activities.CalendarChooseActivity.SUCCESS_SELECT_TIME;
+import static com.umeng.socialize.utils.ContextUtil.getPackageName;
 
 /**
  * Author: 邓言诚  Create at : 17/8/7  16:53
  * Email: yanchengdeng@gmail.com
  * Describle: 首页
  */
+@RuntimePermissions
 public class HomeFragment extends Fragment {
 
 
@@ -77,10 +102,10 @@ public class HomeFragment extends Fragment {
     Button btSearchHotel;
     @BindView(R.id.iv_jifen)
     ImageView ivJifen;
-    @BindView(R.id.coordinatorLayout)
-    CoordinatorLayout coordinatorLayout;
     @BindView(R.id.select_room_type)
     SelectRoomTypeView selectRoomType;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
     private Context context;
     private LocationService locationService;
     private BDLocationListener locationListener;
@@ -102,10 +127,57 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        startLocationService();
+        checkLocatioPermission();
         stant_in = CalendarUtils.getInstant().getDefalutStandIn();
         stant_out = CalendarUtils.getInstant().getDefaulStandOut();
 
+    }
+
+    private void checkLocatioPermission() {
+        HomeFragmentPermissionsDispatcher.showLocationWithCheck(this);
+    }
+
+
+    @OnNeverAskAgain({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
+    void showNeverAskForCamera() {
+        final MaterialDialog dialog = new MaterialDialog(getActivity());
+        dialog.content(
+                "如需要使用该功能，请打开定位权限")//
+                .btnText("取消", "确定")//
+                .show();
+
+        dialog.setOnBtnClickL(
+                new OnBtnClickL() {//left btn click listener
+                    @Override
+                    public void onBtnClick() {
+                        dialog.dismiss();
+                    }
+                },
+                new OnBtnClickL() {//right btn click listener
+                    @Override
+                    public void onBtnClick() {
+                        dialog.dismiss();
+                        try {
+                            Uri packageURI = Uri.parse("package:" + getPackageName());
+                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, packageURI);
+                            startActivity(intent);
+                        } catch (Exception e) {
+                        }
+                    }
+                }
+        );
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // NOTE: delegate the permission handling to generated method
+        HomeFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+    }
+
+    @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
+    void showLocation() {
+        startLocationService();
     }
 
     private void startLocationService() {
@@ -161,12 +233,19 @@ public class HomeFragment extends Fragment {
             locationService.stop();
         }
     }
-
+    protected ImmersionBar mImmersionBar;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, view);
+        ImmersionBar.setTitleBar(getActivity(), toolbar);
+//        mImmersionBar = ImmersionBar.with(this);
+//        mImmersionBar.statusBarColorTransformEnable(false)
+//                .navigationBarColor(R.color.transparent)
+//                .init();
+        toolbar.setBackgroundColor(ColorUtils.blendARGB(Color.TRANSPARENT
+                , ContextCompat.getColor(context, R.color.colorPrimary), 0));
         initData();
         getAd();
         return view;
@@ -201,14 +280,32 @@ public class HomeFragment extends Fragment {
 
     }
 
+
     private void getAd() {
-        List<String> adInfoses = new ArrayList<>();
-        adInfoses.add(Constants.JZ_PIC);
-        adInfoses.add(Constants.JZ_PIC_1);
-        adInfoses.add(Constants.JZ_PIC_2);
-        rollViewPager.setAdapter(new GalleryPagerAdapter(adInfoses, getActivity()));
+
+        Map<String, Object> data = new HashMap<String, Object>();
+        OkGo.<AAResponse<HomeAdInfo>>post(Constants.Net.URL)//
+                .cacheMode(CacheMode.IF_NONE_CACHE_REQUEST)
+                .params("data", ParamsUtils.getParams(data, "getActivity"))
+                .execute(new NewsCallback<AAResponse<HomeAdInfo>>() {
+                    @Override
+                    public void onSuccess(Response<AAResponse<HomeAdInfo>> response) {
+                        HomeAdInfo homeAdInfos = response.body().data;
+                        if (!homeAdInfos.activityList.isEmpty()) {
+                            initAdIinfo(homeAdInfos.activityList);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Response<AAResponse<HomeAdInfo>> response) {
+                        ToastUtils.showShort(response.getException().getMessage());
+                    }
+                });
     }
 
+    private void initAdIinfo(List<HomeAdInfoList> homeAdInfos) {
+        rollViewPager.setAdapter(new GalleryPagerAdapter(homeAdInfos, getActivity()));
+    }
 
 
     @OnClick({R.id.tv_location, R.id.rl_stay_in, R.id.rl_stay_out, R.id.tv_go_location, R.id.tv_choose_condition, R.id.bt_search_hotel, R.id.iv_jifen})
@@ -224,17 +321,28 @@ public class HomeFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(Constants.PASS_STAND_IN, stant_in);
                 bundle.putParcelable(Constants.PASS_STAND_OUT, stant_out);
+                bundle.putBoolean(Constants.PASS_SELECT_HOTLE_TYPE, selectRoomType.getSelectType().equals(DayHourRoomType.DAY_HOUR_ROOM_TYPE_DAY.getType()) ? false : true);
                 intent.putExtras(bundle);
                 startActivityForResult(intent, REQUEST_SELECT_DATE);
                 break;
             case R.id.tv_go_location:
-                locationService.start();
-                locationService.registerListener(locationListener);
+                if (locationService != null) {
+                    locationService.start();
+                    locationService.registerListener(locationListener);
+                } else {
+                    HomeFragmentPermissionsDispatcher.showLocationWithCheck(this);
+                }
                 break;
             case R.id.tv_choose_condition:
                 break;
             case R.id.bt_search_hotel:
-                ((BaseActivity) context).openActivity(SearchHotalResultActivity.class);
+                Bundle bundleHotel = new Bundle();
+                bundleHotel.putParcelable(Constants.PASS_STAND_IN, stant_in);
+                bundleHotel.putParcelable(Constants.PASS_STAND_OUT, stant_out);
+                bundleHotel.putString(Constants.PASS_STRING, tvLocation.getText().toString());
+                bundleHotel.putString(Constants.PASS_SELECT_HOTLE_TYPE, selectRoomType.getSelectType());
+                bundleHotel.putInt(Constants.PASS_DISTANCE_DAYS, diffdays);
+                ((BaseActivity) context).openActivity(SearchHotalResultActivity.class, bundleHotel);
                 break;
             case R.id.iv_jifen:
                 ToastUtils.showShort(getString(R.string.do_later));
@@ -258,5 +366,12 @@ public class HomeFragment extends Fragment {
             }
         }
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
+
 }
 

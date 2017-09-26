@@ -1,5 +1,6 @@
 package apartment.wisdom.com.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -9,6 +10,8 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -17,20 +20,37 @@ import android.widget.TextView;
 import com.alipay.sdk.app.PayTask;
 import com.bigkoo.svprogresshud.SVProgressHUD;
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.ScreenUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.flyco.dialog.listener.OnBtnClickL;
 import com.flyco.dialog.widget.NormalDialog;
+import com.flyco.dialog.widget.base.BaseDialog;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.cache.CacheMode;
+import com.lzy.okgo.model.Response;
 import com.tencent.mm.opensdk.modelpay.PayReq;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
+import org.greenrobot.eventbus.EventBus;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import apartment.wisdom.com.R;
-import apartment.wisdom.com.beans.AliPayInfo;
+import apartment.wisdom.com.beans.AAResponse;
 import apartment.wisdom.com.beans.PayInfo;
 import apartment.wisdom.com.beans.PayResult;
+import apartment.wisdom.com.beans.PreOrderInfo;
 import apartment.wisdom.com.beans.TicketInfo;
 import apartment.wisdom.com.beans.WXPayInfo;
 import apartment.wisdom.com.commons.Constants;
 import apartment.wisdom.com.enums.PayStyle;
+import apartment.wisdom.com.events.PayOrRechargeSuccess;
+import apartment.wisdom.com.utils.LoginUtils;
+import apartment.wisdom.com.utils.NewsCallback;
+import apartment.wisdom.com.utils.ParamsUtils;
+import apartment.wisdom.com.wxapi.WXPayEntryActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -89,9 +109,14 @@ public class PayActivity extends BaseActivity {
     RelativeLayout rlPayBalance;
     @BindView(R.id.tv_sure_pay)
     TextView tvSurePay;
+    @BindView(R.id.tv_balance_money)
+    TextView tvBalanceMoney;
     private int paySyle = PayStyle.PAY_STYLE_ALIPAY.getType();
 
-    private final static  int REQUEST_COUPON_CODE = 0x011;
+    private final static int REQUEST_COUPON_CODE = 0x011;
+    private PreOrderInfo preOrderInfo;
+    private String couponId;
+    private String storeId,selectType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,19 +124,32 @@ public class PayActivity extends BaseActivity {
         setContentView(R.layout.activity_pay);
         ButterKnife.bind(this);
         tvTittle.setText(getString(R.string.pay));
+        preOrderInfo = (PreOrderInfo) getIntent().getSerializableExtra(Constants.PASS_OBJECT);
+        if (!TextUtils.isEmpty(preOrderInfo.consumeTotalPrice)) {
+            tvOrderPrice.setText(preOrderInfo.consumeTotalPrice);
+        }
+
+        if (!TextUtils.isEmpty(LoginUtils.getUserInfo().cardMoney)) {
+            tvBalanceMoney.setText(String.format(getString(R.string.balance_pay_tips),new Object[]{LoginUtils.getUserInfo().cardMoney}));
+        }
+        storeId = getIntent().getStringExtra(Constants.PASS_STRING);
+        selectType = getIntent().getStringExtra(Constants.SELECT_CARD_TYPE);
     }
 
-    @OnClick({R.id.back, R.id.ll_coupon,R.id.tv_order_detail, R.id.rl_pay_alipay, R.id.rl_pay_wx, R.id.rl_pay_balance, R.id.tv_sure_pay})
+    @OnClick({R.id.back, R.id.ll_coupon, R.id.tv_order_detail, R.id.rl_pay_alipay, R.id.rl_pay_wx, R.id.rl_pay_balance, R.id.tv_sure_pay})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.back:
                 finish();
                 break;
             case R.id.tv_order_detail:
-                openActivity(HotelOrderDetailActivity.class);
+                openActivity(PayOrderDetailListActivity.class, getIntent().getExtras());
                 break;
             case R.id.ll_coupon:
-                openActivity(SelectCouponActivity.class,REQUEST_COUPON_CODE);
+                Bundle bundle = new Bundle();
+                bundle.putString(Constants.PASS_STRING,storeId);
+                bundle.putString(Constants.PASS_SELECT_HOTLE_TYPE,selectType);
+                openActivity(SelectCouponActivity.class,bundle, REQUEST_COUPON_CODE);
                 break;
             case R.id.rl_pay_alipay:
                 paySyle = PayStyle.PAY_STYLE_ALIPAY.getType();
@@ -120,15 +158,22 @@ public class PayActivity extends BaseActivity {
                 ivSelectBalance.setImageResource(R.mipmap.continue_rb_uncheck_theme);
                 break;
             case R.id.rl_pay_wx:
-                paySyle = PayStyle.PAY_STYLE_WX.getType();
-                ivSelectAlipay.setImageResource(R.mipmap.continue_rb_uncheck_theme);
-                ivSelectWx.setImageResource(R.mipmap.continue_rb_check_theme);
-                ivSelectBalance.setImageResource(R.mipmap.continue_rb_uncheck_theme);
+                ToastUtils.showShort("敬请期待");
+//                paySyle = PayStyle.PAY_STYLE_WX.getType();
+//                ivSelectAlipay.setImageResource(R.mipmap.continue_rb_uncheck_theme);
+//                ivSelectWx.setImageResource(R.mipmap.continue_rb_check_theme);
+//                ivSelectBalance.setImageResource(R.mipmap.continue_rb_uncheck_theme);
                 break;
             case R.id.rl_pay_balance:
                 //余额支付
                 //1 检查有无余额    2.余额是否足够
-                if (true) {
+                if (TextUtils.isEmpty(LoginUtils.getUserInfo().cardMoney)) {
+                    mSVProgressHUD.showInfoWithStatus("余额不足", SVProgressHUD.SVProgressHUDMaskType.Clear);
+                    return;
+                }
+
+
+                if (Float.parseFloat(LoginUtils.getUserInfo().cardMoney) < Float.parseFloat(preOrderInfo.consumeTotalPrice)) {
                     mSVProgressHUD.showInfoWithStatus("余额不足", SVProgressHUD.SVProgressHUDMaskType.Clear);
                 } else {
                     paySyle = PayStyle.PAY_STYLE_BALANCE.getType();
@@ -147,11 +192,20 @@ public class PayActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_COUPON_CODE){
-            if (resultCode == SelectCouponActivity.SELECT_COUPON_SUCCESS_ERSULT_CODE){
-                if (data!=null){
-                    TicketInfo coupon = data.getParcelableExtra(Constants.PASS_OBJECT);
-                    tvCoupon.setText("xxx 10元");
+        if (requestCode == REQUEST_COUPON_CODE) {
+            if (resultCode == SelectCouponActivity.SELECT_COUPON_SUCCESS_ERSULT_CODE) {
+                if (data != null) {
+                    TicketInfo.TicketInfoItem coupon = (TicketInfo.TicketInfoItem) data.getSerializableExtra(Constants.PASS_OBJECT);
+                    if (coupon==null){
+                        return;
+                    }
+                    if (TextUtils.isEmpty(coupon.couponId)) {
+                        tvCoupon.setHint("不使用");
+                        tvCoupon.setText("");
+                    } else {
+                        tvCoupon.setText(coupon.couponName + " (" + coupon.couponMoney + "元)");
+                        couponId = coupon.couponId;
+                    }
                 }
             }
         }
@@ -182,37 +236,118 @@ public class PayActivity extends BaseActivity {
                     @Override
                     public void onBtnClick() {
                         dialog.dismiss();
-                        prePay();
+                        if (paySyle == PayStyle.PAY_STYLE_BALANCE.getType()) {
+                            showBalencePayDialog();
+                        } else {
+                            doPay("");
+                        }
                     }
                 });
     }
 
+    private ConfirmBalencePayDialog balencePayDialog;
+
+    private void showBalencePayDialog() {
+        balencePayDialog = new ConfirmBalencePayDialog(mContext);
+        balencePayDialog.show();
+    }
+
+
+    //确认余额支付
+    private class ConfirmBalencePayDialog extends BaseDialog<ConfirmBalencePayDialog> {
+
+
+        public ConfirmBalencePayDialog(Context mContext) {
+            super(mContext);
+        }
+
+        @Override
+        public View onCreateView() {
+
+            View inflate = View.inflate(mContext, R.layout.dialog_balence_pay_layout, null);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ScreenUtils.getScreenWidth() - 150, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.gravity = Gravity.CENTER_HORIZONTAL;
+            inflate.setLayoutParams(params);
+            final EditText edpassword = (EditText) inflate.findViewById(R.id.et_password);
+            inflate.findViewById(R.id.tv_cancle).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    balencePayDialog.dismiss();
+                }
+            });
+
+            inflate.findViewById(R.id.tv_sure).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (TextUtils.isEmpty(edpassword.getEditableText().toString().trim())) {
+                        ToastUtils.showShort(R.string.no_password);
+                    } else if (edpassword.getEditableText().toString().trim().length() < 4 || edpassword.getEditableText().toString().trim().length() > 20) {
+                        ToastUtils.showShort(R.string.regex_password);
+                    } else {
+                        doPay(edpassword.getEditableText().toString().trim());
+                        balencePayDialog.dismiss();
+                    }
+
+                }
+            });
+            return inflate;
+        }
+
+        @Override
+        public void setUiBeforShow() {
+
+        }
+
+    }
+
     private PayInfo payInfo;
 
-    private void prePay() {
-        //// TODO: 17/8/16  此接口可获得payInfo信息
-        payInfo = new PayInfo();
-        AliPayInfo aliPayInfo = new AliPayInfo();
-        aliPayInfo.setOrderStr("app_id=2015052600090779&biz_content=%7B%22timeout_express%22%3A%2230m%22%2C%22seller_id%22%3A%22%22%2C%22product_code%22%3A%22QUICK_MSECURITY_PAY%22%2C%22total_amount%22%3A%220.02%22%2C%22subject%22%3A%221%22%2C%22body%22%3A%22%E6%88%91%E6%98%AF%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE%22%2C%22out_trade_no%22%3A%22314VYGIAGG7ZOYY%22%7D&charset=utf-8&method=alipay.trade.app.pay&sign_type=RSA2&timestamp=2016-08-15%2012%3A12%3A15&version=1.0&sign=MsbylYkCzlfYLy9PeRwUUIg9nZPeN9SfXPNavUCroGKR5Kqvx0nEnd3eRmKxJuthNUx4ERCXe552EV9PfwexqW%2B1wbKOdYtDIb4%2B7PL3Pc94RZL0zKaWcaY3tSL89%2FuAVUsQuFqEJdhIukuKygrXucvejOUgTCfoUdwTi7z%2BZzQ%3D");
 
-        payInfo.setPay(aliPayInfo);
+    //去支付
+    private void doPay(String password) {
 
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("payWay", paySyle);
+        data.put("orderNo", preOrderInfo.orderNo);
+        if (!TextUtils.isEmpty(couponId)) {
+            data.put("couponId", couponId);
+        }
+        if (!TextUtils.isEmpty(password)) {
+            data.put("paypwd", password);
+        }
+        OkGo.<AAResponse<PayInfo>>post(Constants.Net.URL)//
+                .cacheMode(CacheMode.NO_CACHE)
+                .params("data", ParamsUtils.getParams(data, "confirmPay"))
+                .execute(new NewsCallback<AAResponse<PayInfo>>() {
+                    @Override
+                    public void onSuccess(Response<AAResponse<PayInfo>> response) {
+                        LogUtils.w("dyc", response.body());
+                        if (paySyle == PayStyle.PAY_STYLE_BALANCE.getType()) {
+                            goAutoSelectRoom();
+                        } else {
+                            payInfo = response.body().data;
+                            WXPayInfo wxPayInfo = new WXPayInfo();
+                            wxPayInfo.setAppid(Constants.WXPay.APP_ID);
+                            wxPayInfo.setPartnerid(Constants.WXPay.MCH_ID);
+                            wxPayInfo.setNoncestr("3LUm8dtC60rRJKfT");
+                            wxPayInfo.setPrepayid("");
+                            wxPayInfo.setSign("724AED95F41CE97855D99048D1EB336A");
+                            wxPayInfo.setTimestamp(String.valueOf(System.currentTimeMillis() / 1000));
+                            wxPayInfo.setWxpackage("Sign=WXPay");
+                            payInfo.setWxpayinfo(wxPayInfo);
+                            //1  根据提交的充值信息 及类型  生成相对应的 支付验证返回值
+                            //2 检查是否安装支付客户端 进行支付
+                            //3支付完成后 回调用户信息接口 进行数据更新
 
-        WXPayInfo wxPayInfo = new WXPayInfo();
-        wxPayInfo.setAppid(Constants.WXPay.APP_ID);
-        wxPayInfo.setPartnerid(Constants.WXPay.MCH_ID);
-        wxPayInfo.setNoncestr("3LUm8dtC60rRJKfT");
-        wxPayInfo.setPrepayid("");
-        wxPayInfo.setSign("724AED95F41CE97855D99048D1EB336A");
-        wxPayInfo.setTimestamp(String.valueOf(System.currentTimeMillis() / 1000));
-        wxPayInfo.setWxpackage("Sign=WXPay");
-        payInfo.setWxpayinfo(wxPayInfo);
-        //1  根据提交的充值信息 及类型  生成相对应的 支付验证返回值
-        //2 检查是否安装支付客户端 进行支付
-        //3支付完成后 回调用户信息接口 进行数据更新
+                            goPay();
+                        }
+                    }
 
-        goPay();
-
+                    @Override
+                    public void onError(Response<AAResponse<PayInfo>> response) {
+                        ToastUtils.showShort(response.getException().getMessage());
+                    }
+                });
 
     }
 
@@ -236,8 +371,6 @@ public class PayActivity extends BaseActivity {
         } else {
             mSVProgressHUD.showSuccessWithStatus("支付成功", SVProgressHUD.SVProgressHUDMaskType.ClearCancel);
         }
-
-
     }
 
 
@@ -303,7 +436,7 @@ public class PayActivity extends BaseActivity {
                 // 构造PayTask 对象
                 PayTask alipay = new PayTask(PayActivity.this);
                 // 调用支付接口，获取支付结果
-                String result = alipay.pay(payInfo.getPay().getOrderStr(), true);
+                String result = alipay.pay(payInfo.getOrderStr(), true);
 
                 Message msg = new Message();
                 msg.what = Constants.AliPay.SDK_PAY_FLAG;
@@ -333,18 +466,10 @@ public class PayActivity extends BaseActivity {
 
                     // 判断resultStatus 为“9000”则代表支付成功，具体状态码代表含义可参考接口文档
                     if (TextUtils.equals(resultStatus, "9000")) {
-                        mSVProgressHUD.showSuccessWithStatus("支付成功", SVProgressHUD.SVProgressHUDMaskType.Clear);
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                finish();
-                            }
-                        }, 1500);
-
-
+                        goAutoSelectRoom();
                     } else if (TextUtils.equals(resultStatus, "6001")) {
                         mSVProgressHUD.showInfoWithStatus("取消支付", SVProgressHUD.SVProgressHUDMaskType.Clear);
-                    }else {
+                    } else {
                         // 判断resultStatus 为非“9000”则代表可能支付失败
                         // “8000”代表支付结果因为支付渠道原因或者系统原因还在等待支付结果确认，最终交易是否成功以服务端异步通知为准（小概率状态）
                         if (TextUtils.equals(resultStatus, "8000")) {
@@ -363,6 +488,16 @@ public class PayActivity extends BaseActivity {
             return false;
         }
     });
+
+    //自助选房
+    private void goAutoSelectRoom() {
+        EventBus.getDefault().post(new PayOrRechargeSuccess());
+        Bundle bundle = getIntent().getExtras();
+        bundle.putSerializable(Constants.PASS_OBJECT,preOrderInfo);
+        openActivity(WXPayEntryActivity.class,getIntent().getExtras());
+        finish();
+
+    }
 
 
     private boolean checkWeiXin() {

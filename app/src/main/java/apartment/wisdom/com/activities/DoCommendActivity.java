@@ -2,6 +2,7 @@ package apartment.wisdom.com.activities;
 
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,11 +13,27 @@ import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bigkoo.svprogresshud.SVProgressHUD;
+import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.flyco.dialog.listener.OnOperItemClickL;
 import com.flyco.dialog.widget.ActionSheetDialog;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.cache.CacheMode;
+import com.lzy.okgo.model.Response;
+
+import org.greenrobot.eventbus.EventBus;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import apartment.wisdom.com.R;
+import apartment.wisdom.com.beans.AAResponse;
+import apartment.wisdom.com.beans.HotelOrderItem;
+import apartment.wisdom.com.beans.UserInfo;
+import apartment.wisdom.com.commons.Constants;
+import apartment.wisdom.com.events.DoCommendAlreadyEvnet;
+import apartment.wisdom.com.utils.NewsCallback;
+import apartment.wisdom.com.utils.ParamsUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -62,6 +79,7 @@ public class DoCommendActivity extends BaseActivity {
     LinearLayout laySubmit;
     @BindView(R.id.bt_submit_comment)
     TextView btSubmitComment;
+    private HotelOrderItem hotelOrderItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +87,10 @@ public class DoCommendActivity extends BaseActivity {
         setContentView(R.layout.activity_do_commend);
         ButterKnife.bind(this);
         tvTittle.setText(getString(R.string.hotel_comment));
+        hotelOrderItem = (HotelOrderItem) getIntent().getSerializableExtra(Constants.PASS_OBJECT);
+        if (!TextUtils.isEmpty(hotelOrderItem.storeName)){
+            tvHotelName.setText(hotelOrderItem.storeName);
+        }
         tvCommentContent.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -102,10 +124,42 @@ public class DoCommendActivity extends BaseActivity {
                 openSelect();
                 break;
             case R.id.bt_submit_comment:
-                mSVProgressHUD.showSuccessWithStatus("已提交", SVProgressHUD.SVProgressHUDMaskType.Clear);
-                finish();
+                doCommend(tvCommentContent.getEditableText().toString().trim());
                 break;
         }
+    }
+
+    private void doCommend(String trim) {
+        if (TextUtils.isEmpty(trim)){
+            ToastUtils.showShort(R.string.no_commend_to_submit);
+            return;
+        }
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("orderNo", hotelOrderItem.orderNo);
+        data.put("roomHealthScore", appStarHealth.getRating());
+        data.put("environmentScore", appStarEnv.getRating());
+        data.put("hotelScore",appStarHotelser.getRating());
+        data.put("deviceScore",appStarInstaser.getRating());
+        data.put("customerEvaluate",trim);
+
+        OkGo.<AAResponse<UserInfo>>post(Constants.Net.URL)//
+                .cacheMode(CacheMode.NO_CACHE)
+                .params("data", ParamsUtils.getParams(data,"tripReview"))
+                .execute(new NewsCallback<AAResponse<UserInfo>>() {
+                    @Override
+                    public void onSuccess(Response<AAResponse<UserInfo>> response) {
+                        LogUtils.w("dyc",response.body());
+                        ToastUtils.showShort("已提交");
+                        EventBus.getDefault().post(new DoCommendAlreadyEvnet(hotelOrderItem.orderNo));
+                        finish();
+                    }
+
+                    @Override
+                    public void onError(Response<AAResponse<UserInfo>> response) {
+                        ToastUtils.showShort(response.getException().getMessage());
+                    }
+                });
+
     }
 
     private void openSelect() {

@@ -19,7 +19,7 @@
             android:layout_height="160.0dip"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="60.0dip"
-            android:background="@mipmap/mine_about_qrcode"
+            android:background="@mipmap/mxs_logo"
             android:scaleType="centerCrop" />
 
         <TextView
@@ -48,7 +48,8 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10.0dip"
-        android:text="Copyright© 2015 Ihotels.cc, All Rights Reserved. "
+        android:gravity="center_horizontal"
+        android:text="@string/copy_right"
         android:textColor="#66798394"
         android:textSize="12.0sp" />
 </RelativeLayout>

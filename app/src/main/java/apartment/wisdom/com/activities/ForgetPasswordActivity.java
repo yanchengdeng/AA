@@ -11,13 +11,24 @@ import android.widget.TextView;
 
 import com.blankj.utilcode.util.RegexUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.cache.CacheMode;
+import com.lzy.okgo.model.Response;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import apartment.wisdom.com.R;
+import apartment.wisdom.com.beans.AAResponse;
+import apartment.wisdom.com.beans.UserInfo;
+import apartment.wisdom.com.commons.Constants;
 import apartment.wisdom.com.events.ResetPasswordSuccessEvent;
+import apartment.wisdom.com.utils.NewsCallback;
+import apartment.wisdom.com.utils.ParamsUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -51,6 +62,7 @@ public class ForgetPasswordActivity extends BaseActivity {
     TextView btNextResetpw;
 
     private CountDownTimer countDownTimer;
+    private String phoneNum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,16 +74,16 @@ public class ForgetPasswordActivity extends BaseActivity {
         countDownTimer = new CountDownTimer(30000, 1000) {
             @Override
             public void onTick(long l) {
-                etVertifyCode.setText(String.format(getString(R.string.seconds_later_restart), ((int) l / 1000)));
-                etVertifyCode.setClickable(false);
-                etVertifyCode.setTextColor(getResources().getColor(R.color.activity_info));
+                btRetryCode.setText(String.format(getString(R.string.seconds_later_restart), ((int) l / 1000)));
+                btRetryCode.setClickable(false);
+                btRetryCode.setTextColor(getResources().getColor(R.color.activity_info));
             }
 
             @Override
             public void onFinish() {
-                etVertifyCode.setClickable(true);
-                etVertifyCode.setText(getString(R.string.send_msg));
-                etVertifyCode.setTextColor(getResources().getColor(R.color.colorPrimary));
+                btRetryCode.setClickable(true);
+                btRetryCode.setText(getString(R.string.send_msg));
+                btRetryCode.setTextColor(getResources().getColor(R.color.colorPrimary));
                 countDownTimer.cancel();
             }
         };
@@ -85,17 +97,24 @@ public class ForgetPasswordActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.bt_retry_code:
-                countDownTimer.cancel();
+                if (TextUtils.isEmpty(etNewMobile.getEditableText().toString().trim())){
+                    ToastUtils.showShort(R.string.no_phone);
+                }else if (RegexUtils.isMobileSimple(etNewMobile.getEditableText().toString().trim())){
+                    sendCode(etNewMobile.getEditableText().toString().trim());
+                }else{
+                    ToastUtils.showShort(R.string.phone_regex);
+                }
+
                 break;
             case R.id.bt_next_resetpw:
-                if (TextUtils.isEmpty(etNewMobile.getEditableText().toString())){
+                if (TextUtils.isEmpty(etNewMobile.getEditableText().toString().trim())){
                     ToastUtils.showShort(R.string.no_phone);
                 }else if (RegexUtils.isMobileSimple(etNewMobile.getEditableText().toString())){
                     if (TextUtils.isEmpty(etVertifyCode.getEditableText().toString().trim())) {
                         ToastUtils.showShort(R.string.no_code);
                     }else{
                         if (etVertifyCode.getEditableText().toString().trim().length()==6){
-                            openActivity(ForgetPasswordTwoActivity.class);
+                            checkCode(etVertifyCode.getEditableText().toString().trim());
                         }else{
                             ToastUtils.showShort(R.string.regex_code);
                         }
@@ -106,6 +125,52 @@ public class ForgetPasswordActivity extends BaseActivity {
 
                 break;
         }
+    }
+
+
+    //发送验证码
+    private void sendCode(final String phone) {
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("mobilePhone", phone);
+        OkGo.<AAResponse<UserInfo>>post(Constants.Net.URL)//
+                .cacheMode(CacheMode.NO_CACHE)
+                .params("data", ParamsUtils.getParams(data,"getCheckCode"))
+                .execute(new NewsCallback<AAResponse<UserInfo>>() {
+                    @Override
+                    public void onSuccess(Response<AAResponse<UserInfo>> response) {
+                        countDownTimer.start();
+                        phoneNum = phone;
+                        ToastUtils.showShort(R.string.code_success);
+                    }
+
+                    @Override
+                    public void onError(Response<AAResponse<UserInfo>> response) {
+                        ToastUtils.showShort(response.getException().getMessage());
+                    }
+                });
+    }
+
+    //校验短信信息
+    private void checkCode(String code) {
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("mobilePhone", phoneNum);
+        data.put("validateCode",code);
+        OkGo.<AAResponse<UserInfo>>post(Constants.Net.URL)//
+                .cacheMode(CacheMode.NO_CACHE)
+                .params("data", ParamsUtils.getParams(data,"checkCode"))
+                .execute(new NewsCallback<AAResponse<UserInfo>>() {
+                    @Override
+                    public void onSuccess(Response<AAResponse<UserInfo>> response) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString(Constants.PASS_STRING,phoneNum);
+                        openActivity(ForgetPasswordTwoActivity.class,bundle);
+                    }
+
+                    @Override
+                    public void onError(Response<AAResponse<UserInfo>> response) {
+                        ToastUtils.showShort(response.getException().getMessage());
+                    }
+                });
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

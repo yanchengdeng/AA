@@ -10,11 +10,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import apartment.wisdom.com.R;
+import apartment.wisdom.com.enums.DayHourRoomType;
 
 public class SelectRoomTypeView extends LinearLayout {
     private Context context;
     public View rlDay,rlHour,lineDay,lineHour;
     private TextView tvDay,tvHour;
+    private String type= DayHourRoomType.DAY_HOUR_ROOM_TYPE_DAY.getType();//"0 天房   1  时钟房
 
     public SelectRoomTypeView(Context context) {
         super(context);
@@ -47,7 +49,7 @@ public class SelectRoomTypeView extends LinearLayout {
         lineHour.setVisibility(INVISIBLE);
         tvDay.setTextColor(context.getResources().getColor(R.color.colorPrimary));
         tvHour.setTextColor(context.getResources().getColor(R.color.activity_tv));
-
+        type = DayHourRoomType.DAY_HOUR_ROOM_TYPE_DAY.getType();
     }
 
     public void setSelectHour(){
@@ -55,5 +57,10 @@ public class SelectRoomTypeView extends LinearLayout {
         lineHour.setVisibility(VISIBLE);
         tvDay.setTextColor(context.getResources().getColor(R.color.activity_tv));
         tvHour.setTextColor(context.getResources().getColor(R.color.colorPrimary));
+        type = DayHourRoomType.DAY_HOUR_ROOM_TYPE_HOUR.getType();
+    }
+
+    public String getSelectType(){
+        return type;
     }
 }

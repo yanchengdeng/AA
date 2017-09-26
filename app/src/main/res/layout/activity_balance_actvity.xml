@@ -34,7 +34,7 @@
                     android:id="@+id/tv_balance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="24.00"
+                    android:text="00.00"
                     android:textColor="@color/white"
                     android:textSize="50sp" />
 
@@ -68,7 +68,7 @@
                         android:id="@+id/tv_balance_recharge"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="19.00"
+                        android:text="00.00"
                         android:textColor="@color/white"
                         android:textSize="@dimen/text_larger" />
 
@@ -99,7 +99,7 @@
                         android:id="@+id/tv_balance_gift"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="5.00"
+                        android:text="00.00"
                         android:textColor="@color/white"
                         android:textSize="@dimen/text_larger" />
 

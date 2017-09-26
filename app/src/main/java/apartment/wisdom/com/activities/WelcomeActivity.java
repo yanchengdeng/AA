@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -18,9 +19,19 @@ import android.widget.TextView;
 
 import com.blankj.utilcode.util.SPUtils;
 import com.bumptech.glide.Glide;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.cache.CacheMode;
+import com.lzy.okgo.model.Response;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import apartment.wisdom.com.R;
+import apartment.wisdom.com.beans.AAResponse;
+import apartment.wisdom.com.beans.SplashImageInfo;
 import apartment.wisdom.com.commons.Constants;
+import apartment.wisdom.com.utils.NewsCallback;
+import apartment.wisdom.com.utils.ParamsUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -77,7 +88,36 @@ public class WelcomeActivity extends FragmentActivity {
             pager.setVisibility(View.GONE);
             initLaunchLogo();
         }
+    }
 
+    private void getAdImage() {
+        Map<String, Object> data = new HashMap<String, Object>();
+        OkGo.<AAResponse<SplashImageInfo>>post(Constants.Net.URL)//
+                .cacheMode(CacheMode.NO_CACHE)
+                .params("data", ParamsUtils.getParams(data,"getStartUpAd"))
+                .execute(new NewsCallback<AAResponse<SplashImageInfo>>() {
+                    @Override
+                    public void onSuccess(Response<AAResponse<SplashImageInfo>> response) {
+                        SplashImageInfo imageInfo = response.body().data;
+                        if (!TextUtils.isEmpty(imageInfo.homeAdImage)){
+                            SPUtils.getInstance().put(Constants.AD_IMAGE,imageInfo.homeAdImage);
+                            Glide.with(WelcomeActivity.this).load(imageInfo.homeAdImage).into(ivAdBg);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Response<AAResponse<SplashImageInfo>> response) {
+                      requestCacheImage();
+                    }
+                });
+    }
+
+    //缓存图片加载
+    private void requestCacheImage() {
+        String string = SPUtils.getInstance().getString(Constants.AD_IMAGE);
+        if (!TextUtils.isEmpty(string)){
+            Glide.with(this).load(string).into(ivAdBg);
+        }
     }
 
     private void initGuideGallery() {
@@ -126,7 +166,8 @@ public class WelcomeActivity extends FragmentActivity {
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             ImageView item = new ImageView(WelcomeActivity.this);
-            item.setScaleType(ImageView.ScaleType.FIT_START);
+            item.setScaleType(ImageView.ScaleType.FIT_XY);
+            item.setAdjustViewBounds(true);
             item.setImageResource(images[position]);
             container.addView(item);
             return item;
@@ -156,7 +197,8 @@ public class WelcomeActivity extends FragmentActivity {
             public void run() {
                 countDownTimer.start();
                 tvSecondJump.setVisibility(View.VISIBLE);
-                Glide.with(WelcomeActivity.this).load(Constants.JZ_PIC).asBitmap().into(ivAdBg);
+                requestCacheImage();
+                getAdImage();
             }
         },1500);
 
@@ -169,7 +211,9 @@ public class WelcomeActivity extends FragmentActivity {
             case R.id.tv_second_jump:
             case R.id.btnHome:
                 tvSecondJump.setClickable(false);
+                tvSecondJump.setVisibility(View.GONE);
                 btnHome.setClickable(false);
+                btnHome.setVisibility(View.GONE);
                 SPUtils.getInstance().put(Constants.FRIST_OPEN_APP, false);
                 startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
                 finish();

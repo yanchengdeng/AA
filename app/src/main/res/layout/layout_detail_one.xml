@@ -28,10 +28,10 @@
             android:gravity="center"
             android:id="@+id/detail_room_tv"
             android:paddingLeft="30.0dip"
-            android:paddingTop="12.0dip"
+            android:paddingTop="14.0dip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="预订成功"
+            android:text=""
             android:singleLine="true" />
 
         <TextView
@@ -44,7 +44,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
-            android:text="已取消"
             android:layout_below="@+id/detail_room_tv" />
 
         <TextView
@@ -56,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="14.0dip"
-            android:text="159"
+            android:text=""
             android:layout_alignParentRight="true" />
     </RelativeLayout>
 
@@ -82,7 +81,7 @@
         android:layout_height="@dimen/list_divider_height" />
 
     <LinearLayout
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10.0dip"
@@ -97,10 +96,10 @@
             android:scaleType="centerInside" />
 
         <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="0.0dip"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="right|center_vertical"
+            android:gravity="center_vertical"
             android:layout_gravity="center_vertical"
             android:layout_weight="1.0">
 
@@ -111,20 +110,17 @@
                 android:gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="35.0dip"
-                android:text="2017-07-20(1间)"
                  />
 
 
             <TextView
                 android:id="@+id/tv_room_price"
                 android:textSize="@dimen/text_design_24px"
-                android:textColor="@color/introduce_color"
+                android:textColor="@color/red"
                 android:gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="35.0dip"
-                android:text="￥159"
                 />
         </LinearLayout>
     </LinearLayout>
@@ -137,6 +133,15 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:src="@mipmap/arrow_down" />
+
+    <apartment.wisdom.com.widgets.views.MyListView
+        android:id="@+id/list_price"
+        android:cacheColorHint="@android:color/transparent"
+        android:dividerHeight="1dp"
+        android:layout_marginTop="10dp"
+        android:divider="@drawable/list_line_diver"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <View
         android:background="@color/list_divider_color"
@@ -155,6 +160,7 @@
             android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:layout_marginLeft="10.0dip">
 
             <TextView

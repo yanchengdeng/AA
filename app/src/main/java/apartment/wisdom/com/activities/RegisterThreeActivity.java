@@ -11,12 +11,22 @@ import android.widget.TextView;
 
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.cache.CacheMode;
+import com.lzy.okgo.model.Response;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import apartment.wisdom.com.R;
+import apartment.wisdom.com.beans.AAResponse;
+import apartment.wisdom.com.beans.UserInfo;
 import apartment.wisdom.com.commons.Constants;
 import apartment.wisdom.com.events.RegisterSuccessEvent;
+import apartment.wisdom.com.utils.NewsCallback;
+import apartment.wisdom.com.utils.ParamsUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -65,22 +75,44 @@ public class RegisterThreeActivity extends BaseActivity {
                 if (TextUtils.isEmpty(etRegisterPwd.getEditableText().toString())) {
                     ToastUtils.showShort(R.string.no_password);
                 } else if (etRegisterPwd.getEditableText().toString().length() > 4 && etRegisterPwd.getEditableText().toString().trim().length() < 21) {
-                    ToastUtils.showShort(R.string.regiseter_success);
-                    if (!TextUtils.isEmpty(phone)) {
-                        SPUtils.getInstance().put(Constants.LOGIN_USER_PHONE, phone);
-                    }
-                    EventBus.getDefault().post(new RegisterSuccessEvent());
-
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            finish();
-                        }
-                    }, 1500);
+                    doRegister( etRegisterPwd.getEditableText().toString().trim());
                 } else {
                     ToastUtils.showShort(R.string.regex_password);
                 }
                 break;
         }
+    }
+
+    private void doRegister( String password) {
+        mSVProgressHUD.showWithStatus("注册中...");
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("mobilePhone", phone);
+        data.put("pwd", password);
+        data.put("name", name);
+        OkGo.<AAResponse<UserInfo>>post(Constants.Net.URL)//
+                .cacheMode(CacheMode.NO_CACHE)
+                .params("data", ParamsUtils.getParams(data, "register"))
+                .execute(new NewsCallback<AAResponse<UserInfo>>() {
+                    @Override
+                    public void onSuccess(Response<AAResponse<UserInfo>> response) {
+                        ToastUtils.showShort(R.string.regiseter_success);
+                        mSVProgressHUD.dismiss();
+                        SPUtils.getInstance().put(Constants.LOGIN_USER_PHONE, phone);
+                        EventBus.getDefault().post(new RegisterSuccessEvent());
+
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                finish();
+                            }
+                        }, 1500);
+                    }
+
+                    @Override
+                    public void onError(Response<AAResponse<UserInfo>> response) {
+                        ToastUtils.showShort(response.getException().getMessage());
+                        mSVProgressHUD.dismiss();
+                    }
+                });
     }
 }

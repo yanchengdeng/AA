@@ -1,12 +1,15 @@
 package apartment.wisdom.com.activities;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import apartment.wisdom.com.R;
+import apartment.wisdom.com.beans.UserInfo;
+import apartment.wisdom.com.utils.LoginUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -45,10 +48,27 @@ public class BalanceActivity extends BaseActivity {
         tvTittle.setText(getString(R.string.money_package));
         tvRight.setVisibility(View.VISIBLE);
         tvRight.setText(getString(R.string.detail));
+        initData();
 
     }
 
-    @OnClick({R.id.back, R.id.tv_right,R.id.tv_recharge})
+    private void initData() {
+        UserInfo userInfo = LoginUtils.getUserInfo();
+        if (userInfo != null && !TextUtils.isEmpty(userInfo.token)) {
+            if (!TextUtils.isEmpty(userInfo.cardMoney)) {
+                tvBalance.setText(userInfo.cardMoney);
+            }
+            if (!TextUtils.isEmpty(userInfo.pechargeMoney)) {
+                tvBalanceRecharge.setText(userInfo.pechargeMoney);
+            }
+
+            if (!TextUtils.isEmpty(userInfo.giveMoney)) {
+                tvBalanceGift.setText(userInfo.giveMoney);
+            }
+        }
+    }
+
+    @OnClick({R.id.back, R.id.tv_right, R.id.tv_recharge})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.back:
@@ -59,6 +79,7 @@ public class BalanceActivity extends BaseActivity {
                 break;
             case R.id.tv_recharge:
                 openActivity(RechagerActivity.class);
+                finish();
                 break;
         }
     }

@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="4.0dip"
-            android:text="点击预订酒店，即刻开启您的行程~"
+            android:text="点击预订公寓，即刻开启您的行程~"
             android:textColor="@color/app_text_light_black"
             android:textSize="14.0sp" />
 
@@ -38,7 +38,7 @@
             android:id="@+id/iv_book_hotel"
             style="@style/BtnNomalStyle"
             android:clickable="true"
-            android:text="预订酒店" />
+            android:text="预订公寓" />
 
         <TextView
             android:id="@+id/tv_history_trip"

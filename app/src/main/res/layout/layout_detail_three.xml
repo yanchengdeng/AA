@@ -10,6 +10,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
+        android:visibility="gone"
         android:layout_marginTop="10.0dip">
 
         <TextView
@@ -49,7 +50,7 @@
             android:textSize="@dimen/text_design_24px"
             android:textColor="@color/app_text_light_black"
             android:id="@+id/detail_remark_tv"
-            android:text="朝阳 、禁止吵闹"
+            android:text=""
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15.0dip" />
@@ -79,7 +80,7 @@
             android:textSize="@dimen/text_design_24px"
             android:textColor="@color/app_text_light_black"
             android:id="@+id/detail_id_tv"
-            android:text="123343434234"
+            android:text=""
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15.0dip" />
@@ -104,7 +105,7 @@
             android:textSize="@dimen/text_design_24px"
             android:textColor="@color/app_text_light_black"
             android:id="@+id/detail_address_tv"
-            android:text="北京朝阳区大街25号"
+            android:text=""
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15.0dip" />
@@ -130,7 +131,7 @@
             android:textSize="@dimen/text_design_24px"
             android:textColor="@color/app_text_light_black"
             android:id="@+id/detail_tel_tv"
-            android:text="021-32333333"
+            android:text=""
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15.0dip" />
@@ -164,7 +165,7 @@
         android:layout_marginTop="10.0dip"
         android:paddingBottom="@dimen/activity_horizontal_margin"
         android:layout_marginRight="10.0dip"
-        android:text="本订单最晚取消时间为--月--日--：--；当超过最晚取消时间后，xxx旅行将不接受您的取消请求，同时已支付的预付款项将不予退还，优惠券订单一经取消后无法恢复。"
+        android:text=""
         android:lineSpacingExtra="3.0dip" />
 
 

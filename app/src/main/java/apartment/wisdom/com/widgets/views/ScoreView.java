@@ -25,7 +25,6 @@ public class ScoreView extends LinearLayout {
         tvTittle = (TextView) view.findViewById(R.id.tv_score_name);
         vWeigth  = view.findViewById(R.id.v_weight);
         tvScoreNum = (TextView) view.findViewById(R.id.tv_score_num);
-        setData();
     }
 
 
@@ -36,14 +35,13 @@ public class ScoreView extends LinearLayout {
         tvTittle = (TextView) view.findViewById(R.id.tv_score_name);
         vWeigth  = view.findViewById(R.id.v_weight);
         tvScoreNum = (TextView) view.findViewById(R.id.tv_score_num);
-        setData();
     }
 
 
-    public void setData(){
-        tvTittle.setText("环境");
-        tvScoreNum.setText("4.5分");
-        vWeigth.setLayoutParams(new LinearLayout.LayoutParams(0, ConvertUtils.dp2px(4),4.5f));
+    public void setData(String tag,String score){
+        tvTittle.setText(tag);
+        tvScoreNum.setText(score+"分");
+        vWeigth.setLayoutParams(new LinearLayout.LayoutParams(0, ConvertUtils.dp2px(4),Float.parseFloat(score)));
 
     }
 

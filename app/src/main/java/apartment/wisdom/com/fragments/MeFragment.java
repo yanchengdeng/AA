@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,30 +16,43 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.IntentUtils;
+import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.SPUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.ecloud.pulltozoomview.PullToZoomScrollViewEx;
 import com.flyco.dialog.listener.OnOperItemClickL;
 import com.flyco.dialog.widget.ActionSheetDialog;
+import com.google.gson.Gson;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.cache.CacheMode;
+import com.lzy.okgo.model.Response;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import apartment.wisdom.com.R;
 import apartment.wisdom.com.activities.AboutActivity;
-import apartment.wisdom.com.activities.BalanceActivity;
 import apartment.wisdom.com.activities.BaseActivity;
-import apartment.wisdom.com.activities.CommendListActivity;
 import apartment.wisdom.com.activities.CommonInfoActivity;
 import apartment.wisdom.com.activities.HotelOrderListActivity;
 import apartment.wisdom.com.activities.LoginActivity;
 import apartment.wisdom.com.activities.MeInfoActivity;
-import apartment.wisdom.com.activities.MyIntegralActivity;
+import apartment.wisdom.com.activities.MyCommendListActivity;
 import apartment.wisdom.com.activities.TicketListActivity;
+import apartment.wisdom.com.beans.AAResponse;
+import apartment.wisdom.com.beans.UserInfo;
 import apartment.wisdom.com.commons.Constants;
 import apartment.wisdom.com.events.LoginOutSuccessEvent;
 import apartment.wisdom.com.events.LoginSuccessEvent;
+import apartment.wisdom.com.events.PayOrRechargeSuccess;
 import apartment.wisdom.com.utils.LoginUtils;
+import apartment.wisdom.com.utils.NewsCallback;
+import apartment.wisdom.com.utils.ParamsUtils;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 import static apartment.wisdom.com.R.id.mine_phone;
@@ -78,22 +92,83 @@ public class MeFragment extends Fragment {
         LinearLayout.LayoutParams localObject = new LinearLayout.LayoutParams(mScreenWidth, (int) (9.0F * (mScreenWidth / 16.0F)));
         scrollView.setHeaderLayoutParams(localObject);
         EventBus.getDefault().register(this);
+        updateUserInfo();
         return view;
     }
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(Object event) {
-        if (event instanceof LoginSuccessEvent){
-            tvPhone.setText("13067380836");
-            ivLevel.setVisibility(View.VISIBLE);
-            tvMeber.setVisibility(View.VISIBLE);
-            Glide.with(this).load(Constants.JZ_PIC).bitmapTransform(new CropCircleTransformation(context)).crossFade(1000).into(ivHeader);
-        }else if (event instanceof LoginOutSuccessEvent){
+        if (event instanceof LoginSuccessEvent) {
+            updateUserInfo();
+        } else if (event instanceof LoginOutSuccessEvent) {
             ivHeader.setImageResource(R.mipmap.mine_head);
             tvPhone.setText(getString(R.string.no_login));
             ivLevel.setVisibility(View.INVISIBLE);
             tvMeber.setVisibility(View.INVISIBLE);
+        }else if (event instanceof PayOrRechargeSuccess){
+            getLoginInfo();
+        }
+    }
+
+    //获取登陆信息
+    private void getLoginInfo() {
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("username", LoginUtils.getUserInfo().cardNo);
+        OkGo.<AAResponse<UserInfo>>post(Constants.Net.URL)//
+                .cacheMode(CacheMode.NO_CACHE)
+                .params("data", ParamsUtils.getParams(data,"getLoginInfo"))
+                .execute(new NewsCallback<AAResponse<UserInfo>>() {
+                    @Override
+                    public void onSuccess(Response<AAResponse<UserInfo>> response) {
+                        LogUtils.w("dyc",response.body());
+                        UserInfo userInfo = response.body().data;
+                        if (userInfo==null){
+                            return;
+                        }
+                        SPUtils.getInstance().put(Constants.USER_INFO,new Gson().toJson(userInfo));
+                        LoginUtils.setLoginStatus(true);
+                        updateUserInfo();
+                    }
+
+                    @Override
+                    public void onError(Response<AAResponse<UserInfo>> response) {
+                        ToastUtils.showShort(response.getException().getMessage());
+                    }
+                });
+
+
+    }
+
+    //更新用户信息
+    private void updateUserInfo() {
+        UserInfo userInfo = LoginUtils.getUserInfo();
+        if (!TextUtils.isEmpty(userInfo.mobilePhone)) {
+            tvPhone.setText(userInfo.mobilePhone);
+        } else {
+            if (!TextUtils.isEmpty(userInfo.cardNo)) {
+                tvPhone.setText(userInfo.cardNo);
+            }
+        }
+
+        if (!TextUtils.isEmpty(userInfo.cardLevel)) {
+            tvMeber.setText(LoginUtils.getCardLeveName(userInfo.cardLevel));
+        }
+
+        if (!TextUtils.isEmpty(userInfo.cardMoney)) {
+            tvBalence.setText(userInfo.cardMoney);
+        }
+
+        if (!TextUtils.isEmpty(userInfo.couponNum)) {
+            tvTicket.setText(userInfo.couponNum);
+        }
+        if (!TextUtils.isEmpty(userInfo.cardIntegral)) {
+            tvIntegral.setText(userInfo.cardIntegral);
+        }
+        ivLevel.setVisibility(View.VISIBLE);
+        tvMeber.setVisibility(View.VISIBLE);
+        if (!TextUtils.isEmpty(userInfo.headImage)) {
+            Glide.with(this).load(userInfo.headImage).bitmapTransform(new CropCircleTransformation(context)).crossFade(1000).into(ivHeader);
         }
     }
 
@@ -121,8 +196,8 @@ public class MeFragment extends Fragment {
             public void onClick(View view) {
                 if (LoginUtils.getLoginStatus()) {
                     startActivity(new Intent(context, MeInfoActivity.class));
-                }else{
-                    ((BaseActivity)getActivity()).openActivity(LoginActivity.class);
+                } else {
+                    ((BaseActivity) getActivity()).openActivity(LoginActivity.class);
                 }
             }
         });
@@ -132,7 +207,12 @@ public class MeFragment extends Fragment {
         scrollView.getPullRootView().findViewById(R.id.lay_my_balance).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(context, BalanceActivity.class));
+
+                if (LoginUtils.getLoginStatus()) {
+//                    startActivity(new Intent(context, BalanceActivity.class));
+                } else {
+//                    ((BaseActivity) getActivity()).openActivity(LoginActivity.class);
+                }
             }
         });
 
@@ -140,7 +220,11 @@ public class MeFragment extends Fragment {
         scrollView.getPullRootView().findViewById(R.id.lay_my_privilege).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(context, TicketListActivity.class));
+                if (LoginUtils.getLoginStatus()) {
+                    startActivity(new Intent(context, TicketListActivity.class));
+                } else {
+                    ((BaseActivity) getActivity()).openActivity(LoginActivity.class);
+                }
             }
         });
 
@@ -148,7 +232,11 @@ public class MeFragment extends Fragment {
         scrollView.getPullRootView().findViewById(R.id.lay_my_integral).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(context,MyIntegralActivity.class));
+                if (LoginUtils.getLoginStatus()) {
+//                    startActivity(new Intent(context, MyIntegralActivity.class));
+                } else {
+//                    ((BaseActivity) getActivity()).openActivity(LoginActivity.class);
+                }
             }
         });
 
@@ -156,7 +244,11 @@ public class MeFragment extends Fragment {
         scrollView.getPullRootView().findViewById(R.id.mine_hotel_order).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(context,HotelOrderListActivity.class));
+                if (LoginUtils.getLoginStatus()) {
+                    startActivity(new Intent(context, HotelOrderListActivity.class));
+                } else {
+                    ((BaseActivity) getActivity()).openActivity(LoginActivity.class);
+                }
             }
         });
 
@@ -164,14 +256,23 @@ public class MeFragment extends Fragment {
         scrollView.getPullRootView().findViewById(R.id.common_info).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(context,CommonInfoActivity.class));
+                if (LoginUtils.getLoginStatus()) {
+                    startActivity(new Intent(context, CommonInfoActivity.class));
+                } else {
+                    ((BaseActivity) getActivity()).openActivity(LoginActivity.class);
+                }
+
             }
         });
         //我的点评
         scrollView.getPullRootView().findViewById(R.id.mine_evaluate).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(context, CommendListActivity.class));
+                if (LoginUtils.getLoginStatus()) {
+                    startActivity(new Intent(context, MyCommendListActivity.class));
+                } else {
+                    ((BaseActivity) getActivity()).openActivity(LoginActivity.class);
+                }
             }
         });
 
@@ -179,7 +280,7 @@ public class MeFragment extends Fragment {
         scrollView.getPullRootView().findViewById(R.id.mine_tel_phone).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setTvHotelCall("010-234342323");
+                setTvHotelCall(getString(R.string.custome_phone));
             }
         });
 

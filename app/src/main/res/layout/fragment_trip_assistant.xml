@@ -8,7 +8,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/rl_common_bar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="@dimen/high_bar"
         android:background="@color/colorAccent">
 
         <TextView
@@ -18,7 +18,7 @@
             android:gravity="center"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:text="预订酒店"
+            android:text="预订公寓"
             android:textColor="@color/white"
             tools:ignore="ContentDescription" />
 

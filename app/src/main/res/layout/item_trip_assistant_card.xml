@@ -307,6 +307,22 @@
                     android:text="取消订单"
                     android:textColor="@color/ta_list_black"
                     android:textSize="13.0sp" />
+
+
+                <Button
+                    android:id="@+id/btn_check_in_code"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30.0dip"
+                    android:background="@drawable/bg_trip_btn_theme"
+                    android:focusable="false"
+                    android:gravity="center"
+                    android:paddingLeft="15.0dip"
+                    android:paddingRight="15.0dip"
+                    android:visibility="gone"
+                    android:text="入住码"
+                    android:textColor="@color/theme_color"
+                    android:textSize="13.0sp"
+                    />
             </LinearLayout>
         </LinearLayout>
     </RelativeLayout>

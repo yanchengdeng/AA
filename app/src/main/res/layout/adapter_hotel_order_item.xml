@@ -85,6 +85,23 @@
 
 
             <TextView
+                android:id="@+id/btn_cancle_order"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8.0dip"
+                android:layout_marginRight="8.0dip"
+                android:layout_marginTop="5.0dip"
+                android:background="@drawable/bg_order_gray"
+                android:paddingBottom="6.0dip"
+                android:paddingLeft="22.0dip"
+                android:paddingRight="22.0dip"
+                android:paddingTop="6.0dip"
+                android:text="取消订单"
+                android:textColor="#99221815"
+                android:textSize="12.0sp" />
+
+
+            <TextView
                 android:id="@+id/bt_order_pre"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -96,7 +113,7 @@
                 android:paddingLeft="22.0dip"
                 android:paddingRight="22.0dip"
                 android:paddingTop="6.0dip"
-                android:text="再次预订"
+                android:text="再次预定"
                 android:textColor="#99221815"
                 android:textSize="12.0sp" />
 

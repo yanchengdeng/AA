@@ -9,16 +9,19 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import apartment.wisdom.com.R;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class HotelEquitmentAdapter extends BaseAdapter {
 
-    private String[] enquitments = new String[]{"空调环境","环境优美","环境优美","环境优美","环境优美","环境优美","环境优美","环境优美","环境优美","环境优美"};
-
+    private String[] enquitments;
     private Context context;
-    public HotelEquitmentAdapter(Context context){
-        this.context = context;
 
+    public HotelEquitmentAdapter(Context context, String[] enquitments) {
+        this.context = context;
+        this.enquitments = enquitments;
     }
+
     @Override
     public int getCount() {
         return enquitments.length;
@@ -36,12 +39,25 @@ public class HotelEquitmentAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        if (view ==null){
-            view = LayoutInflater.from(context).inflate(R.layout.adapter_hotel_equitment,null);
+        ViewHolder viewHolder;
+        if (view == null) {
+            view = LayoutInflater.from(context).inflate(R.layout.adapter_hotel_equitment, null);
+            viewHolder = new ViewHolder(view);
+            view.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) view.getTag();
         }
-        TextView textView = (TextView) view;
 
-        textView.setText(enquitments[i]);
-        return textView;
+        viewHolder.tvDevices.setText(enquitments[i]);
+        return view;
+    }
+
+    static class ViewHolder {
+        @BindView(R.id.tv_devices)
+        TextView tvDevices;
+
+        ViewHolder(View view) {
+            ButterKnife.bind(this, view);
+        }
     }
 }

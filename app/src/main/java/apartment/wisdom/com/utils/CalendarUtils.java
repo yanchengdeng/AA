@@ -1,9 +1,12 @@
 package apartment.wisdom.com.utils;
 
 
+import com.blankj.utilcode.util.TimeUtils;
 import com.tubb.calendarselector.library.FullDay;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class CalendarUtils {
 
@@ -49,26 +52,49 @@ public class CalendarUtils {
         return new FullDay(newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH) + 1, newCalendar.get(Calendar.DAY_OF_MONTH));
     }
 
-    public String getWeekNameByDate(FullDay fullDay){
+    //获取 中国 星期
+    public String getWeekNameByDate(FullDay fullDay) {
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR,fullDay.getWeekOf());
-        calendar.set(Calendar.MONTH,fullDay.getMonth()-1);
-        calendar.set(Calendar.DAY_OF_MONTH,fullDay.getDay());
-        switch (calendar.get(Calendar.DAY_OF_WEEK)){
-            case 0:
-                return "周一";
-            case 1:
-                return "周二";
-            case 2:
-                return "周三";
-            case 3:
-                return "周四";
-            case 4:
-                return "周五";
-            case 5:
-                return "周六";
-            default:
-                return "周日";
+        calendar.set(Calendar.YEAR, fullDay.getYear());
+        calendar.set(Calendar.MONTH, fullDay.getMonth() - 1);
+        calendar.set(Calendar.DAY_OF_MONTH, fullDay.getDay());
+        return
+                TimeUtils.getChineseWeek(calendar.getTime().getTime());
+    }
+
+
+    public String getDateForamte(FullDay fullDay) {
+
+        String moth = String.valueOf(fullDay.getMonth());
+        if (fullDay.getMonth()<10){
+            moth = "0"+fullDay.getMonth();
         }
+
+
+        String day = String.valueOf(fullDay.getDay());
+        if (fullDay.getDay()<10){
+            day = "0"+fullDay.getDay();
+        }
+
+        return fullDay.getYear() + "-" + moth+ "-" + day;
+    }
+
+    public String getDateForamteChinesMMdd(FullDay fullDay) {
+
+        return fullDay.getMonth() + "月" + fullDay.getDay() + "日";
+    }
+
+
+    public String getOrderMonthAndWeek(String checkTime) {
+        Date date = TimeUtils.string2Date(checkTime, new SimpleDateFormat("yyyy-MM-dd"));
+        return date.getMonth()+1 + "月\n" + TimeUtils.getChineseWeek(checkTime, new SimpleDateFormat("yyyy-MM-dd"));
+    }
+
+    public String getDay(String checkInTime) {
+
+       Date date = TimeUtils.string2Date(checkInTime,new SimpleDateFormat("yyyy-MM-dd"));
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
     }
 }

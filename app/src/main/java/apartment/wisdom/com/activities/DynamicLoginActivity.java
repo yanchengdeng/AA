@@ -10,15 +10,25 @@ import android.widget.TextView;
 
 import com.blankj.utilcode.util.RegexUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.cache.CacheMode;
+import com.lzy.okgo.model.Response;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import apartment.wisdom.com.R;
+import apartment.wisdom.com.beans.AAResponse;
+import apartment.wisdom.com.beans.UserInfo;
 import apartment.wisdom.com.commons.Constants;
 import apartment.wisdom.com.events.LoginSuccessEvent;
 import apartment.wisdom.com.events.RegisterSuccessEvent;
+import apartment.wisdom.com.utils.NewsCallback;
+import apartment.wisdom.com.utils.ParamsUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -75,7 +85,7 @@ public class DynamicLoginActivity extends BaseActivity {
                 }else{
                     if (RegexUtils.isMobileSimple(etDynamicphone.getEditableText().toString().trim())){
                         Bundle bundle = new Bundle();
-                        bundle.putString(Constants.PASS_STRING,etDynamicphone.getEditableText().toString());
+                        bundle.putString(Constants.PASS_STRING,etDynamicphone.getEditableText().toString().trim());
                         openActivity(DyanicLoginTwoActivity.class,bundle);
                     }else{
                         ToastUtils.showShort(R.string.phone_regex);
@@ -90,6 +100,31 @@ public class DynamicLoginActivity extends BaseActivity {
                 break;
         }
     }
+
+
+    //发送验证码
+    private void sendCode(String phone) {
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("mobilePhone", phone);
+        OkGo.<AAResponse<UserInfo>>post(Constants.Net.URL)//
+                .cacheMode(CacheMode.NO_CACHE)
+                .params("data", ParamsUtils.getParams(data,"getCheckCode"))
+                .execute(new NewsCallback<AAResponse<UserInfo>>() {
+                    @Override
+                    public void onSuccess(Response<AAResponse<UserInfo>> response) {
+                        ToastUtils.showShort(R.string.code_success);
+                        Bundle bundle = new Bundle();
+                        bundle.putString(Constants.PASS_STRING,etDynamicphone.getEditableText().toString());
+                        openActivity(DyanicLoginTwoActivity.class,bundle);
+                    }
+
+                    @Override
+                    public void onError(Response<AAResponse<UserInfo>> response) {
+                        ToastUtils.showShort(response.getException().getMessage());
+                    }
+                });
+    }
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(RegisterSuccessEvent event) {

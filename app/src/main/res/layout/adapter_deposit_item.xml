@@ -23,7 +23,7 @@
             android:id="@+id/tv_recharge_money"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="充1000元"
+            android:text="@string/charge_money_tips"
             android:textColor="@color/activity_tv"
             android:textSize="@dimen/text_normal_up" />
 
@@ -34,7 +34,7 @@
             android:layout_marginTop="@dimen/image_padding"
             android:ellipsize="end"
             android:singleLine="true"
-            android:text="赠送100元"
+            android:text="@string/gift_money_tips"
             android:textColor="@color/colorAccent"
             android:textSize="@dimen/text_normal_down" />
 

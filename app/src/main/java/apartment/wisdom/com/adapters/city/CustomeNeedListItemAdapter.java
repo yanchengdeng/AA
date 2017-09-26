@@ -23,9 +23,9 @@ public class CustomeNeedListItemAdapter extends BaseAdapter {
     private Context context;
     List<CustomeType.CustomTypeItem> customTypeItems;
 
-    public CustomeNeedListItemAdapter(Context context, List<CustomeType.CustomTypeItem> customTypeItems) {
+    public CustomeNeedListItemAdapter(Context context, CustomeType item) {
         this.context = context;
-        this.customTypeItems = customTypeItems;
+        this.customTypeItems = item.getCustomTypeItems();
     }
 
     @Override
@@ -55,7 +55,8 @@ public class CustomeNeedListItemAdapter extends BaseAdapter {
         }
 
         viewHolder.tvName.setText(customTypeItems.get(i).getName());
-        Glide.with(context).load(customTypeItems.get(i).getPic()).into(viewHolder.ivImage);
+        viewHolder.tvMoney.setText(customTypeItems.get(i).getPrice());
+        Glide.with(context).load(customTypeItems.get(i).getImg()).into(viewHolder.ivImage);
         if (customTypeItems.get(i).isSelect()){
             viewHolder.iv_selected.setVisibility(View.VISIBLE);
         }else{

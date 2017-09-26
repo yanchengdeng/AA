@@ -47,7 +47,7 @@
                     android:paddingBottom="8.0dip"
                     android:paddingLeft="15.0dip"
                     android:singleLine="true"
-                    android:text="青岛尚客优大酒店"
+                    android:text=""
                     android:textColor="@color/black_tv"
                     android:textSize="@dimen/text_design_32px" />
 
@@ -118,6 +118,8 @@
                         android:layout_alignParentRight="true"
                         android:layout_marginLeft="32.0dip"
                         android:isIndicator="false"
+                        android:rating="5"
+                        android:stepSize="1"
                         android:numStars="5" />
                 </LinearLayout>
 
@@ -144,6 +146,8 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_marginLeft="32.0dip"
+                        android:rating="5"
+                        android:stepSize="1"
                         android:isIndicator="false"
                         android:numStars="5" />
                 </LinearLayout>
@@ -160,7 +164,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="酒店服务"
+                        android:text="公寓服务"
                         android:textColor="@color/black_tv"
                         android:textSize="@dimen/text_design_28px" />
 
@@ -171,6 +175,8 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_marginLeft="32.0dip"
+                        android:rating="5"
+                        android:stepSize="1"
                         android:isIndicator="false"
                         android:numStars="5" />
                 </LinearLayout>
@@ -199,6 +205,8 @@
                         android:layout_alignParentRight="true"
                         android:layout_marginLeft="32.0dip"
                         android:isIndicator="false"
+                        android:rating="5"
+                        android:stepSize="1"
                         android:numStars="5" />
                 </LinearLayout>
 
@@ -235,7 +243,7 @@
                         android:layout_toLeftOf="@+id/tv_comtent_count"
                         android:background="@color/WHITE"
                         android:gravity="center|left|top"
-                        android:hint="写下您的入住体验，帮助千万用户挑选到心仪的酒店"
+                        android:hint="写下您的入住体验，帮助千万用户挑选到心仪的公寓"
                         android:lineSpacingExtra="4.0dip"
                         android:minLines="3"
                         android:paddingRight="15.0dip"

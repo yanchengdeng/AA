@@ -34,7 +34,7 @@
             android:layout_width="0.0dip"
             android:layout_height="4.0dip"
             android:layout_marginRight="5.0dip"
-            android:layout_weight="4.0"
+            android:layout_weight="5.00"
             android:background="@drawable/bg_comment_score" />
 
         <TextView

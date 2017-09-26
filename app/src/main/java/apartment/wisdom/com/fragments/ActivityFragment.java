@@ -1,6 +1,5 @@
 package apartment.wisdom.com.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,15 +13,25 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.cache.CacheMode;
+import com.lzy.okgo.model.Response;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import apartment.wisdom.com.R;
-import apartment.wisdom.com.activities.ActivityDetailActivity;
 import apartment.wisdom.com.adapters.ActivityListAdapter;
-import apartment.wisdom.com.beans.ActivityInfo;
+import apartment.wisdom.com.beans.AAResponse;
+import apartment.wisdom.com.beans.HomeAdInfo;
+import apartment.wisdom.com.beans.HomeAdInfoList;
+import apartment.wisdom.com.commons.Constants;
+import apartment.wisdom.com.utils.NewsCallback;
+import apartment.wisdom.com.utils.ParamsUtils;
 import apartment.wisdom.com.utils.RefreshSwiperUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,8 +50,9 @@ public class ActivityFragment extends Fragment implements BaseQuickAdapter.Reque
     RecyclerView rvList;
     @BindView(R.id.swipeLayout)
     SwipeRefreshLayout swipeLayout;
+    private View noDateView;
 
-    private List<ActivityInfo> activityInfoList = new ArrayList<>();
+    private List<HomeAdInfoList> activityInfoList = new ArrayList<>();
 
     private ActivityListAdapter activityListAdapter;
 
@@ -52,39 +62,52 @@ public class ActivityFragment extends Fragment implements BaseQuickAdapter.Reque
         View view = inflater.inflate(R.layout.fragment_activity, container, false);
         ButterKnife.bind(this, view);
         tvTittle.setText(getString(R.string.tab_activity));
+        back.setVisibility(View.GONE);
+        noDateView = getActivity().getLayoutInflater().inflate(R.layout.layour_listview_empty, (ViewGroup) rvList.getParent(), false);
+        ((TextView) noDateView.findViewById(R.id.tv_empty_tips)).setText("暂无活动");
         initRecycle();
         return view;
     }
 
     private void initRecycle() {
-        activityListAdapter = new ActivityListAdapter(R.layout.adapter_activity_layout,getActivityInfoList());
+        activityListAdapter = new ActivityListAdapter(getActivity(), R.layout.adapter_activity_layout, activityInfoList);
         swipeLayout.setOnRefreshListener(this);
         RefreshSwiperUtils.setRecleColor(swipeLayout);
         rvList.setLayoutManager(new LinearLayoutManager(getActivity()));
         swipeLayout.setOnRefreshListener(this);
         rvList.setAdapter(activityListAdapter);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getActivity(),DividerItemDecoration.VERTICAL);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
         dividerItemDecoration.setDrawable(getResources().getDrawable(R.drawable.list_line_transe));
         rvList.addItemDecoration(dividerItemDecoration);
+        getActivityInfoList();
 
-        activityListAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                ActivityFragment.this.startActivity(new Intent(getActivity(), ActivityDetailActivity.class));
-            }
-        });
     }
 
 
-    private List<ActivityInfo> getActivityInfoList(){
-        List<ActivityInfo> activityInfoList = new ArrayList<>();
-        activityInfoList.add(new ActivityInfo());
-        activityInfoList.add(new ActivityInfo());
-        activityInfoList.add(new ActivityInfo());
-        activityInfoList.add(new ActivityInfo());
-        activityInfoList.add(new ActivityInfo());
-        activityInfoList.add(new ActivityInfo());
-        return activityInfoList;
+    private void getActivityInfoList() {
+        Map<String, Object> data = new HashMap<String, Object>();
+        OkGo.<AAResponse<HomeAdInfo>>post(Constants.Net.URL)//
+                .cacheMode(CacheMode.DEFAULT)
+                .params("data", ParamsUtils.getParams(data, "getActivity"))
+                .execute(new NewsCallback<AAResponse<HomeAdInfo>>() {
+                    @Override
+                    public void onSuccess(Response<AAResponse<HomeAdInfo>> response) {
+                        HomeAdInfo homeAdInfos = response.body().data;
+                        if (!homeAdInfos.activityList.isEmpty()) {
+                            activityListAdapter.setNewData(homeAdInfos.activityList);
+                        } else {
+                            activityListAdapter.setNewData(null);
+                            activityListAdapter.setEmptyView(noDateView);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Response<AAResponse<HomeAdInfo>> response) {
+                        ToastUtils.showShort(response.getException().getMessage());
+                        activityListAdapter.setNewData(null);
+                        activityListAdapter.setEmptyView(noDateView);
+                    }
+                });
     }
 
 
@@ -92,6 +115,7 @@ public class ActivityFragment extends Fragment implements BaseQuickAdapter.Reque
     public void onRefresh() {
         swipeLayout.setRefreshing(false);
         activityListAdapter.setEnableLoadMore(true);
+        getActivityInfoList();
 
     }
 
@@ -99,5 +123,11 @@ public class ActivityFragment extends Fragment implements BaseQuickAdapter.Reque
     public void onLoadMoreRequested() {
 
 
+    }
+
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 }

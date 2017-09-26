@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/activity_horizontal_margin"
-            android:src="@mipmap/left_arrow_ic" />
+            android:src="@mipmap/nav_back_white" />
     </LinearLayout>
 
 

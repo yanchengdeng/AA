@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SimpleItemAnimator;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +16,7 @@ import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.tubb.calendarselector.library.CalendarSelector;
 import com.tubb.calendarselector.library.FullDay;
+import com.tubb.calendarselector.library.IntervalSelectListener;
 import com.tubb.calendarselector.library.MonthView;
 import com.tubb.calendarselector.library.SCDateUtils;
 import com.tubb.calendarselector.library.SCMonth;
@@ -53,9 +53,10 @@ public class CalendarChooseActivity extends BaseActivity {
     RelativeLayout rlCommonBar;
     @BindView(R.id.rvCalendar)
     RecyclerView rvCalendar;
-    private FullDay stant_in,stand_out;
+    private FullDay stant_in, stand_out;
 
-    public static int  SUCCESS_SELECT_TIME = 0x110;
+    public static int SUCCESS_SELECT_TIME = 0x110;
+    private boolean isSelectSingle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,19 +66,71 @@ public class CalendarChooseActivity extends BaseActivity {
         tvTittle.setText(getString(R.string.select_date));
         stant_in = getIntent().getParcelableExtra(Constants.PASS_STAND_IN);
         stand_out = getIntent().getParcelableExtra(Constants.PASS_STAND_OUT);
+        isSelectSingle = getIntent().getBooleanExtra(Constants.PASS_SELECT_HOTLE_TYPE, false);
         rvCalendar.setLayoutManager(new LinearLayoutManager(this));
-        ((SimpleItemAnimator) rvCalendar.getItemAnimator()).setSupportsChangeAnimations(false);
+//        ((SimpleItemAnimator) rvCalendar.getItemAnimator()).setSupportsChangeAnimations(false);
         data = getData();
-        segmentMode();
+        if (isSelectSingle) {
+            intervalMode();
+        } else {
+            segmentMode();
+        }
+    }
+
+    /**
+     * interval mode
+     */
+    private void intervalMode() {
+        selector = new CalendarSelector(data, CalendarSelector.INTERVAL);
+        selector.addSelectedInterval(stant_in);
+        selector.setIntervalSelectListener(new IntervalSelectListener() {
+            @Override
+            public void onIntervalSelect(List<FullDay> selectedDays) {
+
+            }
+
+            @Override
+            public boolean onInterceptSelect(List<FullDay> selectedDays, FullDay selectingDay) {
+
+                Calendar selectCalend = Calendar.getInstance(Locale.CHINA);
+                selectCalend.set(Calendar.YEAR, selectingDay.getYear());
+                selectCalend.set(Calendar.MONTH, selectingDay.getMonth());
+                selectCalend.set(Calendar.DAY_OF_MONTH, selectingDay.getDay());
+                LogUtils.w("dyc", selectCalend.getTime().getTime() + "----" + System.currentTimeMillis());
+                Calendar todayCalend = Calendar.getInstance(Locale.CHINA);
+                todayCalend.set(Calendar.MONTH, todayCalend.get(Calendar.MONTH) + 1);
+                if (!SCDateUtils.isToday(selectCalend.get(Calendar.YEAR), selectCalend.get(Calendar.MONTH), selectCalend.get(Calendar.DAY_OF_MONTH))) {
+                    if (selectCalend.compareTo(todayCalend) < 0) {
+                        ToastUtils.showShort(R.string.can_not_select_before_today);
+                        return true;
+                    }
+                }
+
+                selectCalend.add(Calendar.DAY_OF_MONTH,1);
+                FullDay nextDay = new FullDay(selectCalend.get(Calendar.YEAR),selectCalend.get(Calendar.MONTH),selectCalend.get(Calendar.DAY_OF_MONTH));
+
+                Intent intent = new Intent();
+                intent.putExtra(Constants.PASS_STAND_IN, selectingDay);
+                intent.putExtra(Constants.PASS_STAND_OUT, nextDay);
+                intent.putExtra(Constants.STAND_IN_OUT_DISTANCE, 1);
+                setResult(SUCCESS_SELECT_TIME, intent);
+                finish();
+                return super.onInterceptSelect(selectedDays, selectingDay);
+            }
+        });
+        rvCalendar.setAdapter(new CalendarAdpater(data));
     }
 
     /**
      * segment mode
      */
     private void segmentMode() {
-        data = getData();
         selector = new CalendarSelector(data, CalendarSelector.SEGMENT);
+//        if (isSelectSingle) {
+//            selector.addSelectedSegment(stant_in);
+//        } else {
         selector.addSelectedSegment(stant_in, stand_out);
+//        }
         selector.setSegmentSelectListener(new SegmentSelectListener() {
             @Override
             public void onSegmentSelect(FullDay startDay, FullDay endDay) {
@@ -92,8 +145,6 @@ public class CalendarChooseActivity extends BaseActivity {
                 selectCalend.set(Calendar.MONTH, selectingDay.getMonth());
                 selectCalend.set(Calendar.DAY_OF_MONTH, selectingDay.getDay());
                 LogUtils.w("dyc", selectCalend.getTime().getTime() + "----" + System.currentTimeMillis());
-
-
                 Calendar todayCalend = Calendar.getInstance(Locale.CHINA);
                 todayCalend.set(Calendar.MONTH, todayCalend.get(Calendar.MONTH) + 1);
                 if (!SCDateUtils.isToday(selectCalend.get(Calendar.YEAR), selectCalend.get(Calendar.MONTH), selectCalend.get(Calendar.DAY_OF_MONTH))) {
@@ -115,11 +166,10 @@ public class CalendarChooseActivity extends BaseActivity {
                     return true;
                 }
                 Intent intent = new Intent();
-                intent.putExtra(Constants.PASS_STAND_IN,startDay);
-                intent.putExtra(Constants.PASS_STAND_OUT,endDay);
-                intent.putExtra(Constants.STAND_IN_OUT_DISTANCE,differDays);
-
-                setResult(SUCCESS_SELECT_TIME,intent);
+                intent.putExtra(Constants.PASS_STAND_IN, startDay);
+                intent.putExtra(Constants.PASS_STAND_OUT, endDay);
+                intent.putExtra(Constants.STAND_IN_OUT_DISTANCE, differDays-1);
+                setResult(SUCCESS_SELECT_TIME, intent);
                 finish();
                 return super.onInterceptSelect(startDay, endDay);
             }

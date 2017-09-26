@@ -1,6 +1,7 @@
 package apartment.wisdom.com.activities;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -24,6 +25,7 @@ import com.flyco.dialog.widget.ActionSheetDialog;
 
 import apartment.wisdom.com.AAApplication;
 import apartment.wisdom.com.R;
+import apartment.wisdom.com.commons.Constants;
 import apartment.wisdom.com.services.LocationService;
 import apartment.wisdom.com.utils.AMapUtil;
 import apartment.wisdom.com.utils.CoodinateCovertor;
@@ -49,18 +51,29 @@ public class MapActivity extends BaseActivity {
     LatLng point;
     private LatLng locaiton;
     private LocationService locationService;
+    private String coordinate;
+    private String address;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SDKInitializer.initialize(getApplicationContext());
         setContentView(R.layout.activity_map);
+        coordinate = getIntent().getStringExtra(Constants.PASS_STRING);
+        address = getIntent().getStringExtra(Constants.PASS_ADDRESS);
         ButterKnife.bind(this);
 
 
         //119.313287,26.112893
         //定义Maker坐标点
-        point = new LatLng(26.112893, 119.313287);
+        if (TextUtils.isEmpty(coordinate)) {
+            finish();
+            return;
+        }
+
+        String[] pointLatLng = coordinate.split(",");
+
+        point = new LatLng(Double.parseDouble(pointLatLng[0]), Double.parseDouble(pointLatLng[1]));
 //构建Marker图标
         BitmapDescriptor bitmap = BitmapDescriptorFactory
                 .fromResource(R.mipmap.detail_map_pin_big);
@@ -74,11 +87,13 @@ public class MapActivity extends BaseActivity {
 
         //创建InfoWindow展示的view
         TextView button = new TextView(getApplicationContext());
-        button.setTextColor(getResources().getColor(R.color.colorPrimary));
-        button.setText("软件园附近会所");
+        button.setTextColor(getResources().getColor(R.color.white));
+        button.setText(address);
+        button.setBackground(getResources().getDrawable(R.drawable.map_location_bg));
+
 //定义用于显示该InfoWindow的坐标点
 //创建InfoWindow , 传入 view， 地理坐标， y 轴偏移量
-        InfoWindow mInfoWindow = new InfoWindow(button, point, -100);
+        InfoWindow mInfoWindow = new InfoWindow(button, point, -120);
 //显示InfoWindow
         bmapView.getMap().showInfoWindow(mInfoWindow);
 
@@ -147,7 +162,7 @@ public class MapActivity extends BaseActivity {
                     //百度导航
                     if (AMapUtil.isInstallByRead("com.baidu.BaiduMap")) {
                         if (locaiton != null) {
-                            AMapUtil.getToNaviBaidu(mContext, "测试地址", locaiton, point.latitude, point.longitude);
+                            AMapUtil.getToNaviBaidu(mContext, address, locaiton, point.latitude, point.longitude);
                         } else {
                             ToastUtils.showShort(getString(R.string.check_location_is_right));
                         }
@@ -162,7 +177,7 @@ public class MapActivity extends BaseActivity {
                     if (AMapUtil.isInstallByRead("com.autonavi.minimap")) {
 
                         LngLat gaode = CoodinateCovertor.bd_decrypt(new LngLat(point.longitude, point.latitude));
-                        AMapUtil.goToNaviActivity(mContext, "amap", "测试地址", String.valueOf(gaode.getLantitude()), String.valueOf(gaode.getLongitude()), "0", "4");
+                        AMapUtil.goToNaviActivity(mContext, "amap", address, String.valueOf(gaode.getLantitude()), String.valueOf(gaode.getLongitude()), "0", "4");
                     } else {
 //                        Snackbar snackbar = Snackbar.make(ivMapLine, getString(R.string.not_install_gaodemap), Toast.LENGTH_SHORT);
 //                        ColoredSnackbar.alert(snackbar).show();

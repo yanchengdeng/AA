@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 
 import com.bigkoo.svprogresshud.SVProgressHUD;
+import com.lzy.okgo.OkGo;
 
 
 /**
@@ -114,4 +115,9 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        OkGo.getInstance().cancelTag(this);
+    }
 }

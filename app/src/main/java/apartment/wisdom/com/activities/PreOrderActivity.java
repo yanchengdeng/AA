@@ -3,8 +3,10 @@ package apartment.wisdom.com.activities;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,24 +18,51 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.RegexUtils;
+import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ScreenUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.flyco.dialog.listener.OnOperItemClickL;
 import com.flyco.dialog.widget.ActionSheetDialog;
 import com.flyco.dialog.widget.base.BaseDialog;
 import com.flyco.dialog.widget.popup.base.BasePopup;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.cache.CacheMode;
+import com.lzy.okgo.model.Response;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import apartment.wisdom.com.R;
 import apartment.wisdom.com.adapters.CustomeNeedListAdapter;
+import apartment.wisdom.com.adapters.PreOrderDIYSelectAdapter;
+import apartment.wisdom.com.beans.AAResponse;
+import apartment.wisdom.com.beans.CustomPeopleList;
+import apartment.wisdom.com.beans.CustomeDIY;
 import apartment.wisdom.com.beans.CustomeType;
+import apartment.wisdom.com.beans.DIYSaveInfo;
+import apartment.wisdom.com.beans.PreOrderInfo;
+import apartment.wisdom.com.beans.RoomListInfo;
+import apartment.wisdom.com.beans.TimeArrays;
+import apartment.wisdom.com.commons.Constants;
+import apartment.wisdom.com.enums.DIYType;
+import apartment.wisdom.com.events.PayOrRechargeSuccess;
+import apartment.wisdom.com.utils.LoginUtils;
+import apartment.wisdom.com.utils.NewsCallback;
+import apartment.wisdom.com.utils.ParamsUtils;
 import apartment.wisdom.com.widgets.views.BottomPriceView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static apartment.wisdom.com.R.id.tv_arrive_time;
+import static apartment.wisdom.com.R.id.recycle;
 
 /**
  * Author: 邓言诚  Create at : 17/8/15  00:31
@@ -68,15 +97,13 @@ public class PreOrderActivity extends BaseActivity {
     @BindView(R.id.ll_room_count)
     LinearLayout llRoomCount;
     @BindView(R.id.tv_hotel_user_name)
-    TextView tvHotelUserName;
+    EditText tvHotelUserName;
     @BindView(R.id.iv_add_user)
     ImageView ivAddUser;
     @BindView(R.id.et_user_tel)
     EditText etUserTel;
     @BindView(R.id.ll_tel_verify_layout)
     LinearLayout llTelVerifyLayout;
-    @BindView(tv_arrive_time)
-    TextView tvArriveTime;
     @BindView(R.id.ll_arrive_time)
     LinearLayout llArriveTime;
     @BindView(R.id.et_order_remarks)
@@ -87,8 +114,18 @@ public class PreOrderActivity extends BaseActivity {
     LinearLayout llArriveWarn;
     @BindView(R.id.ll_price_detail)
     BottomPriceView llPriceDetail;
+    @BindView(R.id.tv_leave_tips)
+    TextView tvLeaveTips;
+    @BindView(R.id.tv_arrive_time)
+    TextView tvArriveTime;
+    @BindView(R.id.ll_pesonal_custome)
+    LinearLayout llPesonalCustome;
     private PopPrcieDialog bubblePopup;
     private CustomeNeedDialog custemDialg;
+    private RoomListInfo.HourRoom hotelRoom;
+    private List<CustomeType> customeTypes;
+    private List<CustomPeopleList.CustomPeopleItem> peopleItemInfos = new ArrayList<>();
+    String[] arriveTimes ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,22 +133,128 @@ public class PreOrderActivity extends BaseActivity {
         setContentView(R.layout.activity_pre_order);
         ButterKnife.bind(this);
         tvTittle.setText(getString(R.string.fill_order));
+        hotelRoom = (RoomListInfo.HourRoom) getIntent().getSerializableExtra(Constants.PASS_OBJECT);
+        if (!TextUtils.isEmpty(hotelRoom.hotelName)) {
+            tvHotelName.setText(hotelRoom.hotelName);
+        }
+        if (!TextUtils.isEmpty(hotelRoom.roomTypeName)) {
+            tvHotelRoomType.setText(hotelRoom.roomTypeName);
+        }
+        if (!TextUtils.isEmpty(hotelRoom.selectType)) {
+            //天房
+            if (hotelRoom.selectType.equals("0")) {
+                tvStandInDate.setText(hotelRoom.standInSimple);
+                tvLeaveDate.setText(hotelRoom.standOutSimple);
+                tvHotelOrderDays.setText(String.valueOf(hotelRoom.differDays + "晚"));
+            } else {
+                tvStandInDate.setText(hotelRoom.standInSimple);
+                tvLeaveDate.setText(hotelRoom.bespeakTime);
+                tvLeaveTips.setVisibility(View.GONE);
+                tvHotelOrderDays.setVisibility(View.GONE);
+            }
+        }
+        llPriceDetail.tvPrice.setText(String.format("%.2f",Float.parseFloat(hotelRoom.roomPrice) * hotelRoom.differDays+Float.parseFloat(hotelRoom.roomDeposit)));
+
         initBottomLisener();
-        initCustomeNeedDialog();
+        getNeetDIY();
+        getOrderTime();
+
+        EventBus.getDefault().register(this);
     }
+
+    private void getOrderTime() {
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("checkInRoomType",  hotelRoom.selectType);
+        OkGo.<AAResponse<TimeArrays>>post(Constants.Net.URL)//
+                .cacheMode(CacheMode.NO_CACHE)
+                .params("data", ParamsUtils.getParams(data,"getTimeSolt"))
+                .execute(new NewsCallback<AAResponse<TimeArrays>>() {
+                    @Override
+                    public void onSuccess(Response<AAResponse<TimeArrays>> response) {
+                        LogUtils.w("dyc",response.body());
+                        TimeArrays timeArrays = response.body().data;
+                        if (timeArrays!=null&& timeArrays.dateArray!=null && timeArrays.dateArray.length>0){
+                            arriveTimes  = new String[timeArrays.dateArray.length];
+                            for (int i = 0;i<timeArrays.dateArray.length;i++){
+                                arriveTimes[i] = timeArrays.dateArray[i]+"前";
+                            }
+                            tvArriveTime.setText(arriveTimes[0]);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Response<AAResponse<TimeArrays>> response) {
+                        ToastUtils.showShort(response.getException().getMessage());
+                    }
+                });
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(Object event) {
+        if (event instanceof PayOrRechargeSuccess) {
+            finish();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getCustomeList();
+    }
+
+    //获取常用联系人
+    private void getCustomeList() {
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("username", LoginUtils.getUserInfo().cardNo);
+        OkGo.<AAResponse<CustomPeopleList>>post(Constants.Net.URL)//
+                .cacheMode(CacheMode.NO_CACHE)
+                .params("data", ParamsUtils.getParams(data, "queryCommonInfo"))
+                .execute(new NewsCallback<AAResponse<CustomPeopleList>>() {
+                    @Override
+                    public void onSuccess(Response<AAResponse<CustomPeopleList>> response) {
+                        CustomPeopleList customPeopleList = response.body().data;
+                        if (customPeopleList != null && !customPeopleList.contacList.isEmpty()) {
+                            peopleItemInfos = customPeopleList.contacList;
+                            tvHotelUserName.setText(peopleItemInfos.get(0).name);
+                            etUserTel.setText(peopleItemInfos.get(0).mobilePhone);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Response<AAResponse<CustomPeopleList>> response) {
+                        ToastUtils.showShort(response.getException().getMessage());
+                    }
+                });
+    }
+
 
     //套餐配置
     private void initCustomeNeedDialog() {
         custemDialg = new CustomeNeedDialog(mContext);
         custemDialg.setTitle("可选择您套餐");
+//        custemDialg.isTitleShow(false);
         custemDialg.show();
+        custemDialg.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                List<DIYSaveInfo> diySaveInfos = LoginUtils.getDIY();
+                float selectMoney =0;
+                if (diySaveInfos != null && diySaveInfos.size() > 0) {
+                    for (DIYSaveInfo item:diySaveInfos){
+                        selectMoney+=Float.parseFloat(item.getMoney())*item.getNum();
+                    }
+                }
+                llPriceDetail.tvPrice.setText(String.format("%.2f",Float.parseFloat(hotelRoom.roomPrice) * hotelRoom.differDays+Float.parseFloat(hotelRoom.roomDeposit)+selectMoney));
+            }
+        });
     }
 
     private void initBottomLisener() {
         llPriceDetail.btnOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openActivity(PayActivity.class);
+                prePay();
             }
         });
 
@@ -131,6 +274,97 @@ public class PreOrderActivity extends BaseActivity {
         });
     }
 
+
+    //生成订单
+
+    /**
+     * storeId
+     * roomTypeId
+     * cardNo
+     * checkInRoomType
+     * couponId
+     * name
+     * mobilePhone
+     * checkInTime
+     * checkOutTime
+     * arriveTime
+     * remark
+     * templateId
+     * breakfastId
+     * breakfastNum
+     * fivePieceId
+     * aromaId
+     * roomLayoutId
+     * wineId
+     */
+    private void prePay() {
+        if (TextUtils.isEmpty(etUserTel.getEditableText().toString().trim())) {
+            ToastUtils.showShort(R.string.no_phone);
+            return;
+        }
+        if (!RegexUtils.isMobileSimple(etUserTel.getEditableText().toString())) {
+            ToastUtils.showShort(R.string.phone_regex);
+            return;
+        }
+
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("storeId", hotelRoom.storeId);
+        data.put("roomTypeId", hotelRoom.roomTypeId);
+        data.put("cardNo", LoginUtils.getUserInfo().cardNo);
+        data.put("checkInRoomType", hotelRoom.selectType);
+        data.put("checkInTime", hotelRoom.standIn);
+        data.put("name", tvHotelUserName.getText().toString());
+        data.put("mobilePhone", etUserTel.getEditableText().toString().trim());
+
+        data.put("checkOutTime", hotelRoom.standOut);
+        data.put("arriveTime", hotelRoom.standIn + " " + tvArriveTime.getText().toString().replace("前", ""));
+        if (!TextUtils.isEmpty(etOrderRemarks.getEditableText().toString())) {
+            data.put("remark", etOrderRemarks.getEditableText().toString());
+        }
+        if (!TextUtils.isEmpty(LoginUtils.getSelectIdByType(DIYType.DIY_TYPE_BRAKFAST.getType()))) {
+            data.put("breakfastId", LoginUtils.getSelectIdByType(DIYType.DIY_TYPE_BRAKFAST.getType()));
+            data.put("breakfastNum", LoginUtils.getBreakfastNum());
+        }
+
+//        data.put("templateId", "");
+
+        if (!TextUtils.isEmpty(LoginUtils.getSelectIdByType(DIYType.DIY_TYPE_FIVE_PIECES.getType()))) {
+            data.put("fivePieceId", LoginUtils.getSelectIdByType(DIYType.DIY_TYPE_FIVE_PIECES.getType()));
+        }
+
+        if (!TextUtils.isEmpty(LoginUtils.getSelectIdByType(DIYType.DIY_TYPE_ARMOS.getType()))) {
+            data.put("aromaId", LoginUtils.getSelectIdByType(DIYType.DIY_TYPE_ARMOS.getType()));
+        }
+        if (!TextUtils.isEmpty(LoginUtils.getSelectIdByType(DIYType.DIY_TYPE_ROOM_LAYOUT.getType()))) {
+            data.put("roomLayoutId", LoginUtils.getSelectIdByType(DIYType.DIY_TYPE_ROOM_LAYOUT.getType()));
+        }
+        if (!TextUtils.isEmpty(LoginUtils.getSelectIdByType(DIYType.DIY_TYPE_WINE.getType()))) {
+            data.put("wineId", LoginUtils.getSelectIdByType(DIYType.DIY_TYPE_WINE.getType()));
+        }
+
+        OkGo.<AAResponse<PreOrderInfo>>post(Constants.Net.URL)//
+                .cacheMode(CacheMode.NO_CACHE)
+                .params("data", ParamsUtils.getParams(data, "submitOrder"))
+                .execute(new NewsCallback<AAResponse<PreOrderInfo>>() {
+                    @Override
+                    public void onSuccess(Response<AAResponse<PreOrderInfo>> response) {
+                        LogUtils.w("dyc", response.body());
+                        PreOrderInfo preOrderInfo = response.body().data;
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable(Constants.PASS_OBJECT, preOrderInfo);
+                        bundle.putString(Constants.PASS_STRING, hotelRoom.storeId);
+                        bundle.putString(Constants.SELECT_CARD_TYPE, hotelRoom.selectType);
+                        openActivity(PayActivity.class, bundle);
+
+                    }
+
+                    @Override
+                    public void onError(Response<AAResponse<PreOrderInfo>> response) {
+                        ToastUtils.showShort(response.getException().getMessage());
+                    }
+                });
+    }
+
     //显示详细价格
     private void showDetailInfo() {
         bubblePopup = new PopPrcieDialog(mContext);
@@ -148,7 +382,9 @@ public class PreOrderActivity extends BaseActivity {
 
     private class PopPrcieDialog extends BasePopup<PopPrcieDialog> {
 
-        private TextView tvRoom, tvPrice;
+        private TextView tvRoom, tvPrice, tvyj,tvJJ;
+        private RecyclerView recyclerView;
+        private View lljj;
 
         public PopPrcieDialog(Context context) {
             super(context);
@@ -159,9 +395,58 @@ public class PreOrderActivity extends BaseActivity {
             View inflate = View.inflate(mContext, R.layout.pop_detail_price_layout, null);
             inflate.setLayoutParams(new LinearLayout.LayoutParams(ScreenUtils.getScreenWidth(), ViewGroup.LayoutParams.WRAP_CONTENT));
             tvPrice = (TextView) inflate.findViewById(R.id.tv_price);
+            tvyj = (TextView) inflate.findViewById(R.id.tv_price_yj);
             tvRoom = (TextView) inflate.findViewById(R.id.tv_pop_room);
-            tvRoom.setText("2017-08-08(1间)");
-            tvPrice.setText("188");
+            tvJJ = (TextView) inflate.findViewById(R.id.tv_price_jj);
+            lljj = inflate.findViewById(R.id.ll_jj);
+            recyclerView = (RecyclerView) inflate.findViewById(recycle);
+            if (hotelRoom.selectType.equals("0")) {
+                if (hotelRoom.differDays == 1) {
+                    tvRoom.setText(hotelRoom.standIn + " (" + hotelRoom.differDays + "晚)");
+                } else {
+                    tvRoom.setText(hotelRoom.standIn + " 至 " + hotelRoom.standOut + " (" + hotelRoom.differDays + "晚)");
+                }
+                tvPrice.setText(String.valueOf(Float.parseFloat(hotelRoom.roomPrice) * hotelRoom.differDays));
+            } else {
+                tvRoom.setText(hotelRoom.standIn + " (" + hotelRoom.differDays + "晚)");
+                tvPrice.setText(hotelRoom.roomPrice);
+            }
+
+            if (!TextUtils.isEmpty(hotelRoom.roomDeposit)) {
+                tvyj.setText(hotelRoom.roomDeposit);
+            }
+
+            if (TextUtils.isEmpty(hotelRoom.roomRisePrice)){
+                lljj.setVisibility(View.GONE);
+            }else{
+                lljj.setVisibility(View.VISIBLE);
+                tvJJ.setText(hotelRoom.roomRisePrice);
+            }
+
+            recyclerView.setLayoutManager(new LinearLayoutManager(PreOrderActivity.this));
+            DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(PreOrderActivity.this, DividerItemDecoration.VERTICAL);
+            dividerItemDecoration.setDrawable(getResources().getDrawable(R.drawable.list_line_diver));
+            recyclerView.addItemDecoration(dividerItemDecoration);
+
+
+            List<DIYSaveInfo> diySaveInfos = LoginUtils.getDIY();
+            if (diySaveInfos != null && diySaveInfos.size() > 0) {
+                List<PreOrderInfo.CustomeItem> customeItems = new ArrayList<>();
+                for (DIYSaveInfo item : diySaveInfos) {
+                    PreOrderInfo.CustomeItem customTypeItem = new PreOrderInfo.CustomeItem();
+                    customTypeItem.consumeName = item.getSelectName();
+                    customTypeItem.consumePrice = item.getMoney();
+                    customTypeItem.type = item.getType();
+                    customTypeItem.consumeNum= item.getNum();
+                    customTypeItem.typeName = item.getTypeName();
+                    customeItems.add(customTypeItem);
+                }
+                recyclerView.setAdapter(new PreOrderDIYSelectAdapter(mContext, R.layout.adapter_item_prepay_info, customeItems));
+                recyclerView.setVisibility(View.VISIBLE);
+
+            } else {
+                recyclerView.setVisibility(View.GONE);
+            }
             return inflate;
         }
 
@@ -173,22 +458,22 @@ public class PreOrderActivity extends BaseActivity {
     }
 
 
-
     private class CustomeNeedDialog extends BaseDialog<CustomeNeedDialog> {
 
-        public CustomeNeedDialog(Context context) {
-            super(context);
+
+        public CustomeNeedDialog(Context mContext) {
+            super(mContext);
         }
 
         @Override
         public View onCreateView() {
 
-            CustomeNeedListAdapter customeNeedListAdapter = new CustomeNeedListAdapter(mContext,R.layout.dialog_custome_need_item,testData());
+            final CustomeNeedListAdapter customeNeedListAdapter = new CustomeNeedListAdapter(mContext, R.layout.dialog_custome_need_item, customeTypes);
             View inflate = View.inflate(mContext, R.layout.dialog_custome_need_layout, null);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ScreenUtils.getScreenWidth()-150, (int)(ScreenUtils.getScreenHeight()*0.75));
-            params.gravity= Gravity.CENTER_HORIZONTAL;
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ScreenUtils.getScreenWidth() - 100, (int) (ScreenUtils.getScreenHeight() * 0.85));
+            params.gravity = Gravity.CENTER_HORIZONTAL;
             inflate.setLayoutParams(params);
-            RecyclerView recyclerView = (RecyclerView) inflate.findViewById(R.id.recycle);
+            RecyclerView recyclerView = (RecyclerView) inflate.findViewById(recycle);
             recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
             recyclerView.setAdapter(customeNeedListAdapter);
             View headView = getLayoutInflater().inflate(R.layout.dialog_custome_need_layout_head, (ViewGroup) recyclerView.getParent(), false);
@@ -196,14 +481,24 @@ public class PreOrderActivity extends BaseActivity {
             inflate.findViewById(R.id.tv_cancle).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    dismiss();
+                    SPUtils.getInstance().put(Constants.SAVE_DIY_SELECT, "");
+                    for (CustomeType item : customeTypes) {
+                        for (CustomeType.CustomTypeItem customTypeItem : item.getCustomTypeItems()) {
+                            customTypeItem.setSelect(false);
+                        }
+                    }
+                    customeNeedListAdapter.setNewData(customeTypes);
+                    customeNeedListAdapter.notifyDataSetChanged();
+                    ToastUtils.showShort("重置完成");
+                    llPriceDetail.tvPrice.setText(String.format("%.2f",Float.parseFloat(hotelRoom.roomPrice) * hotelRoom.differDays+Float.parseFloat(hotelRoom.roomDeposit)));
+
                 }
             });
 
             inflate.findViewById(R.id.tv_sure).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    dismiss();
+                    custemDialg.dismiss();
                 }
             });
             return inflate;
@@ -216,83 +511,88 @@ public class PreOrderActivity extends BaseActivity {
 
     }
 
-    private List<CustomeType> testData() {
-        List<CustomeType>  customeTypes = new ArrayList<>();
-        CustomeType customeType = new CustomeType();
-        customeType.setName("早餐");
-        customeType.setType(1);
-        List<CustomeType.CustomTypeItem> customTypeItems = new ArrayList<>();
-        CustomeType.CustomTypeItem item = new CustomeType.CustomTypeItem();
-        item.setName("中餐");
-        item.setPic("https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=571094688,4029099390&fm=26&gp=0.jpg");
-        customTypeItems.add(item);
-        customTypeItems.add(item);
-        customTypeItems.add(item);
-        customeType.setCustomTypeItems(customTypeItems);
-
-        //
-        List<CustomeType.CustomTypeItem> customTypeItems1 = new ArrayList<>();
-        CustomeType customeType1 = new CustomeType();
-        customeType1.setName("五件套样式");
-        CustomeType.CustomTypeItem item1 = new CustomeType.CustomTypeItem();
-        item1.setName("紫色");
-        item1.setPic("https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3786141440,2933190617&fm=26&gp=0.jpg");
-        customTypeItems1.add(item1);
-        customTypeItems1.add(item1);
-        customTypeItems1.add(item1);
-        customTypeItems1.add(item1);
-        customeType1.setCustomTypeItems(customTypeItems1);
-
-        //
-        CustomeType customeType2 = new CustomeType();
-        customeType2.setName("香气");
-
-        List<CustomeType.CustomTypeItem> customTypeItems2 = new ArrayList<>();
-        CustomeType.CustomTypeItem item2 = new CustomeType.CustomTypeItem();
-        item2.setName("薰衣草");
-        item2.setPic("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1503171411656&di=528c6a4d0a4aa556bbf6fc02266c0bcf&imgtype=0&src=http%3A%2F%2Fimgs.bzw315.com%2FUploadFiles%2FVersion2%2F0%2F20160414%2F201604141131122854.png");
-        customTypeItems2.add(item2);
-        customTypeItems2.add(item2);
-        customTypeItems2.add(item2);
-        customTypeItems2.add(item2);
-        customeType2.setCustomTypeItems(customTypeItems2);
-        //
-
-        CustomeType customeType3 = new CustomeType();
-        customeType3.setName("房间布置");
-        List<CustomeType.CustomTypeItem> customTypeItems3 = new ArrayList<>();
-        CustomeType.CustomTypeItem item3 = new CustomeType.CustomTypeItem();
-        item3.setName("气球");
-        item3.setPic("https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1515296545,2012236509&fm=26&gp=0.jpg");
-        customTypeItems3.add(item3);
-        customTypeItems3.add(item3);
-        customeType3.setCustomTypeItems(customTypeItems3);
-
-        //
-        CustomeType customeType4 = new CustomeType();
-        customeType4.setName("酒水");
-        List<CustomeType.CustomTypeItem> customTypeItems4 = new ArrayList<>();
-        CustomeType.CustomTypeItem item4 = new CustomeType.CustomTypeItem();
-        item4.setName("威士忌");
-        item4.setPic("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1503171590137&di=3dce2176be04f9947297e6b41fcfd03b&imgtype=0&src=http%3A%2F%2Fpic62.nipic.com%2Ffile%2F20150320%2F2531170_141503092000_2.jpg");
-        customTypeItems4.add(item4);
-        customTypeItems4.add(item4);
-        customTypeItems4.add(item4);
-        customTypeItems4.add(item4);
-        customeType4.setCustomTypeItems(customTypeItems4);
+    CustomeDIY customeDIY;
 
 
-        //
-        customeTypes.add(customeType);
-        customeTypes.add(customeType1);
-        customeTypes.add(customeType2);
-        customeTypes.add(customeType3);
-        customeTypes.add(customeType4);
-        return customeTypes;
+    //获取必须套餐配件
+    private void getNeetDIY() {
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("roomTypeId", hotelRoom.roomTypeId);
+        data.put("checkInRoomType", hotelRoom.selectType);
+        OkGo.<AAResponse<CustomeDIY>>post(Constants.Net.URL)//
+                .cacheMode(CacheMode.NO_CACHE)
+                .params("data", ParamsUtils.getParams(data, "getSelfConfig"))
+                .execute(new NewsCallback<AAResponse<CustomeDIY>>() {
+                    @Override
+                    public void onSuccess(Response<AAResponse<CustomeDIY>> response) {
+                        customeDIY = response.body().data;
+                        if (customeDIY != null && customeDIY.breakfastList != null && !customeDIY.breakfastList.isEmpty()) {
+                            paserDataCustomeDIY(customeDIY);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Response<AAResponse<CustomeDIY>> response) {
+                        ToastUtils.showShort(response.getException().getMessage());
+                    }
+                });
+
     }
 
+    private void paserDataCustomeDIY(CustomeDIY customeDIY) {
+        customeTypes = new ArrayList<>();
+        if (customeDIY.breakfastList != null && !customeDIY.breakfastList.isEmpty()) {
+            CustomeType breakfast = new CustomeType();
+            breakfast.setName("早餐");
+            breakfast.setType(DIYType.DIY_TYPE_BRAKFAST.getType());
+            breakfast.setCustomTypeItems(customeDIY.breakfastList);
+            customeTypes.add(breakfast);
+        }
+        if (customeDIY.fivePieceList != null && !customeDIY.fivePieceList.isEmpty()) {
+            CustomeType fivePiece = new CustomeType();
+            fivePiece.setName("五件套样式");
+            fivePiece.setType(DIYType.DIY_TYPE_FIVE_PIECES.getType());
+            fivePiece.setCustomTypeItems(customeDIY.fivePieceList);
+            customeTypes.add(fivePiece);
+        }
+
+        if (customeDIY.aromaList != null && !customeDIY.aromaList.isEmpty()) {
+            CustomeType aromatype = new CustomeType();
+            aromatype.setName("香气");
+            aromatype.setType(DIYType.DIY_TYPE_ARMOS.getType());
+            aromatype.setCustomTypeItems(customeDIY.aromaList);
+            customeTypes.add(aromatype);
+        }
+
+        if (customeDIY.roomLayoutList != null && !customeDIY.roomLayoutList.isEmpty()) {
+            CustomeType roomlayout = new CustomeType();
+            roomlayout.setName("房间布局");
+            roomlayout.setType(DIYType.DIY_TYPE_ROOM_LAYOUT.getType());
+            roomlayout.setCustomTypeItems(customeDIY.roomLayoutList);
+            customeTypes.add(roomlayout);
+        }
+
+        if (customeDIY.wineList != null && !customeDIY.wineList.isEmpty()) {
+            CustomeType windType = new CustomeType();
+            windType.setName("酒水");
+            windType.setType(DIYType.DIY_TYPE_WINE.getType());
+            windType.setCustomTypeItems(customeDIY.wineList);
+            customeTypes.add(windType);
+        }
+
+        if (!customeTypes.isEmpty()) {
+            llPesonalCustome.setVisibility(View.VISIBLE);
+            initCustomeNeedDialog();
+
+        }
+    }
+
+
     private void showUserSelectDialog() {
-        final String[] stringItems = {"王二", "张三", "周五"};
+        final String[] stringItems = new String[peopleItemInfos.size()];
+        for (int i = 0; i < peopleItemInfos.size(); i++) {
+            stringItems[i] = peopleItemInfos.get(i).name;
+        }
         final ActionSheetDialog dialog = new ActionSheetDialog(mContext, stringItems, llPriceDetail);
         dialog.isTitleShow(false).show();
 
@@ -300,6 +600,7 @@ public class PreOrderActivity extends BaseActivity {
             @Override
             public void onOperItemClick(AdapterView<?> parent, View view, int position, long id) {
                 tvHotelUserName.setText(stringItems[position]);
+                etUserTel.setText(peopleItemInfos.get(position).mobilePhone);
                 dialog.dismiss();
             }
         });
@@ -307,32 +608,50 @@ public class PreOrderActivity extends BaseActivity {
 
 
     private void showSelectTimeDialog() {
-        final String[] stringItems = {"14:00前", "15:00前", "16:00前", "17:00前", "18:00前", "19:00前", "20:00前", "21:00前", "22:00前", "23:00前"};
-        final ActionSheetDialog dialog = new ActionSheetDialog(mContext, stringItems, llPriceDetail);
+        final ActionSheetDialog dialog = new ActionSheetDialog(mContext, arriveTimes, llPriceDetail);
         dialog.isTitleShow(false).show();
 
         dialog.setOnOperItemClickL(new OnOperItemClickL() {
             @Override
             public void onOperItemClick(AdapterView<?> parent, View view, int position, long id) {
-                tvArriveTime.setText(stringItems[position]);
+                tvArriveTime.setText(arriveTimes[position]);
                 dialog.dismiss();
             }
         });
     }
 
-    @OnClick({R.id.back, R.id.iv_add_user, R.id.ll_arrive_time})
+    @OnClick({R.id.back, R.id.iv_add_user, R.id.ll_arrive_time, R.id.ll_pesonal_custome})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.back:
                 finish();
                 break;
             case R.id.iv_add_user:
-                showUserSelectDialog();
+                if (!peopleItemInfos.isEmpty()) {
+                    showUserSelectDialog();
+                } else {
+                    openActivity(CommonInfoActivity.class);
+                }
                 break;
             case R.id.ll_arrive_time:
-                showSelectTimeDialog();
+                if (arriveTimes!=null ) {
+                    showSelectTimeDialog();
+                }else{
+                    getOrderTime();
+                }
+                break;
+            case R.id.ll_pesonal_custome:
+                if (customeDIY != null) {
+                    custemDialg.show();
+                }
                 break;
 
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SPUtils.getInstance().put(Constants.SAVE_DIY_SELECT, "");
     }
 }

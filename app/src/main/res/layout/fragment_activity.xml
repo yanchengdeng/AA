@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="match_parent">
 
-    <include layout="@layout/cp_common_title_bar"></include>
+    <include layout="@layout/cp_common_title_bar_heigh"></include>
 
 
     <android.support.v4.widget.SwipeRefreshLayout

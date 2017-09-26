@@ -15,23 +15,35 @@ import android.widget.TextView;
 import com.alipay.sdk.app.PayTask;
 import com.bigkoo.svprogresshud.SVProgressHUD;
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.cache.CacheMode;
+import com.lzy.okgo.model.Response;
 import com.tencent.mm.opensdk.modelpay.PayReq;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import apartment.wisdom.com.R;
 import apartment.wisdom.com.adapters.RechargeDepositAdapter;
-import apartment.wisdom.com.beans.AliPayInfo;
+import apartment.wisdom.com.beans.AAResponse;
 import apartment.wisdom.com.beans.DepostInfo;
 import apartment.wisdom.com.beans.PayInfo;
 import apartment.wisdom.com.beans.PayResult;
 import apartment.wisdom.com.beans.WXPayInfo;
 import apartment.wisdom.com.commons.Constants;
 import apartment.wisdom.com.enums.PayStyle;
+import apartment.wisdom.com.events.PayOrRechargeSuccess;
+import apartment.wisdom.com.utils.LoginUtils;
+import apartment.wisdom.com.utils.NewsCallback;
+import apartment.wisdom.com.utils.ParamsUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -74,11 +86,12 @@ public class RechagerActivity extends BaseActivity {
     @BindView(R.id.tv_recharge)
     TextView tvRecharge;
 
+    //（0-微信充值，1-充值宝充值）
     private int paySyle = PayStyle.PAY_STYLE_ALIPAY.getType();
 
     private RechargeDepositAdapter rechargeDepositAdapter;
-    private List<DepostInfo> depostInfos = new ArrayList<>();
-    private DepostInfo selectDeposit;
+    private List<DepostInfo.DepostInfoItem> depostInfos = new ArrayList<>();
+    private DepostInfo.DepostInfoItem selectDeposit;
 
 
     @Override
@@ -90,19 +103,43 @@ public class RechagerActivity extends BaseActivity {
         getDeposit();
     }
 
+    //获取充值 额度分类
     private void getDeposit() {
-        depostInfos.add(new DepostInfo());
-        depostInfos.add(new DepostInfo());
-        depostInfos.add(new DepostInfo());
-        depostInfos.add(new DepostInfo());
+
+        Map<String, Object> data = new HashMap<String, Object>();
+        OkGo.<AAResponse<DepostInfo>>post(Constants.Net.URL)//
+                .cacheMode(CacheMode.NO_CACHE)
+                .params("data", ParamsUtils.getParams(data, "rechargePrice"))
+                .execute(new NewsCallback<AAResponse<DepostInfo>>() {
+                    @Override
+                    public void onSuccess(Response<AAResponse<DepostInfo>> response) {
+                        LogUtils.w("dyc", response.body());
+                        DepostInfo depostInfo = response.body().data;
+                        if (!depostInfo.moneyList.isEmpty()) {
+                            setDepostInfos(depostInfo.moneyList);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Response<AAResponse<DepostInfo>> response) {
+                        ToastUtils.showShort(response.getException().getMessage());
+                    }
+                });
+
+    }
+
+
+    private void setDepostInfos(List<DepostInfo.DepostInfoItem> moneyList) {
+        depostInfos = moneyList;
+        depostInfos.get(0).setSelect(true);
+        selectDeposit = depostInfos.get(0);
         rechargeDepositAdapter = new RechargeDepositAdapter(mContext, R.layout.adapter_deposit_item, depostInfos);
         recycle.setLayoutManager(new GridLayoutManager(mContext, 2));
         recycle.setAdapter(rechargeDepositAdapter);
-
         rechargeDepositAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                for (DepostInfo item : depostInfos) {
+                for (DepostInfo.DepostInfoItem item : depostInfos) {
                     item.setSelect(false);
                 }
                 depostInfos.get(position).setSelect(true);
@@ -141,31 +178,39 @@ public class RechagerActivity extends BaseActivity {
     private PayInfo payInfo;
 
     private void doCharge() {
-        //// TODO: 17/8/16  此接口可获得payInfo信息
-        payInfo = new PayInfo();
-        AliPayInfo aliPayInfo = new AliPayInfo();
-        aliPayInfo.setOrderStr("app_id=2015052600090779&biz_content=%7B%22timeout_express%22%3A%2230m%22%2C%22seller_id%22%3A%22%22%2C%22product_code%22%3A%22QUICK_MSECURITY_PAY%22%2C%22total_amount%22%3A%220.02%22%2C%22subject%22%3A%221%22%2C%22body%22%3A%22%E6%88%91%E6%98%AF%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE%22%2C%22out_trade_no%22%3A%22314VYGIAGG7ZOYY%22%7D&charset=utf-8&method=alipay.trade.app.pay&sign_type=RSA2&timestamp=2016-08-15%2012%3A12%3A15&version=1.0&sign=MsbylYkCzlfYLy9PeRwUUIg9nZPeN9SfXPNavUCroGKR5Kqvx0nEnd3eRmKxJuthNUx4ERCXe552EV9PfwexqW%2B1wbKOdYtDIb4%2B7PL3Pc94RZL0zKaWcaY3tSL89%2FuAVUsQuFqEJdhIukuKygrXucvejOUgTCfoUdwTi7z%2BZzQ%3D");
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("payWay", PayStyle.PAY_STYLE_ALIPAY.getType());
+        data.put("rechargeId", selectDeposit.rechargeId);
+        data.put("username", LoginUtils.getUserInfo().cardNo);
+        OkGo.<AAResponse<PayInfo>>post(Constants.Net.URL)//
+                .cacheMode(CacheMode.NO_CACHE)
+                .params("data", ParamsUtils.getParams(data, "walletRecharge"))
+                .execute(new NewsCallback<AAResponse<PayInfo>>() {
+                    @Override
+                    public void onSuccess(Response<AAResponse<PayInfo>> response) {
+                        payInfo = response.body().data;
+                        WXPayInfo wxPayInfo = new WXPayInfo();
+                        wxPayInfo.setAppid(Constants.WXPay.APP_ID);
+                        wxPayInfo.setPartnerid(Constants.WXPay.MCH_ID);
+                        wxPayInfo.setNoncestr("3LUm8dtC60rRJKfT");
+                        wxPayInfo.setPrepayid("");
+                        wxPayInfo.setSign("724AED95F41CE97855D99048D1EB336A");
+                        wxPayInfo.setTimestamp(String.valueOf(System.currentTimeMillis() / 1000));
+                        wxPayInfo.setWxpackage("Sign=WXPay");
+                        payInfo.setWxpayinfo(wxPayInfo);
+                        //1  根据提交的充值信息 及类型  生成相对应的 充值验证返回值
+                        //2 检查是否安装充值客户端 进行充值
+                        //3充值完成后 回调用户信息接口 进行数据更新
 
-        payInfo.setPay(aliPayInfo);
+                        doPay();
+                    }
 
-
-        WXPayInfo wxPayInfo = new WXPayInfo();
-        wxPayInfo.setAppid(Constants.WXPay.APP_ID);
-        wxPayInfo.setPartnerid(Constants.WXPay.MCH_ID);
-        wxPayInfo.setNoncestr("3LUm8dtC60rRJKfT");
-        wxPayInfo.setPrepayid("");
-        wxPayInfo.setSign("724AED95F41CE97855D99048D1EB336A");
-        wxPayInfo.setTimestamp(String.valueOf(System.currentTimeMillis() / 1000));
-        wxPayInfo.setWxpackage("Sign=WXPay");
-        payInfo.setWxpayinfo(wxPayInfo);
-        //1  根据提交的充值信息 及类型  生成相对应的 支付验证返回值
-        //2 检查是否安装支付客户端 进行支付
-        //3支付完成后 回调用户信息接口 进行数据更新
-
-        doPay();
-
-
-    }
+                    @Override
+                    public void onError(Response<AAResponse<PayInfo>> response) {
+                        ToastUtils.showShort(response.getException().getMessage());
+                    }
+                });
+}
 
     private void doPay() {
         if (paySyle == PayStyle.PAY_STYLE_WX.getType()) {
@@ -173,15 +218,15 @@ public class RechagerActivity extends BaseActivity {
                 mSVProgressHUD.showInfoWithStatus("您未安装微信客户端!", SVProgressHUD.SVProgressHUDMaskType.ClearCancel);
                 return;
             } else {
-                //微信支付
+                //微信充值
                 wxPrePay();
             }
         } else if (paySyle == PayStyle.PAY_STYLE_ALIPAY.getType()) {
             if (!checkALi()) {
-                mSVProgressHUD.showInfoWithStatus("您未安装支付宝客户端!", SVProgressHUD.SVProgressHUDMaskType.ClearCancel);
+                mSVProgressHUD.showInfoWithStatus("您未安装充值宝客户端!", SVProgressHUD.SVProgressHUDMaskType.ClearCancel);
                 return;
             } else {
-                //支付宝支付
+                //充值宝充值
                 pay();
             }
         }
@@ -195,7 +240,7 @@ public class RechagerActivity extends BaseActivity {
     private IWXAPI api;
 
     /**
-     * 调用微信支付
+     * 调用微信充值
      *
      * @param wxPayAppId
      */
@@ -212,8 +257,8 @@ public class RechagerActivity extends BaseActivity {
             req.packageValue = "Sign=WXPay";
             req.sign = wxPayAppId.getSign();
             LogUtils.w("dyc", req.checkArgs() + "---------");
-//            mSVProgressHUD.showWithStatus("正常调起支付...", SVProgressHUD.SVProgressHUDMaskType.Clear);
-            // 在支付之前，如果应用没有注册到微信，应该先调用IWXMsg.registerApp将应用注册到微信
+//            mSVProgressHUD.showWithStatus("正常调起充值...", SVProgressHUD.SVProgressHUDMaskType.Clear);
+            // 在充值之前，如果应用没有注册到微信，应该先调用IWXMsg.registerApp将应用注册到微信
             api.sendReq(req);
         } else {
             mSVProgressHUD.showInfoWithStatus(getString(R.string.do_later), SVProgressHUD.SVProgressHUDMaskType.Clear);
@@ -223,7 +268,7 @@ public class RechagerActivity extends BaseActivity {
 
 
     /***
-     * 支付费用
+     * 充值费用
      */
     private void pay() {
         mSVProgressHUD.showWithStatus("加载中...");
@@ -239,7 +284,7 @@ public class RechagerActivity extends BaseActivity {
             e.printStackTrace();
         }
 
-        // 完整的符合支付宝参数规范的订单信息
+        // 完整的符合充值宝参数规范的订单信息
         final String payInfo = orderInfo + "&sign=\"" + sign + "\"&" + AliPayUtiils.getSignType();*/
 
         Runnable payRunnable = new Runnable() {
@@ -248,8 +293,8 @@ public class RechagerActivity extends BaseActivity {
             public void run() {
                 // 构造PayTask 对象
                 PayTask alipay = new PayTask(RechagerActivity.this);
-                // 调用支付接口，获取支付结果
-                String result = alipay.pay(payInfo.getPay().getOrderStr(), true);
+                // 调用充值接口，获取充值结果
+                String result = alipay.pay(payInfo.getOrderStr(), true);
 
                 Message msg = new Message();
                 msg.what = Constants.AliPay.SDK_PAY_FLAG;
@@ -272,32 +317,33 @@ public class RechagerActivity extends BaseActivity {
                 case Constants.AliPay.SDK_PAY_FLAG: {
                     PayResult payResult = new PayResult((String) msg.obj);
 
-                    // 支付宝返回此次支付结果及加签，建议对支付宝签名信息拿签约时支付宝提供的公钥做验签
+                    // 充值宝返回此次充值结果及加签，建议对充值宝签名信息拿签约时充值宝提供的公钥做验签
                     String resultInfo = payResult.getResult();
 
                     String resultStatus = payResult.getResultStatus();
 
-                    // 判断resultStatus 为“9000”则代表支付成功，具体状态码代表含义可参考接口文档
+                    // 判断resultStatus 为“9000”则代表充值成功，具体状态码代表含义可参考接口文档
                     if (TextUtils.equals(resultStatus, "9000")) {
-                        mSVProgressHUD.showSuccessWithStatus("支付成功", SVProgressHUD.SVProgressHUDMaskType.Clear);
+                        mSVProgressHUD.showSuccessWithStatus("充值成功", SVProgressHUD.SVProgressHUDMaskType.Clear);
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
+                                EventBus.getDefault().post(new PayOrRechargeSuccess());
                                 finish();
                             }
                         }, 1500);
 
 
                     } else if (TextUtils.equals(resultStatus, "6001")) {
-                        mSVProgressHUD.showInfoWithStatus("取消支付", SVProgressHUD.SVProgressHUDMaskType.Clear);
+                        mSVProgressHUD.showInfoWithStatus("取消充值", SVProgressHUD.SVProgressHUDMaskType.Clear);
                     } else {
-                        // 判断resultStatus 为非“9000”则代表可能支付失败
-                        // “8000”代表支付结果因为支付渠道原因或者系统原因还在等待支付结果确认，最终交易是否成功以服务端异步通知为准（小概率状态）
+                        // 判断resultStatus 为非“9000”则代表可能充值失败
+                        // “8000”代表充值结果因为充值渠道原因或者系统原因还在等待充值结果确认，最终交易是否成功以服务端异步通知为准（小概率状态）
                         if (TextUtils.equals(resultStatus, "8000")) {
-                            mSVProgressHUD.showSuccessWithStatus("支付结果确认中", SVProgressHUD.SVProgressHUDMaskType.Clear);
+                            mSVProgressHUD.showSuccessWithStatus("充值结果确认中", SVProgressHUD.SVProgressHUDMaskType.Clear);
                         } else {
-                            // 其他值就可以判断为支付失败，包括用户主动取消支付，或者系统返回的错误
-                            mSVProgressHUD.showSuccessWithStatus("支付失败", SVProgressHUD.SVProgressHUDMaskType.Clear);
+                            // 其他值就可以判断为充值失败，包括用户主动取消充值，或者系统返回的错误
+                            mSVProgressHUD.showSuccessWithStatus("充值失败", SVProgressHUD.SVProgressHUDMaskType.Clear);
                         }
                     }
                     break;

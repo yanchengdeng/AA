@@ -11,7 +11,6 @@
         android:paddingLeft="10.0dip"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15.0dip"
         android:layout_marginBottom="10.0dip">
 
         <LinearLayout
@@ -27,7 +26,7 @@
                 android:id="@+id/detail_name_tv"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="酒店"
+                android:visibility="gone"
                 android:singleLine="true" />
 
             <TextView
@@ -43,7 +42,7 @@
 
         <ImageView
             android:layout_gravity="center|right"
-            android:visibility="visible"
+            android:visibility="invisible"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_marginRight="10.0dip"
@@ -79,8 +78,8 @@
             android:id="@+id/detail_time_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20.0dip"
-            android:text="08月15日 19：00前💰"
+            android:layout_marginLeft="10.0dip"
+            android:text="💰"
             android:singleLine="true" />
     </LinearLayout>
 
@@ -106,7 +105,7 @@
             android:id="@+id/detail_end_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="8月16号  20：00前"
+            android:text=""
             android:layout_marginLeft="10.0dip" />
 
         <TextView
@@ -142,7 +141,7 @@
                 android:textColor="@color/app_text_light_black"
                 android:id="@+id/detail_pay_tv"
                 android:layout_width="wrap_content"
-                android:text="已支付"
+                android:text=""
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10.0dip" />
         </LinearLayout>
@@ -160,6 +159,7 @@
     <LinearLayout
         android:orientation="horizontal"
         android:id="@+id/ll_room_list"
+        android:visibility="gone"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10.0dip"
@@ -177,7 +177,7 @@
             android:textSize="@dimen/text_design_24px"
             android:textColor="@color/app_text_light_black"
             android:id="@+id/tv_room_names"
-            android:text="302"
+            android:text="未知"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10.0dip" />
@@ -211,7 +211,7 @@
             android:id="@+id/detail_people_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="邓言诚"
+            android:text=""
             android:layout_marginLeft="10.0dip" />
     </LinearLayout>
 
@@ -236,7 +236,7 @@
             android:textColor="@color/app_text_light_black"
             android:id="@+id/detail_photo_tv"
             android:layout_width="wrap_content"
-            android:text="13067380836"
+            android:text=""
             android:layout_height="wrap_content"
             android:layout_marginLeft="10.0dip" />
     </LinearLayout>

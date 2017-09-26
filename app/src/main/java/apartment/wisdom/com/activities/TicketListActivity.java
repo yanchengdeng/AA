@@ -12,6 +12,7 @@ import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
 
 import apartment.wisdom.com.R;
 import apartment.wisdom.com.commons.Constants;
+import apartment.wisdom.com.enums.TicketType;
 import apartment.wisdom.com.fragments.TicketListFragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,12 +49,22 @@ public class TicketListActivity extends BaseActivity {
         tvTittle.setText(getString(R.string.ticket));
 
         Bundle bundle = new Bundle();
-        bundle.putBoolean(Constants.PASS_STRING,true);
+        bundle.putString(Constants.PASS_STRING, TicketType.TICKET_TYPE_NOT_USER.getType());
+
+
+        Bundle bundleUsed = new Bundle();
+        bundleUsed.putString(Constants.PASS_STRING, TicketType.TICKET_TYPE_USED.getType());
+
+
+        Bundle bundleOutDate = new Bundle();
+        bundleOutDate.putString(Constants.PASS_STRING, TicketType.TICKET_TYPE_OUTDATE.getType());
+
+
         FragmentPagerItemAdapter adapter = new FragmentPagerItemAdapter(
                 getSupportFragmentManager(), FragmentPagerItems.with(this)
                 .add(getString(R.string.ticket_not_user), TicketListFragment.class,bundle)
-                .add(getString(R.string.ticket_used), TicketListFragment.class)
-                .add(getString(R.string.ticket_outdate), TicketListFragment.class)
+                .add(getString(R.string.ticket_used), TicketListFragment.class,bundleUsed)
+                .add(getString(R.string.ticket_outdate), TicketListFragment.class,bundleOutDate)
                 .create());
 
         viewpager.setAdapter(adapter);

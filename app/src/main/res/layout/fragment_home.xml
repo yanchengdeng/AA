@@ -13,60 +13,73 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
+<!--
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:id="@+id/coordinatorLayout"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:fitsSystemWindows="true">
+
+<android.support.design.widget.AppBarLayout
+       android:id="@+id/app_bar"
+       android:layout_width="match_parent"
+       android:layout_height="@dimen/common_header_height"
+       android:fitsSystemWindows="true"
+       android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+       <android.support.design.widget.CollapsingToolbarLayout
+           android:id="@+id/toolbar_layout"
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:fitsSystemWindows="true"
+           app:contentScrim="@color/colorPrimary"
+           app:layout_scrollFlags="scroll|enterAlwaysCollapsed|enterAlways">
+
+           <TextView
+               android:id="@+id/tv_tittle"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:fitsSystemWindows="true"
+               android:scrollbarAlwaysDrawVerticalTrack="true"
+               android:scrollbarStyle="insideInset"
+               android:text="@string/app_name"
+               android:textColor="@color/white"
+               android:textSize="@dimen/text_normal_up" />
+
+           <android.support.v7.widget.Toolbar
+               android:id="@+id/toolbar"
+               android:layout_width="match_parent"
+               android:layout_height="?attr/actionBarSize"
+               app:background="@color/colorPrimary"
+               app:layout_collapseMode="pin"
+               app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+       </android.support.design.widget.CollapsingToolbarLayout>
+
+   </android.support.design.widget.AppBarLayout>-->
+
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/coordinatorLayout"
+    xmlns:gyf="http://schemas.android.com/tools"
+    android:id="@+id/frame"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
-
-    <!-- <android.support.design.widget.AppBarLayout
-         android:id="@+id/app_bar"
-         android:layout_width="match_parent"
-         android:layout_height="@dimen/common_header_height"
-         android:fitsSystemWindows="true"
-         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-         <android.support.design.widget.CollapsingToolbarLayout
-             android:id="@+id/toolbar_layout"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:fitsSystemWindows="true"
-             app:contentScrim="@color/colorPrimary"
-             app:layout_scrollFlags="scroll|enterAlwaysCollapsed|enterAlways">
-
-             <TextView
-                 android:id="@+id/tv_tittle"
-                 android:layout_width="match_parent"
-                 android:layout_height="match_parent"
-                 android:fitsSystemWindows="true"
-                 android:scrollbarAlwaysDrawVerticalTrack="true"
-                 android:scrollbarStyle="insideInset"
-                 android:text="@string/app_name"
-                 android:textColor="@color/white"
-                 android:textSize="@dimen/text_normal_up" />
-
-             <android.support.v7.widget.Toolbar
-                 android:id="@+id/toolbar"
-                 android:layout_width="match_parent"
-                 android:layout_height="?attr/actionBarSize"
-                 app:background="@color/colorPrimary"
-                 app:layout_collapseMode="pin"
-                 app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-         </android.support.design.widget.CollapsingToolbarLayout>
-
-     </android.support.design.widget.AppBarLayout>-->
+    android:orientation="vertical"
+    >
 
 
     <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/coordinatorLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fadeScrollbars="true"
         android:scrollbarFadeDuration="1"
         android:scrollbars="none"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -284,5 +297,11 @@
         </LinearLayout>
     </ScrollView>
 
-</android.support.design.widget.CoordinatorLayout>
-
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="@color/colorPrimary"
+        app:contentInsetStart="0dp"/>
+</FrameLayout>

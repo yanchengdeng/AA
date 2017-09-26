@@ -62,6 +62,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/image_padding_big"
                 android:text="非常好 超级棒"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:textColor="@color/colorAccent"
                 android:textSize="@dimen/text_normal_down" />
 
@@ -73,6 +75,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/image_padding_big"
             android:text="性价比很高"
+            android:maxLines="2"
+            android:ellipsize="end"
             android:textColor="@color/colorAccent"
             android:textSize="@dimen/text_normal" />
 

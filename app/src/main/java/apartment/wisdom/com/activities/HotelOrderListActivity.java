@@ -11,6 +11,7 @@ import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
 
 import apartment.wisdom.com.R;
+import apartment.wisdom.com.commons.Constants;
 import apartment.wisdom.com.fragments.HotelOrdersFragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,11 +45,16 @@ public class HotelOrderListActivity extends BaseActivity {
         setContentView(R.layout.activity_hotel_order_list);
         ButterKnife.bind(this);
 
-        tvTittle.setText(getString(R.string.hotel_comment));
+        tvTittle.setText(getString(R.string.hotel_orders));
+        Bundle all = new Bundle();
+        all.putString(Constants.PASS_STRING,"0");
+
+        Bundle waitAprise = new Bundle();
+        waitAprise.putString(Constants.PASS_STRING,"1");
         FragmentPagerItemAdapter adapter = new FragmentPagerItemAdapter(
                 getSupportFragmentManager(), FragmentPagerItems.with(this)
-                .add(getString(R.string.all_orders), HotelOrdersFragment.class)
-                .add(getString(R.string.wait_comments), HotelOrdersFragment.class)
+                .add(getString(R.string.all_orders), HotelOrdersFragment.class,all)
+                .add(getString(R.string.wait_comments), HotelOrdersFragment.class,waitAprise)
                 .create());
 
         viewpager.setAdapter(adapter);

@@ -5,7 +5,8 @@ import java.util.List;
 
 public class CustomeType {
     private String name;
-    private int type;
+    private String type;
+
     private List<CustomeType.CustomTypeItem> customTypeItems;
 
     public String getName() {
@@ -16,11 +17,11 @@ public class CustomeType {
         this.name = name;
     }
 
-    public int getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -33,8 +34,10 @@ public class CustomeType {
     }
 
     public static class CustomTypeItem {
-        private String name;
-        private String pic;
+        private String id;//18,
+        private String price;//0.01,
+        private String name;//气球,
+        private String img;
         private boolean isSelect;
 
         public String getName() {
@@ -45,12 +48,28 @@ public class CustomeType {
             this.name = name;
         }
 
-        public String getPic() {
-            return pic;
+        public String getId() {
+            return id;
         }
 
-        public void setPic(String pic) {
-            this.pic = pic;
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getPrice() {
+            return price;
+        }
+
+        public void setPrice(String price) {
+            this.price = price;
+        }
+
+        public String getImg() {
+            return img;
+        }
+
+        public void setImg(String img) {
+            this.img = img;
         }
 
         public boolean isSelect() {

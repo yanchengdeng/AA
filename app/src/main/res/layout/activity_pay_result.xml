@@ -1,87 +1,176 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:orientation="vertical">
+
+    <include layout="@layout/cp_common_title_bar" />
 
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/common_header_height"
-        android:gravity="center_horizontal"
+        android:background="@color/white"
         android:orientation="vertical">
 
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="20.0dip"
+            android:background="@color/white" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/wx_logo" />
-
-        <TextView
-            android:id="@+id/tv_wx_pay_result"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="支付成功"
-            android:textColor="@color/GREEN"
-            android:textSize="30sp" />
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/tv_hotel_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="时尚酒店"
             android:layout_gravity="center_horizontal"
-            android:textColor="@color/activity_tv"
-            android:textSize="30sp" />
+            android:src="@mipmap/illustration_comment" />
+
+        <TextView
+            android:id="@+id/tv_room_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="28.0dip"
+            android:gravity="center"
+            android:text="恭喜您支付成功"
+            android:textColor="@color/app_text_black"
+            android:textSize="14.0sp" />
+
 
         <LinearLayout
             android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="30dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:text="你的入住码："
+                android:textColor="@color/app_text_black"
+                android:textSize="14.0sp" />
+
+        <TextView
+            android:id="@+id/tv_room_code"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="￥"
-                android:textColor="@color/activity_tv"
-                android:textSize="30sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tv_hotel_price"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="159"
-                android:textStyle="bold"
-                android:textColor="@color/activity_tv"
-                android:textSize="50sp" />
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:text="暂无"
+            android:textColor="@color/colorAccent"
+            android:textSize="16.0sp" />
 
         </LinearLayout>
 
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="5.0dip"
+            android:gravity="center"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:text="您到达公寓后，请在自助机的互联网取卡界面，输入入住码自助入住"
+            android:textColor="@color/app_text_black"
+            android:layout_marginBottom="20dp"
+            android:textSize="14.0sp" />
+
+        <TextView
+            android:id="@+id/tv_choose_room_selves"
+            style="@style/BtnNomalStyle"
+            android:visibility="gone"
+            android:text="自助选房" />
     </LinearLayout>
 
-
-    <TextView
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:id="@+id/ll_show_only_all_day"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="@dimen/common_header_height"
-        android:textSize="@dimen/text_larger_big"
-        android:background="@drawable/bg_order_green"
-        android:gravity="center"
-        android:padding="@dimen/image_padding_big"
-        android:text="@string/back_app"
-        android:textColor="@color/GREEN" />
+        android:layout_marginTop="10.0dip"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/list_divider_height"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:paddingBottom="10.0dip"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="10.0dip">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2.5dip"
+                android:drawableLeft="@mipmap/time_warn_icon"
+                android:drawablePadding="5.0dip"
+                android:text="" />
+
+            <TextView
+                android:id="@+id/tv_order_room_tip"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="5.0dip"
+                android:text="请于入住日中午12:00后办理入住，如提前到店，视公寓空房情况安排\n\n本次入住享受以下权益"
+                android:textColor="@color/app_text_light_black"
+                android:textSize="@dimen/text_design_22px" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="10.0dip" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="40.0dip"
+            android:orientation="horizontal"
+            android:weightSum="2.0">
+
+            <FrameLayout
+                android:id="@+id/fl_hotel_keep_time"
+                android:layout_width="0.0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0">
+
+                <TextView
+                    android:id="@+id/detail_delay_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:drawablePadding="15.0dip"
+                    android:drawableTop="@mipmap/check_room_ic"
+                    android:gravity="center"
+                    android:text="房间保留19:00"
+                    android:textColor="@color/introduce_color"
+                    android:textSize="@dimen/text_design_24px" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="0.0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0">
+
+                <TextView
+                    android:id="@+id/detail_exit_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:drawablePadding="15.0dip"
+                    android:drawableTop="@mipmap/check_delete_ic"
+                    android:gravity="center"
+                    android:text="退房时间12:00"
+                    android:textColor="@color/introduce_color"
+                    android:textSize="@dimen/text_design_24px" />
+            </FrameLayout>
+        </LinearLayout>
 
 
-</RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>
