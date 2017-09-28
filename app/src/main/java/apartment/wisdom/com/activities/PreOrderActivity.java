@@ -165,6 +165,7 @@ public class PreOrderActivity extends BaseActivity {
     private void getOrderTime() {
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("checkInRoomType",  hotelRoom.selectType);
+        data.put("checkInTime",hotelRoom.standIn);
         OkGo.<AAResponse<TimeArrays>>post(Constants.Net.URL)//
                 .cacheMode(CacheMode.NO_CACHE)
                 .params("data", ParamsUtils.getParams(data,"getTimeSolt"))
@@ -245,7 +246,11 @@ public class PreOrderActivity extends BaseActivity {
                         selectMoney+=Float.parseFloat(item.getMoney())*item.getNum();
                     }
                 }
-                llPriceDetail.tvPrice.setText(String.format("%.2f",Float.parseFloat(hotelRoom.roomPrice) * hotelRoom.differDays+Float.parseFloat(hotelRoom.roomDeposit)+selectMoney));
+                if (TextUtils.isEmpty(hotelRoom.roomRisePrice)) {
+                    llPriceDetail.tvPrice.setText(String.format("%.2f", Float.parseFloat(hotelRoom.roomPrice) * hotelRoom.differDays + Float.parseFloat(hotelRoom.roomDeposit) + selectMoney));
+                }else {
+                    llPriceDetail.tvPrice.setText(String.format("%.2f", Float.parseFloat(hotelRoom.roomPrice) * hotelRoom.differDays + Float.parseFloat(hotelRoom.roomDeposit) +Float.parseFloat(hotelRoom.roomRisePrice)+ selectMoney));
+                }
             }
         });
     }
@@ -490,7 +495,13 @@ public class PreOrderActivity extends BaseActivity {
                     customeNeedListAdapter.setNewData(customeTypes);
                     customeNeedListAdapter.notifyDataSetChanged();
                     ToastUtils.showShort("重置完成");
-                    llPriceDetail.tvPrice.setText(String.format("%.2f",Float.parseFloat(hotelRoom.roomPrice) * hotelRoom.differDays+Float.parseFloat(hotelRoom.roomDeposit)));
+                    if (TextUtils.isEmpty(hotelRoom.roomRisePrice)){
+                        llPriceDetail.tvPrice.setText(String.format("%.2f",Float.parseFloat(hotelRoom.roomPrice) * hotelRoom.differDays+Float.parseFloat(hotelRoom.roomDeposit)));
+
+                    }else{
+                        llPriceDetail.tvPrice.setText(String.format("%.2f",Float.parseFloat(hotelRoom.roomPrice) * hotelRoom.differDays+Float.parseFloat(hotelRoom.roomDeposit)+Float.parseFloat(hotelRoom.roomRisePrice)));
+
+                    }
 
                 }
             });

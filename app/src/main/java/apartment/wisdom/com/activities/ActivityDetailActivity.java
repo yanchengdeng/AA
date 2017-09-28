@@ -73,6 +73,7 @@ public class ActivityDetailActivity extends BaseActivity {
         if (!TextUtils.isEmpty(homeAdInfoList.activityTitle)) {
             tvTittle.setText(homeAdInfoList.activityTitle);
         }
+        ivRight.setVisibility(View.GONE);
 
         webView.loadUrl(homeAdInfoList.activityUrl);
         mSVProgressHUD.showWithStatus("加载中...");

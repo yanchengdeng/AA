@@ -181,7 +181,8 @@ public class MainActivity extends BaseActivity {
                         VersionInfo versionInfo = response.body().data;
                         if (versionInfo != null) {
                             if (!TextUtils.isEmpty(versionInfo.versioncode)) {
-                                if (Integer.parseInt(versionInfo.versioncode)>(AppUtils.getAppVersionCode())) {
+                                int currentCode = AppUtils.getAppVersionCode();
+                                if (Integer.parseInt(versionInfo.versioncode)>currentCode) {
                                     if (!TextUtils.isEmpty(versionInfo.appUrl)) {
                                         showUpdateDialog(versionInfo);
                                     }

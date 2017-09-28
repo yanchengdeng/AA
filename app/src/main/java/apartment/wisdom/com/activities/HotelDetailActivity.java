@@ -30,7 +30,6 @@ import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheMode;
 import com.lzy.okgo.model.Response;
 import com.tubb.calendarselector.library.FullDay;
-import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
@@ -454,13 +453,13 @@ public class HotelDetailActivity extends BaseActivity {
                 item.setIcon(R.mipmap.nav_detail_like_btn_2);
                 isLike = true;
             }
-        } else if (id == R.id.action_share) {
+        } /*else if (id == R.id.action_share) {
             new ShareAction(HotelDetailActivity.this)
                     .withText("hello")
                     .setDisplayList(SHARE_MEDIA.SINA, SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE)
                     .setCallback(shareListener)
                     .open();
-        }
+        }*/
         return true;
     }
 

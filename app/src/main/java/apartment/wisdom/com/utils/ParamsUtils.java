@@ -37,12 +37,14 @@ public class ParamsUtils {
             paramsMaps.put("token", LoginUtils.getUserInfo().token);
         }
         params.put("data", JSONObject.toJSON(paramsMaps));
-        LogUtils.w("dyc接口参数", JSONObject.toJSON(paramsMaps).toString());
-        LogUtils.w("dyc接口方法", method);
+        if (Constants.DEBUG) {
+            LogUtils.w("dyc接口参数", JSONObject.toJSON(paramsMaps).toString());
+            LogUtils.w("dyc接口方法", method);
+        }
         String sign = Signature.getSign(params, Constants.Net.ACCESS_KEY);
         params.put("sign", sign);
         String jsonStr = JSON.toJSONString(params);
-        System.out.print(jsonStr);
+
         String encryptData = null;
         try {
             encryptData = AESCipher.aesEncryptString(jsonStr, Constants.Net.ACCESS_KEY);

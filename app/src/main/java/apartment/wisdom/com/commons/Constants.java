@@ -1,8 +1,6 @@
 package apartment.wisdom.com.commons;
 
 
-import com.blankj.utilcode.util.AppUtils;
-
 public class Constants {
 
     public static final String PASS_STRING = "pass_string";
@@ -15,12 +13,9 @@ public class Constants {
     public static final String STAND_IN_OUT_DISTANCE = "stand_in_out_distance";
     public static final String PASS_SELECT_HOTLE_TYPE = "pass_select_hotle_type";
     public static final String SELECT_CARD_TYPE = "selelct_card_type";
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     public static final String FRIST_OPEN_APP = "is_first_open_app";
     public static int PAGE_SIZE = 10;
-    public static String JZ_PIC = "http://i.shangc.net/2017/0731/20170731120542973.jpg";
-    public static String JZ_PIC_1 = "http://upload.techweb.com.cn/2017/0801/1501573284355.jpg";
-    public static String JZ_PIC_2 = "http://www.imegabox.com/filmimages/216_261/201541175159249237.png";
     public static String IS_LOGIN_STATUS = "is_login_status";
     public static String LOGIN_USER_PHONE = "login_user_phone";
     public static String USER_INFO = "user_info";
@@ -57,10 +52,6 @@ public class Constants {
         /**加密KEY，使用于报文通信KEY*/
         public static final String ACCESS_KEY="NJ6KD5V31D5TZ956";
         //测试接口
-        public static final String URL = "http://116.62.124.66/"+ AppUtils.getAppVersionName()+"/httpMobileTerminalAdapter";
-        //正式接口
-
-//        public static final String URL = "http://www.manxinsu.com:8090/"+ AppUtils.getAppVersionName()+"/httpMobileTerminalAdapter";
-
+        public static final String URL =false? "http://116.62.124.66/httpMobileTerminalAdapter":"http://www.manxinsu.com:8090/httpMobileTerminalAdapter";
     }
 }

@@ -192,7 +192,7 @@ public class MeInfoActivity extends BaseActivity {
                 ToastUtils.showShort(getString(R.string.login_out_success));
                 LoginUtils.setLoginStatus(false);
                 SPUtils.getInstance().put(Constants.USER_INFO, "");
-                EventBus.getDefault().post(new LoginOutSuccessEvent());
+                EventBus.getDefault().post(new LoginOutSuccessEvent("退出时候的"));
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {

@@ -36,7 +36,10 @@ public abstract class NewsCallback<T> extends AbsCallback<T> {
         Type rawType = ((ParameterizedType) type).getRawType();
         if (rawType == AAResponse.class) {
             String decy = AESCipher.aesDecryptString(new String(response.body().bytes()), Constants.Net.ACCESS_KEY);
-            LogUtils.w("dyc", decy);
+           if (Constants.DEBUG) {
+               LogUtils.w("dyc", response.networkResponse().request().url());
+               LogUtils.w("dyc", decy);
+           }
             AAResponse aaResponse = new Gson().fromJson(decy, type);
             if (aaResponse.resultCode.equals("0000")) {
                 response.close();
