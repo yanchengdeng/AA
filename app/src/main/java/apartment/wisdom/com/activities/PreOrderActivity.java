@@ -153,8 +153,14 @@ public class PreOrderActivity extends BaseActivity {
                 tvHotelOrderDays.setVisibility(View.GONE);
             }
         }
-        llPriceDetail.tvPrice.setText(String.format("%.2f",Float.parseFloat(hotelRoom.roomPrice) * hotelRoom.differDays+Float.parseFloat(hotelRoom.roomDeposit)));
 
+        if (TextUtils.isEmpty(hotelRoom.roomRisePrice)) {
+
+            llPriceDetail.tvPrice.setText(String.format("%.2f", Float.parseFloat(hotelRoom.roomPrice) * hotelRoom.differDays + Float.parseFloat(hotelRoom.roomDeposit)));
+        }else{
+            llPriceDetail.tvPrice.setText(String.format("%.2f", Float.parseFloat(hotelRoom.roomPrice) * hotelRoom.differDays + Float.parseFloat(hotelRoom.roomDeposit)+Float.parseFloat(hotelRoom.roomRisePrice)));
+
+        }
         initBottomLisener();
         getNeetDIY();
         getOrderTime();
@@ -358,7 +364,7 @@ public class PreOrderActivity extends BaseActivity {
                         Bundle bundle = new Bundle();
                         bundle.putSerializable(Constants.PASS_OBJECT, preOrderInfo);
                         bundle.putString(Constants.PASS_STRING, hotelRoom.storeId);
-                        bundle.putString(Constants.SELECT_CARD_TYPE, hotelRoom.selectType);
+                        bundle.putString(Constants.SELECT_CARD_TYPE, hotelRoom.roomTypeId);
                         openActivity(PayActivity.class, bundle);
 
                     }
@@ -502,7 +508,6 @@ public class PreOrderActivity extends BaseActivity {
                         llPriceDetail.tvPrice.setText(String.format("%.2f",Float.parseFloat(hotelRoom.roomPrice) * hotelRoom.differDays+Float.parseFloat(hotelRoom.roomDeposit)+Float.parseFloat(hotelRoom.roomRisePrice)));
 
                     }
-
                 }
             });
 
