@@ -228,6 +228,10 @@ public class CalendarChooseActivity extends BaseActivity {
 
 
     public List<SCMonth> getData() {
-        return SCDateUtils.generateMonths(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH) + 1, Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH) + 3);
+        if (Calendar.getInstance().get(Calendar.MONTH) + 2 > 12) {
+            return SCDateUtils.generateMonths(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH) + 1, Calendar.getInstance().get(Calendar.YEAR)+1, Calendar.getInstance().get(Calendar.MONTH) + 1);
+        } else {
+            return SCDateUtils.generateMonths(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH) + 1, Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH) + 2);
+        }
     }
 }

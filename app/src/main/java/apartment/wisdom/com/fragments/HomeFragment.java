@@ -245,7 +245,7 @@ public class HomeFragment extends Fragment {
 //                .navigationBarColor(R.color.transparent)
 //                .init();
         toolbar.setBackgroundColor(ColorUtils.blendARGB(Color.TRANSPARENT
-                , ContextCompat.getColor(context, R.color.colorPrimary), 0));
+                , ContextCompat.getColor(context, R.color.colorPrimary), 0.2f));
         initData();
         getAd();
         return view;
