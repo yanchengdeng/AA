@@ -76,6 +76,7 @@ public class ActivityDetailActivity extends BaseActivity {
         ivRight.setVisibility(View.GONE);
 
         webView.loadUrl(homeAdInfoList.activityUrl);
+        webView.getSettings().setJavaScriptEnabled(true);
         mSVProgressHUD.showWithStatus("加载中...");
         tvEmptyTips.setText("重新点击加载");
 
