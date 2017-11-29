@@ -31,6 +31,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
         debug {
             signingConfig signingConfigs.config
@@ -57,11 +58,8 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     //其中latest.release指代最新Bugly SDK版本号
-
     //其中latest.release指代最新Bugly NDK版本号
-
     ///加载效果  高斯模糊  之类
-
     //glid image loader
     compile files('libs/BaiduLBS_Android.jar')
     compile project(':library')
@@ -71,7 +69,7 @@ dependencies {
     compile project(':multi-image-selector')
     compile files('libs/alipaySdk-20170725.jar')
     compile files('libs/fastjson-1.2.7.jar')
-    compile("com.github.hotchemi:permissionsdispatcher:2.4.0") {
+    compile('com.github.hotchemi:permissionsdispatcher:2.4.0') {
         exclude module: "support-v13"
     }
     compile 'com.android.support:design:25.3.1'

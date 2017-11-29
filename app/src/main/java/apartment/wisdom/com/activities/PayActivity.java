@@ -33,6 +33,8 @@ import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,6 +49,7 @@ import apartment.wisdom.com.beans.WXPayInfo;
 import apartment.wisdom.com.commons.Constants;
 import apartment.wisdom.com.enums.PayStyle;
 import apartment.wisdom.com.events.PayOrRechargeSuccess;
+import apartment.wisdom.com.events.WXpaySuccessEvent;
 import apartment.wisdom.com.utils.LoginUtils;
 import apartment.wisdom.com.utils.NewsCallback;
 import apartment.wisdom.com.utils.ParamsUtils;
@@ -125,6 +128,7 @@ public class PayActivity extends BaseActivity {
         ButterKnife.bind(this);
         tvTittle.setText(getString(R.string.pay));
         preOrderInfo = (PreOrderInfo) getIntent().getSerializableExtra(Constants.PASS_OBJECT);
+        Constants.CHECK_ROOM_CODE = preOrderInfo.checkInNo;
         if (!TextUtils.isEmpty(preOrderInfo.consumeTotalPrice)) {
             tvOrderPrice.setText(preOrderInfo.consumeTotalPrice);
         }
@@ -134,6 +138,12 @@ public class PayActivity extends BaseActivity {
         }
         storeId = getIntent().getStringExtra(Constants.PASS_STRING);
         selectType = getIntent().getStringExtra(Constants.SELECT_CARD_TYPE);
+        EventBus.getDefault().register(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(WXpaySuccessEvent event) {
+        finish();
     }
 
     @OnClick({R.id.back, R.id.ll_coupon, R.id.tv_order_detail, R.id.rl_pay_alipay, R.id.rl_pay_wx, R.id.rl_pay_balance, R.id.tv_sure_pay})
@@ -158,11 +168,10 @@ public class PayActivity extends BaseActivity {
                 ivSelectBalance.setImageResource(R.mipmap.continue_rb_uncheck_theme);
                 break;
             case R.id.rl_pay_wx:
-                ToastUtils.showShort("敬请期待");
-//                paySyle = PayStyle.PAY_STYLE_WX.getType();
-//                ivSelectAlipay.setImageResource(R.mipmap.continue_rb_uncheck_theme);
-//                ivSelectWx.setImageResource(R.mipmap.continue_rb_check_theme);
-//                ivSelectBalance.setImageResource(R.mipmap.continue_rb_uncheck_theme);
+                paySyle = PayStyle.PAY_STYLE_WX.getType();
+                ivSelectAlipay.setImageResource(R.mipmap.continue_rb_uncheck_theme);
+                ivSelectWx.setImageResource(R.mipmap.continue_rb_check_theme);
+                ivSelectBalance.setImageResource(R.mipmap.continue_rb_uncheck_theme);
                 break;
             case R.id.rl_pay_balance:
                 //余额支付
@@ -326,15 +335,15 @@ public class PayActivity extends BaseActivity {
                             goAutoSelectRoom();
                         } else {
                             payInfo = response.body().data;
-                            WXPayInfo wxPayInfo = new WXPayInfo();
-                            wxPayInfo.setAppid(Constants.WXPay.APP_ID);
-                            wxPayInfo.setPartnerid(Constants.WXPay.MCH_ID);
-                            wxPayInfo.setNoncestr("3LUm8dtC60rRJKfT");
-                            wxPayInfo.setPrepayid("");
-                            wxPayInfo.setSign("724AED95F41CE97855D99048D1EB336A");
-                            wxPayInfo.setTimestamp(String.valueOf(System.currentTimeMillis() / 1000));
-                            wxPayInfo.setWxpackage("Sign=WXPay");
-                            payInfo.setWxpayinfo(wxPayInfo);
+//                            WXPayInfo wxPayInfo = new WXPayInfo();
+//                            wxPayInfo.setAppid(Constants.WXPay.APP_ID);
+//                            wxPayInfo.setPartnerid(Constants.WXPay.MCH_ID);
+//                            wxPayInfo.setNoncestr("3LUm8dtC60rRJKfT");
+//                            wxPayInfo.setPrepayid("");
+//                            wxPayInfo.setSign("724AED95F41CE97855D99048D1EB336A");
+//                            wxPayInfo.setTimestamp(String.valueOf(System.currentTimeMillis() / 1000));
+//                            wxPayInfo.setWxpackage("Sign=WXPay");
+//                            payInfo.setWxpayinfo(wxPayInfo);
                             //1  根据提交的充值信息 及类型  生成相对应的 支付验证返回值
                             //2 检查是否安装支付客户端 进行支付
                             //3支付完成后 回调用户信息接口 进行数据更新
@@ -398,7 +407,7 @@ public class PayActivity extends BaseActivity {
             req.timeStamp = wxPayAppId.getTimestamp();
             req.packageValue = "Sign=WXPay";
             req.sign = wxPayAppId.getSign();
-            LogUtils.w("dyc", req.checkArgs() + "---------");
+            LogUtils.w("dyc  ", req.checkArgs() + "---------");
 //            mSVProgressHUD.showWithStatus("正常调起支付...", SVProgressHUD.SVProgressHUDMaskType.Clear);
             // 在支付之前，如果应用没有注册到微信，应该先调用IWXMsg.registerApp将应用注册到微信
             api.sendReq(req);
@@ -517,5 +526,11 @@ public class PayActivity extends BaseActivity {
         } catch (PackageManager.NameNotFoundException e) {
             return false;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mSVProgressHUD.dismissImmediately();
     }
 }

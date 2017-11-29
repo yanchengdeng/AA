@@ -28,6 +28,7 @@ import com.baidu.location.BDLocationListener;
 import com.blankj.utilcode.util.ToastUtils;
 import com.flyco.dialog.listener.OnBtnClickL;
 import com.flyco.dialog.widget.MaterialDialog;
+import com.flyco.dialog.widget.NormalDialog;
 import com.gyf.barlibrary.ImmersionBar;
 import com.jude.rollviewpager.RollPagerView;
 import com.lzy.okgo.OkGo;
@@ -35,6 +36,7 @@ import com.lzy.okgo.cache.CacheMode;
 import com.lzy.okgo.model.Response;
 import com.tubb.calendarselector.library.FullDay;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -130,7 +132,50 @@ public class HomeFragment extends Fragment {
         checkLocatioPermission();
         stant_in = CalendarUtils.getInstant().getDefalutStandIn();
         stant_out = CalendarUtils.getInstant().getDefaulStandOut();
+        showZeroTimeTips();
 
+    }
+
+    //12:00  ~4:00 凌晨
+    private void showZeroTimeTips() {
+        Calendar galendar = Calendar.getInstance();
+
+        int hours = galendar.get(Calendar.HOUR_OF_DAY);
+        if (hours == 0 || hours == 1 || hours == 2 || hours == 3) {
+            showZeroOrderDialog();
+        }
+    }
+
+
+    //提示凌晨入住对话框
+    private void showZeroOrderDialog() {
+        final NormalDialog dialog = new NormalDialog(getActivity());
+        dialog.titleTextColor(getResources().getColor(R.color.colorPrimary));
+        dialog.titleLineColor(getResources().getColor(R.color.colorPrimary));
+        dialog.titleTextSize(18);
+        dialog.content("您是否需要预定凌晨房？")//
+                .show();
+        dialog.btnText("忽略", "继续", "确定");
+        dialog.setOnBtnClickL(
+                new OnBtnClickL() {
+                    @Override
+                    public void onBtnClick() {
+                        dialog.dismiss();
+                    }
+                },
+                new OnBtnClickL() {
+                    @Override
+                    public void onBtnClick() {
+                        dialog.dismiss();
+                        Bundle bundleHotel = new Bundle();
+                        bundleHotel.putParcelable(Constants.PASS_STAND_IN, stant_in);
+                        bundleHotel.putParcelable(Constants.PASS_STAND_OUT, stant_out);
+                        bundleHotel.putString(Constants.PASS_STRING, tvLocation.getText().toString());
+                        bundleHotel.putString(Constants.PASS_SELECT_HOTLE_TYPE, selectRoomType.getSelectType());
+                        bundleHotel.putInt(Constants.PASS_DISTANCE_DAYS, diffdays);
+                        ((BaseActivity) context).openActivity(SearchHotalResultActivity.class, bundleHotel);
+                    }
+                });
     }
 
     private void checkLocatioPermission() {
@@ -233,7 +278,9 @@ public class HomeFragment extends Fragment {
             locationService.stop();
         }
     }
+
     protected ImmersionBar mImmersionBar;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -294,6 +341,11 @@ public class HomeFragment extends Fragment {
                         if (!homeAdInfos.activityList.isEmpty()) {
                             initAdIinfo(homeAdInfos.activityList);
                         }
+                    }
+
+                    @Override
+                    public void onCacheSuccess(Response<AAResponse<HomeAdInfo>> response) {
+                        onSuccess(response);
                     }
 
                     @Override

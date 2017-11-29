@@ -12,6 +12,12 @@ public class WXPayInfo {
     private   String      wxpackage;//Sign=WXPay,
     private   String      partnerid;//,
     private   String      appid;//wxb317c47e9d1ceb31
+    private String prepayid;//商戶號
+
+    public String getNoncestr() {
+        return noncestr;
+    }
+
 
     public String getPrepayid() {
         return prepayid;
@@ -19,13 +25,6 @@ public class WXPayInfo {
 
     public void setPrepayid(String prepayid) {
         this.prepayid = prepayid;
-    }
-
-    private String prepayid;//商戶號
-
-
-    public String getNoncestr() {
-        return noncestr;
     }
 
     public void setNoncestr(String noncestr) {

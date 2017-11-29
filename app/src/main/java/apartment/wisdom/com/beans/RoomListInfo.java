@@ -30,6 +30,8 @@ public class RoomListInfo implements Serializable {
         public String storeId;
         public String roomDeposit;//押金
         public String roomRisePrice;//涨价 周五、六
+        public List<RoomTypeImage> roomTypeImageList;
+        public String roomTypeRemark;
     }
 
     public static class HourRoom implements Serializable {
@@ -51,6 +53,8 @@ public class RoomListInfo implements Serializable {
         public String bespeakTime;
         public String roomDeposit;//押金
         public String roomRisePrice;//涨价 周五、六
+        public List<RoomTypeImage> roomTypeImageList;
+        public String roomTypeRemark;
     }
 
     public class CustomePriceInfo implements Serializable {
@@ -60,5 +64,9 @@ public class RoomListInfo implements Serializable {
         public String customerScore;
         public String evaluateDate;
 
+    }
+
+    public class RoomTypeImage implements Serializable{
+        public String roomTypeImage;
     }
 }

@@ -355,6 +355,8 @@ public class HotelDetailActivity extends BaseActivity {
                 groupHotel.roomRisePrice = item.roomRisePrice;
                 groupHotel.roomDeposit = item.roomDeposit;
                 groupHotel.bespeakDays = item.bespeakDays;
+                groupHotel.roomTypeImageList = item.roomTypeImageList;
+                groupHotel.roomTypeRemark = item.roomTypeRemark;
                 List<DayGroupHotel.DayGroupHotelItem> childHotels = new ArrayList<>();
                 DayGroupHotel.DayGroupHotelItem dayGroupHotelItem = new DayGroupHotel.DayGroupHotelItem();
                 dayGroupHotelItem.discountPrice = item.roomPrice;
@@ -371,6 +373,8 @@ public class HotelDetailActivity extends BaseActivity {
                 dayGroupHotelItem.selectType = DayHourRoomType.DAY_HOUR_ROOM_TYPE_DAY.getType();
                 dayGroupHotelItem.roomRisePrice = item.roomRisePrice;
                 dayGroupHotelItem.roomDeposit = item.roomDeposit;
+                dayGroupHotelItem.roomTypeImageList = item.roomTypeImageList;
+                dayGroupHotelItem.roomTypeRemark = item.roomTypeRemark;
                 childHotels.add(dayGroupHotelItem);
                 groupHotel.items = childHotels;
                 dayGroupHotels.add(groupHotel);

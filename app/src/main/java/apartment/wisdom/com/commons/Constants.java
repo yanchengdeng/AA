@@ -13,7 +13,7 @@ public class Constants {
     public static final String STAND_IN_OUT_DISTANCE = "stand_in_out_distance";
     public static final String PASS_SELECT_HOTLE_TYPE = "pass_select_hotle_type";
     public static final String SELECT_CARD_TYPE = "selelct_card_type";
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
     public static final String FRIST_OPEN_APP = "is_first_open_app";
     public static int PAGE_SIZE = 10;
     public static String IS_LOGIN_STATUS = "is_login_status";
@@ -21,6 +21,7 @@ public class Constants {
     public static String USER_INFO = "user_info";
     public static String AD_IMAGE ="ad_iamge";
     public static String SAVE_DIY_SELECT= "save_diy_select";//保存diy信息
+    public static String CHECK_ROOM_CODE = "check_room_code";
 
 
     /*****
@@ -52,6 +53,6 @@ public class Constants {
         /**加密KEY，使用于报文通信KEY*/
         public static final String ACCESS_KEY="NJ6KD5V31D5TZ956";
         //测试接口
-        public static final String URL =false? "http://116.62.124.66/httpMobileTerminalAdapter":"http://www.manxinsu.com:8090/httpMobileTerminalAdapter";
+        public static final String URL =Constants.DEBUG? "http://115.29.210.47:8088/httpMobileTerminalAdapter":"http://www.manxinsu.com:8090/httpMobileTerminalAdapter";
     }
 }

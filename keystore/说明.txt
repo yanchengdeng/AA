@@ -6,6 +6,11 @@ sha1       70:1A:8B:0B:81:E3:BE:66:EC:12:A1:1E:00:1D:4E:90:C0:0A:84:7D
 包名：apartment.wisdom.com
 
 
+
+微信支付签名：
+abe3d84db92b476898f80ead881e5f5a
+
+
 smartFit Umeng统计：
 
 

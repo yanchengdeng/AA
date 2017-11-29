@@ -78,8 +78,9 @@ public class MainActivity extends BaseActivity {
         initFragments();
         EventBus.getDefault().register(this);
         checkPermission();
-
     }
+
+
 
     private void checkPermission() {
 

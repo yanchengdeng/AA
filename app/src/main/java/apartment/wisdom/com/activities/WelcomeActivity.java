@@ -18,7 +18,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.SPUtils;
+import com.blankj.utilcode.util.ScreenUtils;
 import com.bumptech.glide.Glide;
+import com.jude.rollviewpager.RollPagerView;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheMode;
 import com.lzy.okgo.model.Response;
@@ -44,8 +46,8 @@ public class WelcomeActivity extends FragmentActivity {
     TextView tvSecondJump;
     @BindView(R.id.guide_ui)
     RelativeLayout guideUi;
-    @BindView(R.id.pager)
-    ViewPager pager;
+    @BindView(R.id.roll_view_pager)
+    RollPagerView pager;
     @BindView(R.id.btnHome)
     Button btnHome;
 
@@ -126,7 +128,7 @@ public class WelcomeActivity extends FragmentActivity {
         btnHome = (Button) findViewById(R.id.btnHome);
         adapter = new GalleryPagerAdapter();
         pager.setAdapter(adapter);
-        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        pager.getViewPager().addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -166,6 +168,7 @@ public class WelcomeActivity extends FragmentActivity {
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             ImageView item = new ImageView(WelcomeActivity.this);
+            item.setLayoutParams(new ViewGroup.LayoutParams(ScreenUtils.getScreenWidth(), ScreenUtils.getScreenHeight()));
             item.setScaleType(ImageView.ScaleType.FIT_XY);
             item.setAdjustViewBounds(true);
             item.setImageResource(images[position]);

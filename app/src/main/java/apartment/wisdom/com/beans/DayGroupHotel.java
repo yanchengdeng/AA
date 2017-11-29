@@ -23,6 +23,8 @@ public class DayGroupHotel {
     public int differDays;
     public String selectType;
     public int bespeakDays;
+    public List<RoomListInfo.RoomTypeImage> roomTypeImageList;
+    public String roomTypeRemark;
 
     public static class DayGroupHotelItem implements Serializable{
         public String roomPirce;
@@ -39,5 +41,7 @@ public class DayGroupHotel {
         public String selectType;
         public String roomDeposit;//押金
         public String roomRisePrice;//涨价 周五、六
+        public List<RoomListInfo.RoomTypeImage> roomTypeImageList;
+        public String roomTypeRemark;
     }
 }

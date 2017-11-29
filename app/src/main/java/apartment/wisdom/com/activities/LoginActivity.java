@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bigkoo.svprogresshud.SVProgressHUD;
+import com.blankj.utilcode.util.KeyboardUtils;
 import com.blankj.utilcode.util.RegexUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
@@ -157,6 +158,7 @@ public class LoginActivity extends BaseActivity {
                         if (userInfo==null){
                             return;
                         }
+                        KeyboardUtils.hideSoftInput(LoginActivity.this);
                         SPUtils.getInstance().put(Constants.USER_INFO,new Gson().toJson(userInfo));
                         LoginUtils.setLoginStatus(true);
                         SPUtils.getInstance().put(Constants.LOGIN_USER_PHONE, etLoginName.getEditableText().toString().trim());

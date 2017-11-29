@@ -189,15 +189,6 @@ public class RechagerActivity extends BaseActivity {
                     @Override
                     public void onSuccess(Response<AAResponse<PayInfo>> response) {
                         payInfo = response.body().data;
-                        WXPayInfo wxPayInfo = new WXPayInfo();
-                        wxPayInfo.setAppid(Constants.WXPay.APP_ID);
-                        wxPayInfo.setPartnerid(Constants.WXPay.MCH_ID);
-                        wxPayInfo.setNoncestr("3LUm8dtC60rRJKfT");
-                        wxPayInfo.setPrepayid("");
-                        wxPayInfo.setSign("724AED95F41CE97855D99048D1EB336A");
-                        wxPayInfo.setTimestamp(String.valueOf(System.currentTimeMillis() / 1000));
-                        wxPayInfo.setWxpackage("Sign=WXPay");
-                        payInfo.setWxpayinfo(wxPayInfo);
                         //1  根据提交的充值信息 及类型  生成相对应的 充值验证返回值
                         //2 检查是否安装充值客户端 进行充值
                         //3充值完成后 回调用户信息接口 进行数据更新

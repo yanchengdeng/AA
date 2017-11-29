@@ -481,7 +481,7 @@ public class PreOrderActivity extends BaseActivity {
 
             final CustomeNeedListAdapter customeNeedListAdapter = new CustomeNeedListAdapter(mContext, R.layout.dialog_custome_need_item, customeTypes);
             View inflate = View.inflate(mContext, R.layout.dialog_custome_need_layout, null);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ScreenUtils.getScreenWidth() - 100, (int) (ScreenUtils.getScreenHeight() * 0.85));
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ScreenUtils.getScreenWidth() - 50, (int) (ScreenUtils.getScreenHeight() * 0.85));
             params.gravity = Gravity.CENTER_HORIZONTAL;
             inflate.setLayoutParams(params);
             RecyclerView recyclerView = (RecyclerView) inflate.findViewById(recycle);

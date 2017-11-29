@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -57,26 +57,34 @@ public class CustomeNeedListItemAdapter extends BaseAdapter {
         viewHolder.tvName.setText(customTypeItems.get(i).getName());
         viewHolder.tvMoney.setText(customTypeItems.get(i).getPrice());
         Glide.with(context).load(customTypeItems.get(i).getImg()).into(viewHolder.ivImage);
-        if (customTypeItems.get(i).isSelect()){
-            viewHolder.iv_selected.setVisibility(View.VISIBLE);
-        }else{
-            viewHolder.iv_selected.setVisibility(View.GONE);
+        if (customTypeItems.get(i).isSelect()) {
+            viewHolder.ivSelected.setImageResource(R.mipmap.selected);
+        } else {
+            viewHolder.ivSelected.setImageResource(R.mipmap.unselected);
         }
 
         return view;
     }
 
     static class ViewHolder {
-        @BindView(R.id.iv_image)
-        ImageView ivImage;
         @BindView(R.id.tv_name)
         TextView tvName;
         @BindView(R.id.tv_money)
         TextView tvMoney;
-        @BindView(R.id.rl_ui)
-        RelativeLayout rlUi;
+        @BindView(R.id.iv_image)
+        ImageView ivImage;
+        @BindView(R.id.iv_minus)
+        ImageView ivMinus;
+        @BindView(R.id.tv_num_breakfast)
+        TextView tvNumBreakfast;
+        @BindView(R.id.iv_add)
+        ImageView ivAdd;
+        @BindView(R.id.ll_breakfast)
+        LinearLayout llBreakfast;
         @BindView(R.id.iv_selected)
-        ImageView iv_selected;
+        ImageView ivSelected;
+        @BindView(R.id.rl_ui)
+        LinearLayout rlUi;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);

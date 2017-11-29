@@ -176,7 +176,10 @@ public class CityPickedActivity extends BaseActivity {
                             String city = bdLocation.getCity();
                             String district = bdLocation.getDistrict();
                             String location = StringUtils.extractLocation(city, district);
-                            mCityAdapter.updateLocateState(LocateState.SUCCESS, location);
+                            if (bdLocation.getCity().contains(getString(R.string.city_single))) {
+                                city = bdLocation.getCity().replace(getString(R.string.city_single), "");
+                            }
+                            mCityAdapter.updateLocateState(LocateState.SUCCESS, city);
                             locationService.stop();
                         }
                     }

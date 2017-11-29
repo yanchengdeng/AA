@@ -10,18 +10,24 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.tencent.mm.opensdk.modelbase.BaseReq;
 import com.tencent.mm.opensdk.modelbase.BaseResp;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
+import org.greenrobot.eventbus.EventBus;
+
 import apartment.wisdom.com.R;
 import apartment.wisdom.com.activities.AutoSelectRoomActivity;
 import apartment.wisdom.com.activities.BaseActivity;
 import apartment.wisdom.com.beans.PreOrderInfo;
 import apartment.wisdom.com.commons.Constants;
+import apartment.wisdom.com.events.PayOrRechargeSuccess;
+import apartment.wisdom.com.events.WXpaySuccessEvent;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -68,8 +74,10 @@ public class WXPayEntryActivity extends BaseActivity implements IWXAPIEventHandl
         api = WXAPIFactory.createWXAPI(this, Constants.WXPay.APP_ID);
         api.handleIntent(getIntent(), this);
         tvTittle.setText(getString(R.string.pay_success));
-        if (!TextUtils.isEmpty(preOrderInfo.checkInNo)) {
+        if (preOrderInfo!=null &&  !TextUtils.isEmpty(preOrderInfo.checkInNo)) {
             tvRoomCode.setText(preOrderInfo.checkInNo);
+        }else{
+            tvRoomCode.setText(""+Constants.CHECK_ROOM_CODE);
         }
     }
 
@@ -90,9 +98,16 @@ public class WXPayEntryActivity extends BaseActivity implements IWXAPIEventHandl
     public void onResp(BaseResp req) {
 
         if (req.errCode == BaseResp.ErrCode.ERR_OK) {
-//            tvWxPayResult.setText("支付成功");
-        } else {
-//            tvWxPayResult.setText("支付失败");
+            LogUtils.w("dyc","----");
+            EventBus.getDefault().post(new WXpaySuccessEvent());
+            EventBus.getDefault().post(new PayOrRechargeSuccess());
+        } else if (req.errCode== BaseResp.ErrCode.ERR_USER_CANCEL){
+            LogUtils.w("dyc","----     "+req.errCode);
+            Toast.makeText(mContext,"取消支付",Toast.LENGTH_SHORT).show();
+            finish();
+        }else{
+            Toast.makeText(mContext,"支付失败",Toast.LENGTH_SHORT).show();
+            finish();
         }
     }
 
