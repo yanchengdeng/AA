@@ -1,5 +1,6 @@
 package apartment.wisdom.com.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,7 +10,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.lzy.ninegrid.ImageInfo;
+import com.lzy.ninegrid.preview.ImagePreviewActivity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +42,7 @@ public class ShowHotelPicActivity extends BaseActivity {
 
     private PhotoGridViewAdapter photoGridViewAdapter;
     private List<String> photos = new ArrayList<>();
-    private  ArrayList<HotelListInfo.HotelListItem.StoreImageInfo> storeImageList;
+    private ArrayList<HotelListInfo.HotelListItem.StoreImageInfo> storeImageList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,15 +51,15 @@ public class ShowHotelPicActivity extends BaseActivity {
         ButterKnife.bind(this);
         storeImageList = (ArrayList<HotelListInfo.HotelListItem.StoreImageInfo>) getIntent().getSerializableExtra(Constants.PASS_OBJECT);
         tvTittle.setText("公寓照片(1张)");
-        if (storeImageList!=null && storeImageList.size()>0){
-            tvTittle.setText(String.format("公寓照片(%d张)",new Object[]{storeImageList.size()}));
-            for (HotelListInfo.HotelListItem.StoreImageInfo item:storeImageList){
+        if (storeImageList != null && storeImageList.size() > 0) {
+            tvTittle.setText(String.format("公寓照片(%d张)", new Object[]{storeImageList.size()}));
+            for (HotelListInfo.HotelListItem.StoreImageInfo item : storeImageList) {
                 photos.add(item.storeImage);
             }
-            photoGridViewAdapter = new PhotoGridViewAdapter(mContext,R.layout.adapter_photo_layout,photos);
-            recycle.setLayoutManager(new GridLayoutManager(mContext,2));
+            photoGridViewAdapter = new PhotoGridViewAdapter(mContext, R.layout.adapter_photo_layout, photos);
+            recycle.setLayoutManager(new GridLayoutManager(mContext, 2));
             recycle.setAdapter(photoGridViewAdapter);
-        }else{
+        } else {
 
         }
 
@@ -63,8 +67,26 @@ public class ShowHotelPicActivity extends BaseActivity {
         photoGridViewAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                ImagePagerActivity.ImageSize imageSize = new ImagePagerActivity.ImageSize(view.getMeasuredWidth(), view.getMeasuredHeight());
-                ImagePagerActivity.startImagePagerActivity(mContext, photos, position, imageSize);
+//                ImagePagerActivity.ImageSize imageSize = new ImagePagerActivity.ImageSize(view.getMeasuredWidth(), view.getMeasuredHeight());
+//                ImagePagerActivity.startImagePagerActivity(mContext, photos, position, imageSize);
+
+                List<ImageInfo> imageInfos = new ArrayList<>();
+                for (String item : photos) {
+                    ImageInfo imageInfo = new ImageInfo();
+                    imageInfo.setBigImageUrl(item);
+                    imageInfo.setThumbnailUrl(item);
+                    imageInfos.add(imageInfo);
+                }
+
+
+                Intent intent = new Intent(mContext, ImagePreviewActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(ImagePreviewActivity.IMAGE_INFO, (Serializable) imageInfos);
+                bundle.putInt(ImagePreviewActivity.CURRENT_ITEM, position);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                overridePendingTransition(0, 0);
+
 
             }
         });

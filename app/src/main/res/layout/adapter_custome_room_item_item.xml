@@ -60,7 +60,7 @@
             android:orientation="horizontal">
 
             <LinearLayout
-                android:id="@+id/ll_breakfast"
+                android:id="@+id/ll_support_mult"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -106,14 +106,15 @@
             </LinearLayout>
 
 
-            <ImageView
+            <CheckBox
                 android:id="@+id/iv_selected"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:padding="@dimen/image_padding_big"
-                android:src="@mipmap/unselected" />
+                android:checked="false"
+                android:button="@drawable/checkbox_style" />
         </RelativeLayout>
 
 

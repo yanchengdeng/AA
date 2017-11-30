@@ -13,7 +13,6 @@ import java.util.List;
 
 import apartment.wisdom.com.R;
 import apartment.wisdom.com.beans.PreOrderInfo;
-import apartment.wisdom.com.enums.DIYType;
 
 public class PreOrderDIYSelectAdapter extends BaseQuickAdapter<PreOrderInfo.CustomeItem, BaseViewHolder> {
 
@@ -27,14 +26,15 @@ public class PreOrderDIYSelectAdapter extends BaseQuickAdapter<PreOrderInfo.Cust
 
     @Override
     protected void convert(BaseViewHolder helper, PreOrderInfo.CustomeItem item) {
-        ((TextView)helper.getView(R.id.tv_name)).setText("个性消费 - "+item.typeName+" - "+item.consumeName);
+        ((TextView) helper.getView(R.id.tv_name)).setText("个性消费 - " + item.typeName + " - " + item.consumeName);
 
-        if (item.type.equals(DIYType.DIY_TYPE_BRAKFAST.getType())) {
-            ((TextView) helper.getView(R.id.tv_price)).setText(item.consumePrice+" x "+item.consumeNum + "份");
-        } else {
-            ((TextView) helper.getView(R.id.tv_price)).setText(item.consumePrice);
-
-        }
+//        if (item.type.equals(DIYType.DIY_TYPE_BRAKFAST.getType())) {
+        ((TextView) helper.getView(R.id.tv_price)).setText(item.consumePrice + " x " + item.consumeNum + "份");
+//        }
+// else {
+//            ((TextView) helper.getView(R.id.tv_price)).setText(item.consumePrice);
+//
+//        }
 
 
     }

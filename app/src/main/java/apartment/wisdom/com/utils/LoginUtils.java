@@ -4,17 +4,14 @@ import android.text.TextUtils;
 
 import com.blankj.utilcode.util.SPUtils;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import apartment.wisdom.com.beans.CustomeType;
 import apartment.wisdom.com.beans.DIYSaveInfo;
 import apartment.wisdom.com.beans.UserInfo;
 import apartment.wisdom.com.commons.Constants;
-import apartment.wisdom.com.enums.DIYType;
 
 /**
  * Author: 邓言诚  Create at : 17/8/17  13:59
@@ -57,74 +54,93 @@ public class LoginUtils {
         }
     }
 
-    //获取  diy 保存信息
-    public static List<DIYSaveInfo> getDIY() {
-        List<DIYSaveInfo> diySaveInfos = new ArrayList<>();
-        String diyInfo = SPUtils.getInstance().getString(Constants.SAVE_DIY_SELECT);
-        Gson gson = new Gson();
-        if (!TextUtils.isEmpty(diyInfo)) {
-            //Json的解析类对象
-            JsonParser parser = new JsonParser();
-            //将JSON的String 转成一个JsonArray对象
-            JsonArray jsonArray = parser.parse(diyInfo).getAsJsonArray();
-            for (JsonElement user : jsonArray) {
-                diySaveInfos.add(gson.fromJson(user, DIYSaveInfo.class));
+
+    //是否存在该类型的选项
+    public static boolean hasSelectedByType(List<CustomeType> customeTypes, String type) {
+        boolean isSelected = false;
+        for (CustomeType customeType : customeTypes) {
+            for (CustomeType.CustomTypeItem item : customeType.getCustomTypeItems()) {
+                if (item.getDiy_type().equals(type)) {
+                    isSelected = true;
+                }
             }
+        }
+        return isSelected;
+    }
+
+    //根据类型 获取 选取的id  2,2,2
+    public static String getSelectIdsByType(List<CustomeType> customeTypes, String type) {
+        List<CustomeType.CustomTypeItem> customTypeItems = new ArrayList<>();
+        for (CustomeType customeType : customeTypes) {
+            for (CustomeType.CustomTypeItem item : customeType.getCustomTypeItems()) {
+                if (item.getDiy_type().equals(type)&& item.isSelect()) {
+                    customTypeItems.add(item);
+                }
+            }
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < customTypeItems.size(); i++) {
+            if (i == customTypeItems.size() - 1) {
+                sb.append(customTypeItems.get(i).getId());
+            } else {
+                sb.append(customTypeItems.get(i).getId()).append(",");
+            }
+        }
+        return sb.toString();
+    }
+
+    //根据类型 获取 选取的数量  2,2,2
+    public static String getSelectCountsByType(List<CustomeType> customeTypes, String type) {
+        List<CustomeType.CustomTypeItem> customTypeItems = new ArrayList<>();
+        for (CustomeType customeType : customeTypes) {
+            for (CustomeType.CustomTypeItem item : customeType.getCustomTypeItems()) {
+                if (item.getDiy_type().equals(type)&& item.isSelect()) {
+                    customTypeItems.add(item);
+                }
+            }
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < customTypeItems.size(); i++) {
+            if (i == customTypeItems.size() - 1) {
+                sb.append(customTypeItems.get(i).getNum());
+            } else {
+                sb.append(customTypeItems.get(i).getNum()).append(",");
+            }
+        }
+        return sb.toString();
+    }
+
+    //已选择的套餐
+    public static List<DIYSaveInfo> getDIY(List<CustomeType> customeTypes) {
+        List<CustomeType.CustomTypeItem> customTypeItems = new ArrayList<>();
+        for (CustomeType customeType : customeTypes) {
+            for (CustomeType.CustomTypeItem item : customeType.getCustomTypeItems()) {
+                if (item.isSelect()) {
+                    customTypeItems.add(item);
+                }
+            }
+        }
+        List<DIYSaveInfo> diySaveInfos = new ArrayList<>();
+        for (CustomeType.CustomTypeItem item : customTypeItems) {
+            DIYSaveInfo diySaveInfo = new DIYSaveInfo();
+            diySaveInfo.setSelectName(item.getName());
+            diySaveInfo.setMoney(item.getPrice());
+//             diySaveInfo.setType();
+            diySaveInfo.setNum(item.getNum());
+            diySaveInfo.setTypeName(item.getType_name());
+            diySaveInfos.add(diySaveInfo);
         }
         return diySaveInfos;
     }
 
-    //更新已存在diy
-    public static void updateDIY(DIYSaveInfo hasExist) {
-        List<DIYSaveInfo> diySaveInfos = getDIY();
-        for (DIYSaveInfo item : diySaveInfos) {
-            if (item.getType().equals(hasExist.getType())) {
-                if (item.getType().equals(DIYType.DIY_TYPE_BRAKFAST.getType())) {
-                    item.setNum(item.getNum());
+    //重置已选择的套餐
+    public static void setDIYByTypeResetSelected(List<CustomeType.CustomTypeItem>  customTypeItems,String type) {
+            for (CustomeType.CustomTypeItem item : customTypeItems) {
+                if (item.getDiy_type().equals(type)) {
+                   item.setSelect(false);
                 }
-                item.setSelectType(hasExist.getSelectType());
-                item.setSelectName(hasExist.getSelectName());
-                item.setMoney(hasExist.getMoney());
             }
-        }
-        SPUtils.getInstance().put(Constants.SAVE_DIY_SELECT, new Gson().toJson(diySaveInfos));
-    }
-
-    //更新选择早餐数
-    public static void updateBreakFast(int num) {
-        List<DIYSaveInfo> diySaveInfos = getDIY();
-        boolean isExist = false;
-        for (DIYSaveInfo item : diySaveInfos) {
-            if (item.getType().equals(DIYType.DIY_TYPE_BRAKFAST.getType())) {
-                item.setNum(num);
-                isExist = true;
-            }
-        }
-        if (isExist) {
-            SPUtils.getInstance().put(Constants.SAVE_DIY_SELECT, new Gson().toJson(diySaveInfos));
-        }
-    }
-
-    public static CharSequence getSelectIdByType(String type) {
-        List<DIYSaveInfo> diySaveInfos = getDIY();
-        String  selectTyper ="";
-        for (DIYSaveInfo item : diySaveInfos) {
-            if (item.getType().equals(type)) {
-                selectTyper = item.getSelectType();
-            }
-        }
-        return selectTyper;
-    }
-
-
-    public static int getBreakfastNum() {
-        List<DIYSaveInfo> diySaveInfos = getDIY();
-        int  num =1;
-        for (DIYSaveInfo item : diySaveInfos) {
-            if (item.getType().equals(DIYType.DIY_TYPE_BRAKFAST.getType())) {
-                num = item.getNum();
-            }
-        }
-        return num;
     }
 }

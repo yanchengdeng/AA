@@ -20,7 +20,6 @@ public class Constants {
     public static String LOGIN_USER_PHONE = "login_user_phone";
     public static String USER_INFO = "user_info";
     public static String AD_IMAGE ="ad_iamge";
-    public static String SAVE_DIY_SELECT= "save_diy_select";//保存diy信息
     public static String CHECK_ROOM_CODE = "check_room_code";
 
 

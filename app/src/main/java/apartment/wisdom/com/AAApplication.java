@@ -1,9 +1,14 @@
 package apartment.wisdom.com;
 
 
+import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.multidex.MultiDexApplication;
+import android.widget.ImageView;
 
 import com.blankj.utilcode.util.Utils;
+import com.bumptech.glide.Glide;
+import com.lzy.ninegrid.NineGridView;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheEntity;
 import com.lzy.okgo.cache.CacheMode;
@@ -42,6 +47,7 @@ public class AAApplication extends MultiDexApplication {
         QueuedWork.isUseThreadPool = false;
         UMShareAPI.get(this);
         initOkGo();
+        NineGridView.setImageLoader(new GlideImageLoader());
     }
 
 
@@ -88,6 +94,23 @@ public class AAApplication extends MultiDexApplication {
                 .setRetryCount(0) ;                          //全局统一超时重连次数，默认为三次，那么最差的情况会请求4次(一次原始请求，三次重连请求)，不需要可以设置为0
 //                .addCommonHeaders(headers)                      //全局公共头
 //                .addCommonParams(params);                       //全局公共参数
+    }
+
+    /**
+     * Glide 加载
+     */
+    private class GlideImageLoader implements NineGridView.ImageLoader {
+        @Override
+        public void onDisplayImage(Context context, ImageView imageView, String url) {
+            Glide.with(context)//
+                    .load(url)
+                    .into(imageView);
+        }
+
+        @Override
+        public Bitmap getCacheImage(String url) {
+            return null;
+        }
     }
 
 }

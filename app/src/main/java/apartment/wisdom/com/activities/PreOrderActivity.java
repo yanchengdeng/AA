@@ -20,7 +20,6 @@ import android.widget.TextView;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.RegexUtils;
-import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ScreenUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.flyco.dialog.listener.OnOperItemClickL;
@@ -123,7 +122,7 @@ public class PreOrderActivity extends BaseActivity {
     private PopPrcieDialog bubblePopup;
     private CustomeNeedDialog custemDialg;
     private RoomListInfo.HourRoom hotelRoom;
-    private List<CustomeType> customeTypes;
+    private  List<CustomeType> customeTypes;
     private List<CustomPeopleList.CustomPeopleItem> peopleItemInfos = new ArrayList<>();
     String[] arriveTimes ;
 
@@ -245,10 +244,9 @@ public class PreOrderActivity extends BaseActivity {
         custemDialg.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
-                List<DIYSaveInfo> diySaveInfos = LoginUtils.getDIY();
                 float selectMoney =0;
-                if (diySaveInfos != null && diySaveInfos.size() > 0) {
-                    for (DIYSaveInfo item:diySaveInfos){
+                if (LoginUtils.getDIY(customeTypes) != null && LoginUtils.getDIY(customeTypes) .size() > 0) {
+                    for (DIYSaveInfo item:LoginUtils.getDIY(customeTypes) ){
                         selectMoney+=Float.parseFloat(item.getMoney())*item.getNum();
                     }
                 }
@@ -332,25 +330,25 @@ public class PreOrderActivity extends BaseActivity {
         if (!TextUtils.isEmpty(etOrderRemarks.getEditableText().toString())) {
             data.put("remark", etOrderRemarks.getEditableText().toString());
         }
-        if (!TextUtils.isEmpty(LoginUtils.getSelectIdByType(DIYType.DIY_TYPE_BRAKFAST.getType()))) {
-            data.put("breakfastId", LoginUtils.getSelectIdByType(DIYType.DIY_TYPE_BRAKFAST.getType()));
-            data.put("breakfastNum", LoginUtils.getBreakfastNum());
+
+        if (LoginUtils.hasSelectedByType(customeTypes,DIYType.DIY_TYPE_BRAKFAST.getType())) {
+            data.put("breakfastId", LoginUtils.getSelectIdsByType(customeTypes, DIYType.DIY_TYPE_BRAKFAST.getType()));
+            data.put("breakfastNum", LoginUtils.getSelectCountsByType(customeTypes, DIYType.DIY_TYPE_BRAKFAST.getType()));
         }
 
-//        data.put("templateId", "");
-
-        if (!TextUtils.isEmpty(LoginUtils.getSelectIdByType(DIYType.DIY_TYPE_FIVE_PIECES.getType()))) {
-            data.put("fivePieceId", LoginUtils.getSelectIdByType(DIYType.DIY_TYPE_FIVE_PIECES.getType()));
+        if (LoginUtils.hasSelectedByType(customeTypes, DIYType.DIY_TYPE_FIVE_PIECES.getType())) {
+            data.put("fivePieceId", LoginUtils.getSelectIdsByType(customeTypes, DIYType.DIY_TYPE_FIVE_PIECES.getType()));
         }
 
-        if (!TextUtils.isEmpty(LoginUtils.getSelectIdByType(DIYType.DIY_TYPE_ARMOS.getType()))) {
-            data.put("aromaId", LoginUtils.getSelectIdByType(DIYType.DIY_TYPE_ARMOS.getType()));
+        if (LoginUtils.hasSelectedByType(customeTypes, DIYType.DIY_TYPE_ARMOS.getType())) {
+            data.put("aromaId", LoginUtils.getSelectIdsByType(customeTypes, DIYType.DIY_TYPE_ARMOS.getType()));
         }
-        if (!TextUtils.isEmpty(LoginUtils.getSelectIdByType(DIYType.DIY_TYPE_ROOM_LAYOUT.getType()))) {
-            data.put("roomLayoutId", LoginUtils.getSelectIdByType(DIYType.DIY_TYPE_ROOM_LAYOUT.getType()));
+        if (LoginUtils.hasSelectedByType(customeTypes, DIYType.DIY_TYPE_ROOM_LAYOUT.getType())) {
+            data.put("roomLayoutId", LoginUtils.getSelectIdsByType(customeTypes, DIYType.DIY_TYPE_ROOM_LAYOUT.getType()));
         }
-        if (!TextUtils.isEmpty(LoginUtils.getSelectIdByType(DIYType.DIY_TYPE_WINE.getType()))) {
-            data.put("wineId", LoginUtils.getSelectIdByType(DIYType.DIY_TYPE_WINE.getType()));
+        if (LoginUtils.hasSelectedByType(customeTypes, DIYType.DIY_TYPE_WINE.getType())) {
+            data.put("wineId", LoginUtils.getSelectIdsByType(customeTypes, DIYType.DIY_TYPE_WINE.getType()));
+            data.put("wineNum", LoginUtils.getSelectCountsByType(customeTypes, DIYType.DIY_TYPE_WINE.getType()));
         }
 
         OkGo.<AAResponse<PreOrderInfo>>post(Constants.Net.URL)//
@@ -439,8 +437,7 @@ public class PreOrderActivity extends BaseActivity {
             dividerItemDecoration.setDrawable(getResources().getDrawable(R.drawable.list_line_diver));
             recyclerView.addItemDecoration(dividerItemDecoration);
 
-
-            List<DIYSaveInfo> diySaveInfos = LoginUtils.getDIY();
+            List<DIYSaveInfo> diySaveInfos = LoginUtils.getDIY(customeTypes);
             if (diySaveInfos != null && diySaveInfos.size() > 0) {
                 List<PreOrderInfo.CustomeItem> customeItems = new ArrayList<>();
                 for (DIYSaveInfo item : diySaveInfos) {
@@ -492,10 +489,10 @@ public class PreOrderActivity extends BaseActivity {
             inflate.findViewById(R.id.tv_cancle).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    SPUtils.getInstance().put(Constants.SAVE_DIY_SELECT, "");
                     for (CustomeType item : customeTypes) {
                         for (CustomeType.CustomTypeItem customTypeItem : item.getCustomTypeItems()) {
                             customTypeItem.setSelect(false);
+                            customTypeItem.setNum(1);
                         }
                     }
                     customeNeedListAdapter.setNewData(customeTypes);
@@ -562,6 +559,11 @@ public class PreOrderActivity extends BaseActivity {
             breakfast.setName("早餐");
             breakfast.setType(DIYType.DIY_TYPE_BRAKFAST.getType());
             breakfast.setCustomTypeItems(customeDIY.breakfastList);
+            for (CustomeType.CustomTypeItem item:customeDIY.breakfastList){
+                item.setSupportMultSelect(true);
+                item.setDiy_type(DIYType.DIY_TYPE_BRAKFAST.getType());
+                item.setType_name(breakfast.getName());
+            }
             customeTypes.add(breakfast);
         }
         if (customeDIY.fivePieceList != null && !customeDIY.fivePieceList.isEmpty()) {
@@ -569,6 +571,11 @@ public class PreOrderActivity extends BaseActivity {
             fivePiece.setName("五件套样式");
             fivePiece.setType(DIYType.DIY_TYPE_FIVE_PIECES.getType());
             fivePiece.setCustomTypeItems(customeDIY.fivePieceList);
+            for (CustomeType.CustomTypeItem item:customeDIY.fivePieceList){
+                item.setSupportMultSelect(false);
+                item.setDiy_type(DIYType.DIY_TYPE_FIVE_PIECES.getType());
+                item.setType_name(fivePiece.getName());
+            }
             customeTypes.add(fivePiece);
         }
 
@@ -577,6 +584,11 @@ public class PreOrderActivity extends BaseActivity {
             aromatype.setName("香气");
             aromatype.setType(DIYType.DIY_TYPE_ARMOS.getType());
             aromatype.setCustomTypeItems(customeDIY.aromaList);
+            for (CustomeType.CustomTypeItem item:customeDIY.aromaList){
+                item.setSupportMultSelect(false);
+                item.setDiy_type(DIYType.DIY_TYPE_ARMOS.getType());
+                item.setType_name(aromatype.getName());
+            }
             customeTypes.add(aromatype);
         }
 
@@ -585,6 +597,11 @@ public class PreOrderActivity extends BaseActivity {
             roomlayout.setName("房间布局");
             roomlayout.setType(DIYType.DIY_TYPE_ROOM_LAYOUT.getType());
             roomlayout.setCustomTypeItems(customeDIY.roomLayoutList);
+            for (CustomeType.CustomTypeItem item:customeDIY.roomLayoutList){
+                item.setSupportMultSelect(false);
+                item.setDiy_type(DIYType.DIY_TYPE_ROOM_LAYOUT.getType());
+                item.setType_name(roomlayout.getName());
+            }
             customeTypes.add(roomlayout);
         }
 
@@ -593,6 +610,11 @@ public class PreOrderActivity extends BaseActivity {
             windType.setName("酒水");
             windType.setType(DIYType.DIY_TYPE_WINE.getType());
             windType.setCustomTypeItems(customeDIY.wineList);
+            for (CustomeType.CustomTypeItem item:customeDIY.wineList){
+                item.setSupportMultSelect(true);
+                item.setDiy_type(DIYType.DIY_TYPE_WINE.getType());
+                item.setType_name(windType.getName());
+            }
             customeTypes.add(windType);
         }
 
@@ -668,6 +690,5 @@ public class PreOrderActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        SPUtils.getInstance().put(Constants.SAVE_DIY_SELECT, "");
     }
 }
