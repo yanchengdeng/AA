@@ -30,7 +30,7 @@
     <com.jude.rollviewpager.RollPagerView
         android:id="@+id/roll_view_pager"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/ad_heigh"
+        android:layout_height="wrap_content"
         app:rollviewpager_hint_gravity="center"
         app:rollviewpager_hint_paddingBottom="5dp"
         app:rollviewpager_hint_paddingRight="16dp"

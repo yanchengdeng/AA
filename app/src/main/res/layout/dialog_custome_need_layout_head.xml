@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:padding="@dimen/image_padding_big"
-    android:text="可选择您套餐"
+    android:text="您可选择的套餐"
     android:textColor="@color/activity_tv"
     android:textSize="@dimen/text_normal_up" />
 

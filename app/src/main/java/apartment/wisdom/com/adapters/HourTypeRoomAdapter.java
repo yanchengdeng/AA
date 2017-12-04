@@ -172,7 +172,9 @@ public class HourTypeRoomAdapter extends BaseAdapter {
             tvname.setText(hourRoom.hotelName);
             TextView tvMoney = (TextView) view.findViewById(R.id.tv_pay_money);
             tvMoney.setText(hourRoom.roomPrice);
+            LinearLayout.LayoutParams rollPageParams = new LinearLayout.LayoutParams(ScreenUtils.getScreenWidth() - 100, (int) ((ScreenUtils.getScreenWidth() - 100)*(3.0/4)));
             RollPagerView pager = (RollPagerView) view.findViewById(R.id.roll_view_pager);
+            pager.setLayoutParams(rollPageParams);
             pager.setAdapter(new GalleryPagerAdapter(hourRoom.roomTypeImageList));
             TextView tvPay = (TextView) view.findViewById(R.id.tv_sure);
             if (!TextUtils.isEmpty(hourRoom.roomNum)) {

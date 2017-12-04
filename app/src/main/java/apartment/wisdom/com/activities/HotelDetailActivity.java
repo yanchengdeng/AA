@@ -200,6 +200,7 @@ public class HotelDetailActivity extends BaseActivity {
         setCollapsingToolbarLayoutTitle(getString(R.string.hotel_detail));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         selectRoomType.rlDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -225,6 +226,14 @@ public class HotelDetailActivity extends BaseActivity {
 
         initData();
         getHotelInfo();
+        if (LoginUtils.isZeroTime()){
+            selectRoomType.setVisibility(View.GONE);
+            tvStayDays.setText("凌晨房");
+            tvStayDays.setBackground(null);
+            tvStayDays.setTextSize(18);
+            tvStayDays.setTextColor(getResources().getColor(R.color.activity_tv));
+            rlStayOut.setVisibility(View.GONE);
+        }
         EventBus.getDefault().register(this);
     }
 

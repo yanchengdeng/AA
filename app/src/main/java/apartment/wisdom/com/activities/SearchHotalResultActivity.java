@@ -36,6 +36,7 @@ import apartment.wisdom.com.commons.Constants;
 import apartment.wisdom.com.enums.DayHourRoomType;
 import apartment.wisdom.com.events.PayOrRechargeSuccess;
 import apartment.wisdom.com.utils.CalendarUtils;
+import apartment.wisdom.com.utils.LoginUtils;
 import apartment.wisdom.com.utils.NewsCallback;
 import apartment.wisdom.com.utils.ParamsUtils;
 import apartment.wisdom.com.utils.RefreshSwiperUtils;
@@ -108,9 +109,12 @@ public class SearchHotalResultActivity extends BaseActivity implements BaseQuick
         } else {
             tvCityCondition.setText(area);
         }
-        tvTimeCondition.setText(String.format(getString(R.string.search_text_mix), new Object[]{stant_in.getMonth(), stant_in.getDay(), stant_out.getMonth(), stant_out.getDay(), diffDay}));
+        if (LoginUtils.isZeroTime()) {
+            tvTimeCondition.setText(String.format(getString(R.string.search_text_single), new Object[]{stant_in.getMonth(), stant_in.getDay()}));
+        } else {
+            tvTimeCondition.setText(String.format(getString(R.string.search_text_mix), new Object[]{stant_in.getMonth(), stant_in.getDay(), stant_out.getMonth(), stant_out.getDay(), diffDay}));
+        }
     }
-
     private void initRecyle() {
 
         swipeLayout.setOnRefreshListener(this);

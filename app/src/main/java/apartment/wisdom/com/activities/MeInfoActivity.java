@@ -177,7 +177,8 @@ public class MeInfoActivity extends BaseActivity {
                 openActivity(EditNameActivity.class, REQUEST_NAME);
                 break;
             case R.id.rl_birth:
-                MeInfoActivityPermissionsDispatcher.showCameraWithCheck(this);
+                showBirthPop();
+//                MeInfoActivityPermissionsDispatcher.showCameraWithCheck(this);
                 break;
             case R.id.rl_phone:
                 //TODO

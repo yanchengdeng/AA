@@ -181,7 +181,9 @@ public class DayTypeRoomAdapterNew extends BaseAdapter {
             tvname.setText(item.hotelName);
             TextView tvMoney = (TextView) view.findViewById(R.id.tv_pay_money);
             tvMoney.setText(item.discountPrice);
+            LinearLayout.LayoutParams rollPageParams = new LinearLayout.LayoutParams(ScreenUtils.getScreenWidth() - 100, (int) ((ScreenUtils.getScreenWidth() - 100)*(3.0/4)));
             RollPagerView pager = (RollPagerView) view.findViewById(R.id.roll_view_pager);
+            pager.setLayoutParams(rollPageParams);
             pager.setAdapter(new GalleryPagerAdapter(item.roomTypeImageList));
             TextView tvPay = (TextView) view.findViewById(R.id.tv_sure);
             if (!TextUtils.isEmpty(item.roomNum)) {

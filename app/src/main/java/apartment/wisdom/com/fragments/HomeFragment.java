@@ -15,6 +15,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +37,6 @@ import com.lzy.okgo.cache.CacheMode;
 import com.lzy.okgo.model.Response;
 import com.tubb.calendarselector.library.FullDay;
 
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +55,7 @@ import apartment.wisdom.com.commons.Constants;
 import apartment.wisdom.com.enums.DayHourRoomType;
 import apartment.wisdom.com.services.LocationService;
 import apartment.wisdom.com.utils.CalendarUtils;
+import apartment.wisdom.com.utils.LoginUtils;
 import apartment.wisdom.com.utils.NewsCallback;
 import apartment.wisdom.com.utils.ParamsUtils;
 import apartment.wisdom.com.widgets.views.SelectRoomTypeView;
@@ -138,10 +139,7 @@ public class HomeFragment extends Fragment {
 
     //12:00  ~4:00 凌晨
     private void showZeroTimeTips() {
-        Calendar galendar = Calendar.getInstance();
-
-        int hours = galendar.get(Calendar.HOUR_OF_DAY);
-        if (hours == 0 || hours == 1 || hours == 2 || hours == 3) {
+        if (LoginUtils.isZeroTime()) {
             showZeroOrderDialog();
         }
     }
@@ -153,8 +151,14 @@ public class HomeFragment extends Fragment {
         dialog.titleTextColor(getResources().getColor(R.color.colorPrimary));
         dialog.titleLineColor(getResources().getColor(R.color.colorPrimary));
         dialog.titleTextSize(18);
-        dialog.content("您是否需要预定凌晨房？")//
-                .show();
+        TextView textContent = new TextView(getActivity());
+        View viewContent = LayoutInflater.from(getActivity()).inflate(R.layout.view_zero_time_tips, null);
+//        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//        params.gravity = Gravity.CENTER;
+//        dialog.setContentView(viewContent);
+        dialog.content(getString(R.string.zero_time_tips));
+        dialog.contentGravity(Gravity.CENTER_HORIZONTAL);
+        dialog.show();
         dialog.btnText("忽略", "继续", "确定");
         dialog.setOnBtnClickL(
                 new OnBtnClickL() {
@@ -166,7 +170,6 @@ public class HomeFragment extends Fragment {
                 new OnBtnClickL() {
                     @Override
                     public void onBtnClick() {
-                        dialog.dismiss();
                         Bundle bundleHotel = new Bundle();
                         bundleHotel.putParcelable(Constants.PASS_STAND_IN, stant_in);
                         bundleHotel.putParcelable(Constants.PASS_STAND_OUT, stant_out);
@@ -174,6 +177,7 @@ public class HomeFragment extends Fragment {
                         bundleHotel.putString(Constants.PASS_SELECT_HOTLE_TYPE, selectRoomType.getSelectType());
                         bundleHotel.putInt(Constants.PASS_DISTANCE_DAYS, diffdays);
                         ((BaseActivity) context).openActivity(SearchHotalResultActivity.class, bundleHotel);
+                        dialog.dismiss();
                     }
                 });
     }

@@ -143,8 +143,9 @@
     <string name="phone_card_regex">手机号、卡号格式不正确</string>
     <string name="code_success">短信发送成功</string>
     <string name="copy_right">福州蔓联盟网络科技有限公司\nCopyright@2017 manxinsu.com，All Rights Reserved</string>
-    <string name="custome_phone">0591-83598898</string>
+    <string name="custome_phone">13075821312</string>
     <string name="search_text_mix">%1$d月%2$d - %3$d月%4$d  共%5$d天</string>
+    <string name="search_text_single">%1$d月%2$d</string>
     <string name="student_card">学生证</string>
     <string name="add_success">添加成功</string>
     <string name="no_net_data">无网络数据</string>
@@ -164,4 +165,5 @@
     <string name="no_commend_to_submit">您未填写任何评论</string>
     <string name="my_commend">我的点评</string>
     <string name="do_over">已完成选房</string>
+    <string name="zero_time_tips">"您是否需要预定凌晨房？\n 凌晨入住、当天退房"</string>
 </resources>

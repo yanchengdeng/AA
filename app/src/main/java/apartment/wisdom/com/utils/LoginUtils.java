@@ -6,6 +6,7 @@ import com.blankj.utilcode.util.SPUtils;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import apartment.wisdom.com.beans.CustomeType;
@@ -73,7 +74,7 @@ public class LoginUtils {
         List<CustomeType.CustomTypeItem> customTypeItems = new ArrayList<>();
         for (CustomeType customeType : customeTypes) {
             for (CustomeType.CustomTypeItem item : customeType.getCustomTypeItems()) {
-                if (item.getDiy_type().equals(type)&& item.isSelect()) {
+                if (item.getDiy_type().equals(type) && item.isSelect()) {
                     customTypeItems.add(item);
                 }
             }
@@ -95,7 +96,7 @@ public class LoginUtils {
         List<CustomeType.CustomTypeItem> customTypeItems = new ArrayList<>();
         for (CustomeType customeType : customeTypes) {
             for (CustomeType.CustomTypeItem item : customeType.getCustomTypeItems()) {
-                if (item.getDiy_type().equals(type)&& item.isSelect()) {
+                if (item.getDiy_type().equals(type) && item.isSelect()) {
                     customTypeItems.add(item);
                 }
             }
@@ -136,11 +137,23 @@ public class LoginUtils {
     }
 
     //重置已选择的套餐
-    public static void setDIYByTypeResetSelected(List<CustomeType.CustomTypeItem>  customTypeItems,String type) {
-            for (CustomeType.CustomTypeItem item : customTypeItems) {
-                if (item.getDiy_type().equals(type)) {
-                   item.setSelect(false);
-                }
+    public static void setDIYByTypeResetSelected(List<CustomeType.CustomTypeItem> customTypeItems, String type) {
+        for (CustomeType.CustomTypeItem item : customTypeItems) {
+            if (item.getDiy_type().equals(type)) {
+                item.setSelect(false);
             }
+        }
+    }
+
+    public static boolean isZeroTime() {
+
+        Calendar galendar = Calendar.getInstance();
+
+        int hours = galendar.get(Calendar.HOUR_OF_DAY);
+        if (hours == 0 || hours == 1 || hours == 2 || hours == 3) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

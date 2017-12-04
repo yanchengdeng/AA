@@ -238,7 +238,7 @@ public class PreOrderActivity extends BaseActivity {
     //套餐配置
     private void initCustomeNeedDialog() {
         custemDialg = new CustomeNeedDialog(mContext);
-        custemDialg.setTitle("可选择您套餐");
+        custemDialg.setTitle("您可选择的套餐");
 //        custemDialg.isTitleShow(false);
         custemDialg.show();
         custemDialg.setOnDismissListener(new DialogInterface.OnDismissListener() {
