@@ -226,7 +226,7 @@ public class HotelDetailActivity extends BaseActivity {
 
         initData();
         getHotelInfo();
-        if (LoginUtils.isZeroTime()){
+        if (LoginUtils.isZeroTime()&& Constants.IS_SELECT_ZERO_TIME){
             selectRoomType.setVisibility(View.GONE);
             tvStayDays.setText("凌晨房");
             tvStayDays.setBackground(null);
@@ -366,6 +366,7 @@ public class HotelDetailActivity extends BaseActivity {
                 groupHotel.bespeakDays = item.bespeakDays;
                 groupHotel.roomTypeImageList = item.roomTypeImageList;
                 groupHotel.roomTypeRemark = item.roomTypeRemark;
+                groupHotel.roomTypeCode = item.roomTypeCode;
                 List<DayGroupHotel.DayGroupHotelItem> childHotels = new ArrayList<>();
                 DayGroupHotel.DayGroupHotelItem dayGroupHotelItem = new DayGroupHotel.DayGroupHotelItem();
                 dayGroupHotelItem.discountPrice = item.roomPrice;
@@ -384,6 +385,7 @@ public class HotelDetailActivity extends BaseActivity {
                 dayGroupHotelItem.roomDeposit = item.roomDeposit;
                 dayGroupHotelItem.roomTypeImageList = item.roomTypeImageList;
                 dayGroupHotelItem.roomTypeRemark = item.roomTypeRemark;
+                dayGroupHotelItem.roomTypeCode = item.roomTypeCode;
                 childHotels.add(dayGroupHotelItem);
                 groupHotel.items = childHotels;
                 dayGroupHotels.add(groupHotel);

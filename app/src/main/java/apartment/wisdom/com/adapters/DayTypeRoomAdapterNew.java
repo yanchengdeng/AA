@@ -114,6 +114,12 @@ public class DayTypeRoomAdapterNew extends BaseAdapter {
                 long days = TimeUtils.getTimeSpanByNow(calendarstandIn.get(Calendar.YEAR) + "-" + calendarstandIn.get(Calendar.MONTH) + "-" + calendarstandIn.get(Calendar.DAY_OF_MONTH), new SimpleDateFormat("yyyy-MM-dd"), TimeConstants.DAY);
 
 
+
+                if ((item.roomTypeCode.equals("0002")|| item.roomTypeCode.equals("0003"))&&Constants.IS_SELECT_ZERO_TIME&&LoginUtils.isZeroTime()){
+                    ToastUtils.showShort("凌晨房模式不能入住精品房和豪华房");
+                    return;
+                }
+
                 LogUtils.w("dyc", days);
                 if (days < item.bespeakDays) {
                     ToastUtils.showShort(item.name + "需要提前" + item.bespeakDays + "天预订，请重新选择入住时间");

@@ -21,6 +21,7 @@ public class Constants {
     public static String USER_INFO = "user_info";
     public static String AD_IMAGE ="ad_iamge";
     public static String CHECK_ROOM_CODE = "check_room_code";
+    public static boolean  IS_SELECT_ZERO_TIME = false;//选中凌晨房模式  默认未选中
 
 
     /*****

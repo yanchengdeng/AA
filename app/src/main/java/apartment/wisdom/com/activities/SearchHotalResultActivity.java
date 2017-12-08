@@ -109,7 +109,7 @@ public class SearchHotalResultActivity extends BaseActivity implements BaseQuick
         } else {
             tvCityCondition.setText(area);
         }
-        if (LoginUtils.isZeroTime()) {
+        if (LoginUtils.isZeroTime() && Constants.IS_SELECT_ZERO_TIME ) {
             tvTimeCondition.setText(String.format(getString(R.string.search_text_single), new Object[]{stant_in.getMonth(), stant_in.getDay()}));
         } else {
             tvTimeCondition.setText(String.format(getString(R.string.search_text_mix), new Object[]{stant_in.getMonth(), stant_in.getDay(), stant_out.getMonth(), stant_out.getDay(), diffDay}));

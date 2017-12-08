@@ -25,6 +25,7 @@ public class DayGroupHotel {
     public int bespeakDays;
     public List<RoomListInfo.RoomTypeImage> roomTypeImageList;
     public String roomTypeRemark;
+    public String roomTypeCode;//0001  普通房   0002  精品房   0003 豪华房
 
     public static class DayGroupHotelItem implements Serializable{
         public String roomPirce;
@@ -43,5 +44,6 @@ public class DayGroupHotel {
         public String roomRisePrice;//涨价 周五、六
         public List<RoomListInfo.RoomTypeImage> roomTypeImageList;
         public String roomTypeRemark;
+        public String roomTypeCode;//0001  普通房   0002  精品房   0003 豪华房
     }
 }

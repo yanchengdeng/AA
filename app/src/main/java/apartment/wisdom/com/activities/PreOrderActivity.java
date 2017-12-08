@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.RegexUtils;
 import com.blankj.utilcode.util.ScreenUtils;
+import com.blankj.utilcode.util.TimeUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.flyco.dialog.listener.OnOperItemClickL;
 import com.flyco.dialog.widget.ActionSheetDialog;
@@ -34,7 +35,10 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -122,9 +126,9 @@ public class PreOrderActivity extends BaseActivity {
     private PopPrcieDialog bubblePopup;
     private CustomeNeedDialog custemDialg;
     private RoomListInfo.HourRoom hotelRoom;
-    private  List<CustomeType> customeTypes;
+    private List<CustomeType> customeTypes;
     private List<CustomPeopleList.CustomPeopleItem> peopleItemInfos = new ArrayList<>();
-    String[] arriveTimes ;
+    String[] arriveTimes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,6 +149,16 @@ public class PreOrderActivity extends BaseActivity {
                 tvStandInDate.setText(hotelRoom.standInSimple);
                 tvLeaveDate.setText(hotelRoom.standOutSimple);
                 tvHotelOrderDays.setText(String.valueOf(hotelRoom.differDays + "晚"));
+                if (LoginUtils.isZeroTime() && Constants.IS_SELECT_ZERO_TIME) {
+                    Calendar calendarIn = Calendar.getInstance();
+                    calendarIn.setTime(TimeUtils.string2Date(hotelRoom.standIn,new SimpleDateFormat("yyyy-MM-dd")));
+                    calendarIn.add(Calendar.DAY_OF_MONTH, -1);
+                    Date dataInBefore = calendarIn.getTime();
+                    tvStandInDate.setText(TimeUtils.date2String(dataInBefore, new SimpleDateFormat("MM月dd日")));
+                    tvLeaveDate.setText(hotelRoom.standInSimple);
+                    hotelRoom.standOut = hotelRoom.standIn;
+                    hotelRoom.standIn = TimeUtils.date2String(dataInBefore,new SimpleDateFormat("yyyy-MM-dd"));
+                }
             } else {
                 tvStandInDate.setText(hotelRoom.standInSimple);
                 tvLeaveDate.setText(hotelRoom.bespeakTime);
@@ -156,8 +170,8 @@ public class PreOrderActivity extends BaseActivity {
         if (TextUtils.isEmpty(hotelRoom.roomRisePrice)) {
 
             llPriceDetail.tvPrice.setText(String.format("%.2f", Float.parseFloat(hotelRoom.roomPrice) * hotelRoom.differDays + Float.parseFloat(hotelRoom.roomDeposit)));
-        }else{
-            llPriceDetail.tvPrice.setText(String.format("%.2f", Float.parseFloat(hotelRoom.roomPrice) * hotelRoom.differDays + Float.parseFloat(hotelRoom.roomDeposit)+Float.parseFloat(hotelRoom.roomRisePrice)));
+        } else {
+            llPriceDetail.tvPrice.setText(String.format("%.2f", Float.parseFloat(hotelRoom.roomPrice) * hotelRoom.differDays + Float.parseFloat(hotelRoom.roomDeposit) + Float.parseFloat(hotelRoom.roomRisePrice)));
 
         }
         initBottomLisener();
@@ -169,20 +183,20 @@ public class PreOrderActivity extends BaseActivity {
 
     private void getOrderTime() {
         Map<String, Object> data = new HashMap<String, Object>();
-        data.put("checkInRoomType",  hotelRoom.selectType);
-        data.put("checkInTime",hotelRoom.standIn);
+        data.put("checkInRoomType", hotelRoom.selectType);
+        data.put("checkInTime", hotelRoom.standIn);
         OkGo.<AAResponse<TimeArrays>>post(Constants.Net.URL)//
                 .cacheMode(CacheMode.NO_CACHE)
-                .params("data", ParamsUtils.getParams(data,"getTimeSolt"))
+                .params("data", ParamsUtils.getParams(data, "getTimeSolt"))
                 .execute(new NewsCallback<AAResponse<TimeArrays>>() {
                     @Override
                     public void onSuccess(Response<AAResponse<TimeArrays>> response) {
-                        LogUtils.w("dyc",response.body());
+                        LogUtils.w("dyc", response.body());
                         TimeArrays timeArrays = response.body().data;
-                        if (timeArrays!=null&& timeArrays.dateArray!=null && timeArrays.dateArray.length>0){
-                            arriveTimes  = new String[timeArrays.dateArray.length];
-                            for (int i = 0;i<timeArrays.dateArray.length;i++){
-                                arriveTimes[i] = timeArrays.dateArray[i]+"前";
+                        if (timeArrays != null && timeArrays.dateArray != null && timeArrays.dateArray.length > 0) {
+                            arriveTimes = new String[timeArrays.dateArray.length];
+                            for (int i = 0; i < timeArrays.dateArray.length; i++) {
+                                arriveTimes[i] = timeArrays.dateArray[i] + "前";
                             }
                             tvArriveTime.setText(arriveTimes[0]);
                         }
@@ -244,16 +258,16 @@ public class PreOrderActivity extends BaseActivity {
         custemDialg.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
-                float selectMoney =0;
-                if (LoginUtils.getDIY(customeTypes) != null && LoginUtils.getDIY(customeTypes) .size() > 0) {
-                    for (DIYSaveInfo item:LoginUtils.getDIY(customeTypes) ){
-                        selectMoney+=Float.parseFloat(item.getMoney())*item.getNum();
+                float selectMoney = 0;
+                if (LoginUtils.getDIY(customeTypes) != null && LoginUtils.getDIY(customeTypes).size() > 0) {
+                    for (DIYSaveInfo item : LoginUtils.getDIY(customeTypes)) {
+                        selectMoney += Float.parseFloat(item.getMoney()) * item.getNum();
                     }
                 }
                 if (TextUtils.isEmpty(hotelRoom.roomRisePrice)) {
                     llPriceDetail.tvPrice.setText(String.format("%.2f", Float.parseFloat(hotelRoom.roomPrice) * hotelRoom.differDays + Float.parseFloat(hotelRoom.roomDeposit) + selectMoney));
-                }else {
-                    llPriceDetail.tvPrice.setText(String.format("%.2f", Float.parseFloat(hotelRoom.roomPrice) * hotelRoom.differDays + Float.parseFloat(hotelRoom.roomDeposit) +Float.parseFloat(hotelRoom.roomRisePrice)+ selectMoney));
+                } else {
+                    llPriceDetail.tvPrice.setText(String.format("%.2f", Float.parseFloat(hotelRoom.roomPrice) * hotelRoom.differDays + Float.parseFloat(hotelRoom.roomDeposit) + Float.parseFloat(hotelRoom.roomRisePrice) + selectMoney));
                 }
             }
         });
@@ -331,7 +345,7 @@ public class PreOrderActivity extends BaseActivity {
             data.put("remark", etOrderRemarks.getEditableText().toString());
         }
 
-        if (LoginUtils.hasSelectedByType(customeTypes,DIYType.DIY_TYPE_BRAKFAST.getType())) {
+        if (LoginUtils.hasSelectedByType(customeTypes, DIYType.DIY_TYPE_BRAKFAST.getType())) {
             data.put("breakfastId", LoginUtils.getSelectIdsByType(customeTypes, DIYType.DIY_TYPE_BRAKFAST.getType()));
             data.put("breakfastNum", LoginUtils.getSelectCountsByType(customeTypes, DIYType.DIY_TYPE_BRAKFAST.getType()));
         }
@@ -391,7 +405,7 @@ public class PreOrderActivity extends BaseActivity {
 
     private class PopPrcieDialog extends BasePopup<PopPrcieDialog> {
 
-        private TextView tvRoom, tvPrice, tvyj,tvJJ;
+        private TextView tvRoom, tvPrice, tvyj, tvJJ;
         private RecyclerView recyclerView;
         private View lljj;
 
@@ -425,9 +439,9 @@ public class PreOrderActivity extends BaseActivity {
                 tvyj.setText(hotelRoom.roomDeposit);
             }
 
-            if (TextUtils.isEmpty(hotelRoom.roomRisePrice)){
+            if (TextUtils.isEmpty(hotelRoom.roomRisePrice)) {
                 lljj.setVisibility(View.GONE);
-            }else{
+            } else {
                 lljj.setVisibility(View.VISIBLE);
                 tvJJ.setText(hotelRoom.roomRisePrice);
             }
@@ -445,7 +459,7 @@ public class PreOrderActivity extends BaseActivity {
                     customTypeItem.consumeName = item.getSelectName();
                     customTypeItem.consumePrice = item.getMoney();
                     customTypeItem.type = item.getType();
-                    customTypeItem.consumeNum= item.getNum();
+                    customTypeItem.consumeNum = item.getNum();
                     customTypeItem.typeName = item.getTypeName();
                     customeItems.add(customTypeItem);
                 }
@@ -498,11 +512,11 @@ public class PreOrderActivity extends BaseActivity {
                     customeNeedListAdapter.setNewData(customeTypes);
                     customeNeedListAdapter.notifyDataSetChanged();
                     ToastUtils.showShort("重置完成");
-                    if (TextUtils.isEmpty(hotelRoom.roomRisePrice)){
-                        llPriceDetail.tvPrice.setText(String.format("%.2f",Float.parseFloat(hotelRoom.roomPrice) * hotelRoom.differDays+Float.parseFloat(hotelRoom.roomDeposit)));
+                    if (TextUtils.isEmpty(hotelRoom.roomRisePrice)) {
+                        llPriceDetail.tvPrice.setText(String.format("%.2f", Float.parseFloat(hotelRoom.roomPrice) * hotelRoom.differDays + Float.parseFloat(hotelRoom.roomDeposit)));
 
-                    }else{
-                        llPriceDetail.tvPrice.setText(String.format("%.2f",Float.parseFloat(hotelRoom.roomPrice) * hotelRoom.differDays+Float.parseFloat(hotelRoom.roomDeposit)+Float.parseFloat(hotelRoom.roomRisePrice)));
+                    } else {
+                        llPriceDetail.tvPrice.setText(String.format("%.2f", Float.parseFloat(hotelRoom.roomPrice) * hotelRoom.differDays + Float.parseFloat(hotelRoom.roomDeposit) + Float.parseFloat(hotelRoom.roomRisePrice)));
 
                     }
                 }
@@ -559,7 +573,7 @@ public class PreOrderActivity extends BaseActivity {
             breakfast.setName("早餐");
             breakfast.setType(DIYType.DIY_TYPE_BRAKFAST.getType());
             breakfast.setCustomTypeItems(customeDIY.breakfastList);
-            for (CustomeType.CustomTypeItem item:customeDIY.breakfastList){
+            for (CustomeType.CustomTypeItem item : customeDIY.breakfastList) {
                 item.setSupportMultSelect(true);
                 item.setDiy_type(DIYType.DIY_TYPE_BRAKFAST.getType());
                 item.setType_name(breakfast.getName());
@@ -571,7 +585,7 @@ public class PreOrderActivity extends BaseActivity {
             fivePiece.setName("五件套样式");
             fivePiece.setType(DIYType.DIY_TYPE_FIVE_PIECES.getType());
             fivePiece.setCustomTypeItems(customeDIY.fivePieceList);
-            for (CustomeType.CustomTypeItem item:customeDIY.fivePieceList){
+            for (CustomeType.CustomTypeItem item : customeDIY.fivePieceList) {
                 item.setSupportMultSelect(false);
                 item.setDiy_type(DIYType.DIY_TYPE_FIVE_PIECES.getType());
                 item.setType_name(fivePiece.getName());
@@ -584,7 +598,7 @@ public class PreOrderActivity extends BaseActivity {
             aromatype.setName("香气");
             aromatype.setType(DIYType.DIY_TYPE_ARMOS.getType());
             aromatype.setCustomTypeItems(customeDIY.aromaList);
-            for (CustomeType.CustomTypeItem item:customeDIY.aromaList){
+            for (CustomeType.CustomTypeItem item : customeDIY.aromaList) {
                 item.setSupportMultSelect(false);
                 item.setDiy_type(DIYType.DIY_TYPE_ARMOS.getType());
                 item.setType_name(aromatype.getName());
@@ -597,7 +611,7 @@ public class PreOrderActivity extends BaseActivity {
             roomlayout.setName("房间布局");
             roomlayout.setType(DIYType.DIY_TYPE_ROOM_LAYOUT.getType());
             roomlayout.setCustomTypeItems(customeDIY.roomLayoutList);
-            for (CustomeType.CustomTypeItem item:customeDIY.roomLayoutList){
+            for (CustomeType.CustomTypeItem item : customeDIY.roomLayoutList) {
                 item.setSupportMultSelect(false);
                 item.setDiy_type(DIYType.DIY_TYPE_ROOM_LAYOUT.getType());
                 item.setType_name(roomlayout.getName());
@@ -610,7 +624,7 @@ public class PreOrderActivity extends BaseActivity {
             windType.setName("酒水");
             windType.setType(DIYType.DIY_TYPE_WINE.getType());
             windType.setCustomTypeItems(customeDIY.wineList);
-            for (CustomeType.CustomTypeItem item:customeDIY.wineList){
+            for (CustomeType.CustomTypeItem item : customeDIY.wineList) {
                 item.setSupportMultSelect(true);
                 item.setDiy_type(DIYType.DIY_TYPE_WINE.getType());
                 item.setType_name(windType.getName());
@@ -672,9 +686,9 @@ public class PreOrderActivity extends BaseActivity {
                 }
                 break;
             case R.id.ll_arrive_time:
-                if (arriveTimes!=null ) {
+                if (arriveTimes != null) {
                     showSelectTimeDialog();
-                }else{
+                } else {
                     getOrderTime();
                 }
                 break;

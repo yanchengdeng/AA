@@ -160,11 +160,15 @@ public class HomeFragment extends Fragment {
         dialog.contentGravity(Gravity.CENTER_HORIZONTAL);
         dialog.show();
         dialog.btnText("忽略", "继续", "确定");
+//        dialog.dimEnabled(false);
+//        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
         dialog.setOnBtnClickL(
                 new OnBtnClickL() {
                     @Override
                     public void onBtnClick() {
                         dialog.dismiss();
+                        Constants.IS_SELECT_ZERO_TIME = false;
                     }
                 },
                 new OnBtnClickL() {
@@ -177,6 +181,7 @@ public class HomeFragment extends Fragment {
                         bundleHotel.putString(Constants.PASS_SELECT_HOTLE_TYPE, selectRoomType.getSelectType());
                         bundleHotel.putInt(Constants.PASS_DISTANCE_DAYS, diffdays);
                         ((BaseActivity) context).openActivity(SearchHotalResultActivity.class, bundleHotel);
+                        Constants.IS_SELECT_ZERO_TIME = true;
                         dialog.dismiss();
                     }
                 });
@@ -426,6 +431,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        Constants.IS_SELECT_ZERO_TIME = false;
     }
 
 
