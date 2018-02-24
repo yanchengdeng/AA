@@ -13,7 +13,7 @@ public class Constants {
     public static final String STAND_IN_OUT_DISTANCE = "stand_in_out_distance";
     public static final String PASS_SELECT_HOTLE_TYPE = "pass_select_hotle_type";
     public static final String SELECT_CARD_TYPE = "selelct_card_type";
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     public static final String FRIST_OPEN_APP = "is_first_open_app";
     public static int PAGE_SIZE = 10;
     public static String IS_LOGIN_STATUS = "is_login_status";

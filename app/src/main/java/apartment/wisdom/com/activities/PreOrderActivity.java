@@ -149,6 +149,7 @@ public class PreOrderActivity extends BaseActivity {
                 tvStandInDate.setText(hotelRoom.standInSimple);
                 tvLeaveDate.setText(hotelRoom.standOutSimple);
                 tvHotelOrderDays.setText(String.valueOf(hotelRoom.differDays + "晚"));
+                //如果凌晨房   日期显示 及  预支付订单接口  日期提前一天
                 if (LoginUtils.isZeroTime() && Constants.IS_SELECT_ZERO_TIME) {
                     Calendar calendarIn = Calendar.getInstance();
                     calendarIn.setTime(TimeUtils.string2Date(hotelRoom.standIn,new SimpleDateFormat("yyyy-MM-dd")));
@@ -285,7 +286,7 @@ public class PreOrderActivity extends BaseActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
-                    showDetailInfo();
+                        showDetailInfo();
                 } else {
                     if (bubblePopup != null) {
                         if (bubblePopup.isShowing()) {

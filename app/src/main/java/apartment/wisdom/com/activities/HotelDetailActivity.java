@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.blankj.utilcode.util.IntentUtils;
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.TimeUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.flyco.dialog.listener.OnOperItemClickL;
@@ -39,7 +40,9 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -266,6 +269,15 @@ public class HotelDetailActivity extends BaseActivity {
     RoomListInfo roomListInfo;
 
     private void getHotelInfo() {
+        if (LoginUtils.isZeroTime() && Constants.IS_SELECT_ZERO_TIME) {
+            Calendar calendarIn = Calendar.getInstance();
+            calendarIn.setTime(TimeUtils.string2Date(CalendarUtils.getInstant().getDateForamte(stant_in),new SimpleDateFormat("yyyy-MM-dd")));
+            calendarIn.add(Calendar.DAY_OF_MONTH, -1);
+            stant_out = stant_in;
+            stant_in = new FullDay(calendarIn.get(Calendar.YEAR),calendarIn.get(Calendar.MONTH)+1,calendarIn.get(Calendar.DAY_OF_MONTH));
+        }
+
+
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("storeId", hotelListItem.storeId);
         data.put("checkInRoomType", selectType);

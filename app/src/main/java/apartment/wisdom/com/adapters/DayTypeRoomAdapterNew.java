@@ -15,7 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.blankj.utilcode.constant.TimeConstants;
-import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ScreenUtils;
 import com.blankj.utilcode.util.TimeUtils;
 import com.blankj.utilcode.util.ToastUtils;
@@ -101,27 +100,12 @@ public class DayTypeRoomAdapterNew extends BaseAdapter {
                     return;
                 }
 
-                Calendar calendarstandIn = Calendar.getInstance();
-                calendarstandIn.set(Calendar.YEAR, item.standIn.getYear());
-                calendarstandIn.set(Calendar.MONTH, item.standIn.getMonth());
-                calendarstandIn.set(Calendar.DAY_OF_MONTH, item.standIn.getDay());
-
-                Calendar calendarNow = Calendar.getInstance();
-                calendarNow.set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR));
-                calendarNow.set(Calendar.MONTH, Calendar.getInstance().get(Calendar.MONTH) + 1);
-                calendarNow.set(Calendar.DAY_OF_MONTH, Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
-
-                long days = TimeUtils.getTimeSpanByNow(calendarstandIn.get(Calendar.YEAR) + "-" + calendarstandIn.get(Calendar.MONTH) + "-" + calendarstandIn.get(Calendar.DAY_OF_MONTH), new SimpleDateFormat("yyyy-MM-dd"), TimeConstants.DAY);
-
-
-
-                if ((item.roomTypeCode.equals("0002")|| item.roomTypeCode.equals("0003"))&&Constants.IS_SELECT_ZERO_TIME&&LoginUtils.isZeroTime()){
+                if ((item.roomTypeCode.equals("0002") || item.roomTypeCode.equals("0003")) && Constants.IS_SELECT_ZERO_TIME && LoginUtils.isZeroTime()) {
                     ToastUtils.showShort("凌晨房模式不能入住精品房和豪华房");
                     return;
                 }
 
-                LogUtils.w("dyc", days);
-                if (days < item.bespeakDays) {
+                if (getDiffDays(item) < item.bespeakDays) {
                     ToastUtils.showShort(item.name + "需要提前" + item.bespeakDays + "天预订，请重新选择入住时间");
                     return;
                 }
@@ -187,7 +171,7 @@ public class DayTypeRoomAdapterNew extends BaseAdapter {
             tvname.setText(item.hotelName);
             TextView tvMoney = (TextView) view.findViewById(R.id.tv_pay_money);
             tvMoney.setText(item.discountPrice);
-            LinearLayout.LayoutParams rollPageParams = new LinearLayout.LayoutParams(ScreenUtils.getScreenWidth() - 100, (int) ((ScreenUtils.getScreenWidth() - 100)*(3.0/4)));
+            LinearLayout.LayoutParams rollPageParams = new LinearLayout.LayoutParams(ScreenUtils.getScreenWidth() - 100, (int) ((ScreenUtils.getScreenWidth() - 100) * (3.0 / 4)));
             RollPagerView pager = (RollPagerView) view.findViewById(R.id.roll_view_pager);
             pager.setLayoutParams(rollPageParams);
             pager.setAdapter(new GalleryPagerAdapter(item.roomTypeImageList));
@@ -205,6 +189,17 @@ public class DayTypeRoomAdapterNew extends BaseAdapter {
                 @Override
                 public void onClick(View view) {
                     if (LoginUtils.getLoginStatus()) {
+
+                        if ((item.roomTypeCode.equals("0002") || item.roomTypeCode.equals("0003")) && Constants.IS_SELECT_ZERO_TIME && LoginUtils.isZeroTime()) {
+                            ToastUtils.showShort("凌晨房模式不能入住精品房和豪华房");
+                            return;
+                        }
+
+                        if (getDiffDays(item) < item.bespeakDays) {
+                            ToastUtils.showShort(item.name + "需要提前" + item.bespeakDays + "天预订，请重新选择入住时间");
+                            return;
+                        }
+
                         RoomListInfo.HourRoom hourRoom = new RoomListInfo.HourRoom();
                         hourRoom.roomPrice = item.discountPrice;
                         hourRoom.roomTypeId = item.roomTypeId;
@@ -241,6 +236,21 @@ public class DayTypeRoomAdapterNew extends BaseAdapter {
         public void setUiBeforShow() {
 
         }
+    }
+
+    private long getDiffDays(DayGroupHotel item) {
+        Calendar calendarstandIn = Calendar.getInstance();
+        calendarstandIn.set(Calendar.YEAR, item.standIn.getYear());
+        calendarstandIn.set(Calendar.MONTH, item.standIn.getMonth());
+        calendarstandIn.set(Calendar.DAY_OF_MONTH, item.standIn.getDay());
+
+        Calendar calendarNow = Calendar.getInstance();
+        calendarNow.set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR));
+        calendarNow.set(Calendar.MONTH, Calendar.getInstance().get(Calendar.MONTH) + 1);
+        calendarNow.set(Calendar.DAY_OF_MONTH, Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+
+        long days = TimeUtils.getTimeSpanByNow(calendarstandIn.get(Calendar.YEAR) + "-" + calendarstandIn.get(Calendar.MONTH) + "-" + calendarstandIn.get(Calendar.DAY_OF_MONTH), new SimpleDateFormat("yyyy-MM-dd"), TimeConstants.DAY);
+        return days;
     }
 
     static class ViewHolder {

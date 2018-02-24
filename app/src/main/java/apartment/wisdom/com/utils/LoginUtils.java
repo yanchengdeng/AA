@@ -59,10 +59,12 @@ public class LoginUtils {
     //是否存在该类型的选项
     public static boolean hasSelectedByType(List<CustomeType> customeTypes, String type) {
         boolean isSelected = false;
-        for (CustomeType customeType : customeTypes) {
-            for (CustomeType.CustomTypeItem item : customeType.getCustomTypeItems()) {
-                if (item.getDiy_type().equals(type)) {
-                    isSelected = true;
+        if (customeTypes!=null && customeTypes.size()>0) {
+            for (CustomeType customeType : customeTypes) {
+                for (CustomeType.CustomTypeItem item : customeType.getCustomTypeItems()) {
+                    if (item.getDiy_type().equals(type)) {
+                        isSelected = true;
+                    }
                 }
             }
         }
@@ -115,25 +117,29 @@ public class LoginUtils {
 
     //已选择的套餐
     public static List<DIYSaveInfo> getDIY(List<CustomeType> customeTypes) {
-        List<CustomeType.CustomTypeItem> customTypeItems = new ArrayList<>();
-        for (CustomeType customeType : customeTypes) {
-            for (CustomeType.CustomTypeItem item : customeType.getCustomTypeItems()) {
-                if (item.isSelect()) {
-                    customTypeItems.add(item);
+        if (customeTypes!=null && customeTypes.size()>0) {
+            List<CustomeType.CustomTypeItem> customTypeItems = new ArrayList<>();
+            for (CustomeType customeType : customeTypes) {
+                for (CustomeType.CustomTypeItem item : customeType.getCustomTypeItems()) {
+                    if (item.isSelect()) {
+                        customTypeItems.add(item);
+                    }
                 }
             }
-        }
-        List<DIYSaveInfo> diySaveInfos = new ArrayList<>();
-        for (CustomeType.CustomTypeItem item : customTypeItems) {
-            DIYSaveInfo diySaveInfo = new DIYSaveInfo();
-            diySaveInfo.setSelectName(item.getName());
-            diySaveInfo.setMoney(item.getPrice());
+            List<DIYSaveInfo> diySaveInfos = new ArrayList<>();
+            for (CustomeType.CustomTypeItem item : customTypeItems) {
+                DIYSaveInfo diySaveInfo = new DIYSaveInfo();
+                diySaveInfo.setSelectName(item.getName());
+                diySaveInfo.setMoney(item.getPrice());
 //             diySaveInfo.setType();
-            diySaveInfo.setNum(item.getNum());
-            diySaveInfo.setTypeName(item.getType_name());
-            diySaveInfos.add(diySaveInfo);
+                diySaveInfo.setNum(item.getNum());
+                diySaveInfo.setTypeName(item.getType_name());
+                diySaveInfos.add(diySaveInfo);
+            }
+            return diySaveInfos;
+        }else{
+            return new ArrayList<>();
         }
-        return diySaveInfos;
     }
 
     //重置已选择的套餐
